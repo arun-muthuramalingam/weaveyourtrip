@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Paris Adventure · WeaveYourTrip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index-visa.html" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <div class="freemium-counter">🔥 <span class="count">2</span> free trips left <span class="upgrade">Upgrade →</span></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a href="wizard-visa.html" class="btn btn-ghost btn-sm">← Edit trip</a>
+    <button class="btn btn-primary btn-sm">Share</button>
+  </div>
+</nav>
+
+<!-- ITINERARY HERO -->
+<div class="itinerary-hero">
+  <div class="itinerary-hero-inner container">
+    <div class="label" style="color:var(--gold); margin-bottom:12px;">🇮🇳 → 🇫🇷 · Mid-range · Vegetarian</div>
+    <h1>Your Paris <span>Adventure</span></h1>
+    <p class="itinerary-meta">
+      <strong>10 nights</strong> &nbsp;·&nbsp;
+      <strong>2 travellers</strong> &nbsp;·&nbsp;
+      15–25 Jul 2026 &nbsp;·&nbsp;
+      <strong>~₹2,98,800 total (flights + hotel + trip)</strong>
+      &nbsp;<span style="color:rgba(245,240,232,0.5); font-size:13px;">(~€3,320)</span>
+    </p>
+    <div class="highlight-pills">
+      <span class="highlight-pill">⭐ Eiffel Tower at sunset</span>
+      <span class="highlight-pill">⭐ Louvre + Tuileries</span>
+      <span class="highlight-pill">⭐ Versailles day trip</span>
+      <span class="highlight-pill">⭐ Montmartre &amp; Sacré-Cœur</span>
+      <span class="highlight-pill">⭐ Seine river cruise</span>
+    </div>
+    <div class="itinerary-actions">
+      <button class="btn btn-primary btn-sm">⬇ Download Itinerary PDF</button>
+      <button class="btn btn-sm" style="background:var(--gold); color:#2a1800; border:none;">📄 Visa Checklist PDF</button>
+      <button class="btn btn-ghost btn-sm" style="color:rgba(245,240,232,0.7); border-color:rgba(245,240,232,0.2);">📅 Calendar</button>
+      <button class="btn btn-ghost btn-sm" style="color:rgba(245,240,232,0.7); border-color:rgba(245,240,232,0.2);">💬 WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- VISA SUMMARY BLOCK (renders for hard-passport flows; hidden for soft-passport) -->
+<div style="background:linear-gradient(135deg, rgba(201,79,44,0.04), rgba(212,168,67,0.04)); border-bottom:1px solid var(--border); padding:20px 0;">
+  <div class="container" style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:280px;">
+      <span style="font-size:32px;">📄</span>
+      <div>
+        <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--rust); font-weight:600;">Visa Required · Schengen Type C</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--ink); margin-top:2px;">
+          Apply by 30 Jun 2026
+          <span style="font-size:13px; font-weight:400; color:var(--muted);">· 15 day processing + 7 day buffer</span>
+        </div>
+        <div style="font-size:12.5px; color:var(--muted); margin-top:2px;">
+          ₹ 10,200 fee per person (€80 + €31 service) · 9 documents · Multiple-entry, 90-day validity
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-sm" style="background:var(--rust); color:white; border:none;">⬇ Visa checklist + cover letter PDF</button>
+      <a href="wizard-visa.html" class="btn btn-ghost btn-sm">View visa details</a>
+    </div>
+  </div>
+</div>
+
+<!-- TRAVEL INSURANCE REQUIRED CALLOUT -->
+<div style="background:rgba(74,103,65,0.06); border-bottom:1px solid rgba(74,103,65,0.18); padding:14px 0;">
+  <div class="container" style="display:flex; align-items:center; gap:12px; font-size:13.5px;">
+    <span style="font-size:18px;">🛡️</span>
+    <span style="flex:1;">
+      <strong style="color:var(--sage);">Travel insurance required for Schengen visa</strong> — minimum €30,000 medical coverage.
+      Recommended: <strong>Bajaj Allianz International ✈ — ₹2,200 for 2 travellers, 10 days, Schengen-compliant</strong>.
+    </span>
+    <a href="#" class="btn btn-sm" style="background:var(--sage); color:white; border:none;">Get insurance →</a>
+  </div>
+</div>
+
+<!-- SELECTED BOOKINGS STRIP -->
+<div class="booking-strip">
+  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px; flex-shrink:0;">Your bookings</div>
+  <div class="booking-item">
+    <span class="booking-icon">✈</span>
+    <div>
+      <div class="booking-label">Outbound flight</div>
+      <div class="booking-val">Air France · BOM→CDG · 15 Jul · 02:30 Direct</div>
+    </div>
+    <span class="booking-price">₹ 1,16,800</span>
+    <a href="flights.html">Change</a>
+  </div>
+  <div class="booking-item">
+    <span class="booking-icon">🏨</span>
+    <div>
+      <div class="booking-label">Accommodation</div>
+      <div class="booking-val">Hotel Migny Opera Montmartre · 9th Arr · 10 nights</div>
+    </div>
+    <span class="booking-price">₹ 98,000</span>
+    <a href="hotels.html">Change</a>
+  </div>
+  <div style="margin-left:auto; text-align:right; flex-shrink:0;">
+    <div style="font-size:12px; color:var(--muted);">Flights + Hotel</div>
+    <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--rust);">₹ 2,14,800</div>
+    <div style="font-size:11px; color:var(--sage);">+ daily spend ₹ 84,000 est.</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container" style="padding-top:36px; padding-bottom:100px;">
+
+  <div style="display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start;">
+
+    <!-- LEFT: Days -->
+    <div>
+
+      <!-- DAY 1 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-header-left">
+            <div class="day-number">1</div>
+            <div>
+              <div class="day-title">Arrival &amp; first taste of Paris</div>
+              <div class="day-date">Wednesday, 15 Jul · Est. ₹6,400/person</div>
+            </div>
+          </div>
+          <span class="day-cost">~₹6,400/person</span>
+        </div>
+        <div class="day-body">
+
+          <div class="activity">
+            <span class="activity-time">08:05</span>
+            <span class="activity-icon">✈️</span>
+            <div class="activity-content">
+              <div class="activity-name">Land at Paris CDG · Terminal 2E</div>
+              <div class="activity-desc">Air France direct from Mumbai lands in Terminal 2E. Take RER B train to Gare du Nord (35 min, ₹1,150/person). Avoid taxi scams.</div>
+              <div class="activity-meta">
+                <span class="badge badge-transport">35 min</span>
+                <span class="badge badge-cost">~₹1,150/person RER ticket</span>
+              </div>
+            </div>
+            <div class="activity-photo-placeholder">✈️</div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">10:30</span>
+            <span class="activity-icon">🏨</span>
+            <div class="activity-content">
+              <div class="activity-name">Check-in: Hotel Migny Opera Montmartre</div>
+              <div class="activity-desc">Early check-in arranged. Drop bags, freshen up. Hotel offers veg breakfast included — perfect to ease into the trip after the overnight flight.</div>
+              <div class="activity-meta">
+                <span class="badge badge-duration">45 min</span>
+                <span class="badge badge-free">Included</span>
+              </div>
+            </div>
+            <div class="activity-photo-placeholder">🏨</div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">12:30</span>
+            <span class="activity-icon">🥬</span>
+            <div class="activity-content">
+              <div class="activity-name">Lunch: Saravana Bhavan (Rue Cadet)</div>
+              <div class="activity-desc">South Indian veg classic — 8 min walk from hotel. Dosa, idli, sambar, filter coffee. Comfort food for day-one Paris arrival.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★</span> 4.5 <span class="count">(3,840 reviews)</span></div>
+                <span class="badge badge-duration">60 min</span>
+                <span class="badge badge-cost">~₹1,400/person</span>
+                <span class="badge" style="background:rgba(74,103,65,0.1); color:var(--sage);">🥬 100% veg</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/saravana-paris/240/170" alt="Saravana Bhavan">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">15:00</span>
+            <span class="activity-icon">🗼</span>
+            <div class="activity-content">
+              <div class="activity-name">Eiffel Tower from Trocadéro</div>
+              <div class="activity-desc">Free postcard view from Trocadéro Plaza — best photo angle without paying for the climb. Walk under the Tower afterwards. Sparkles every hour after dusk.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.7 <span class="count">(184,200 reviews)</span></div>
+                <span class="badge badge-duration">2 hours</span>
+                <span class="badge badge-free">Free viewing</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/eiffel-trocadero/240/170" alt="Eiffel from Trocadéro">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">19:30</span>
+            <span class="activity-icon">🍛</span>
+            <div class="activity-content">
+              <div class="activity-name">Dinner: Krishna Bhavan, La Chapelle</div>
+              <div class="activity-desc">Tamil-style veg thali — the best South Indian in Paris. 4-thali combo for two ₹1,800. Family-run, busy but worth the wait.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.6 <span class="count">(2,140 reviews)</span></div>
+                <span class="badge badge-duration">75 min</span>
+                <span class="badge badge-cost">~₹1,800/person</span>
+                <span class="badge" style="background:rgba(74,103,65,0.1); color:var(--sage);">🥬 Veg / Jain on request</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/krishna-bhavan/240/170" alt="Krishna Bhavan">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-header-left">
+            <div class="day-number">2</div>
+            <div>
+              <div class="day-title">Classic Paris — Île de la Cité &amp; Louvre</div>
+              <div class="day-date">Thursday, 16 Jul · Est. ₹7,200/person</div>
+            </div>
+          </div>
+          <span class="day-cost">~₹7,200/person</span>
+        </div>
+        <div class="day-body">
+
+          <div class="activity">
+            <span class="activity-time">09:00</span>
+            <span class="activity-icon">⛪</span>
+            <div class="activity-content">
+              <div class="activity-name">Notre-Dame Cathedral (exterior + Île de la Cité)</div>
+              <div class="activity-desc">Reopened Dec 2024 after restoration — interior access via timed reservation (free). Square in front is the historic "Point Zéro" of France.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.7 <span class="count">(89,400 reviews)</span></div>
+                <span class="badge badge-duration">90 min</span>
+                <span class="badge badge-free">Free (with reservation)</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/notre-dame-paris/240/170" alt="Notre-Dame">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">11:00</span>
+            <span class="activity-icon">💎</span>
+            <div class="activity-content">
+              <div class="activity-name">Sainte-Chapelle</div>
+              <div class="activity-desc">15-minute walk. The most beautiful stained glass in Europe — 1,113 panels, 13th century. Easy to miss; book skip-the-line.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.8 <span class="count">(31,200 reviews)</span></div>
+                <span class="badge badge-duration">60 min</span>
+                <span class="badge badge-cost">₹1,200/person</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/sainte-chapelle/240/170" alt="Sainte-Chapelle">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">13:00</span>
+            <span class="activity-icon">🥬</span>
+            <div class="activity-content">
+              <div class="activity-name">Lunch: Pooja (Indian Veg, Marais)</div>
+              <div class="activity-desc">Reliable veg restaurant in the Marais. Thali + lassi for ₹1,500. Walking distance from Sainte-Chapelle.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★</span> 4.4 <span class="count">(1,690 reviews)</span></div>
+                <span class="badge badge-duration">60 min</span>
+                <span class="badge badge-cost">~₹1,500/person</span>
+                <span class="badge" style="background:rgba(74,103,65,0.1); color:var(--sage);">🥬 Veg</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/pooja-marais/240/170" alt="Pooja Restaurant">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">14:30</span>
+            <span class="activity-icon">🖼️</span>
+            <div class="activity-content">
+              <div class="activity-name">The Louvre (afternoon ticket)</div>
+              <div class="activity-desc">Mona Lisa, Venus de Milo, Egyptian galleries. Afternoon is less crowded than morning. Enter via Carrousel entrance to skip pyramid queue.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.7 <span class="count">(225,800 reviews)</span></div>
+                <span class="badge badge-duration">3 hours</span>
+                <span class="badge badge-cost">₹2,000/person</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/louvre-museum/240/170" alt="Louvre">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">19:30</span>
+            <span class="activity-icon">🚢</span>
+            <div class="activity-content">
+              <div class="activity-name">Seine River Cruise (Bateaux Parisiens)</div>
+              <div class="activity-desc">60-min cruise passes Notre-Dame, Louvre, Eiffel Tower — best lit at dusk. Departures every 30 min from Pont d'Iéna.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★</span> 4.5 <span class="count">(48,700 reviews)</span></div>
+                <span class="badge badge-duration">60 min</span>
+                <span class="badge badge-cost">₹1,600/person</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/seine-cruise/240/170" alt="Seine Cruise">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-header-left">
+            <div class="day-number" style="background:var(--gold); box-shadow:0 3px 10px rgba(212,168,67,0.3);">3</div>
+            <div>
+              <div class="day-title">Day Trip: Versailles — Palace &amp; Gardens</div>
+              <div class="day-date">Friday, 17 Jul · Est. ₹8,400/person</div>
+            </div>
+          </div>
+          <span class="day-cost">~₹8,400/person</span>
+        </div>
+        <div class="day-body">
+
+          <div class="activity">
+            <span class="activity-time">08:00</span>
+            <span class="activity-icon">🚆</span>
+            <div class="activity-content">
+              <div class="activity-name">RER C from Saint-Michel → Versailles</div>
+              <div class="activity-desc">Direct train, 40 min. Book the round-trip Mobilis ticket — cheaper than two singles. Sit forward for château views.</div>
+              <div class="activity-meta">
+                <span class="badge badge-transport">40 min</span>
+                <span class="badge badge-cost">₹780 return/person</span>
+              </div>
+            </div>
+            <div class="activity-photo-placeholder">🚆</div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">09:30</span>
+            <span class="activity-icon">🏰</span>
+            <div class="activity-content">
+              <div class="activity-name">Palace of Versailles — Hall of Mirrors</div>
+              <div class="activity-desc">UNESCO World Heritage. Pre-book the morning slot — afternoons get brutal queues. Audio guide included. Hall of Mirrors + Royal Apartments take ~3 hours.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.6 <span class="count">(112,400 reviews)</span></div>
+                <span class="badge badge-duration">3 hours</span>
+                <span class="badge badge-cost">₹3,200/person</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/versailles-palace/240/170" alt="Versailles Palace">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">13:00</span>
+            <span class="activity-icon">🥪</span>
+            <div class="activity-content">
+              <div class="activity-name">Lunch: Picnic in the Gardens</div>
+              <div class="activity-desc">Pre-buy veg sandwiches/falafel from Mosquée de Paris café near hotel — eat them in the Versailles gardens (allowed). Cheaper than tourist cafés.</div>
+              <div class="activity-meta">
+                <span class="badge badge-duration">45 min</span>
+                <span class="badge badge-cost">~₹600/person</span>
+                <span class="badge" style="background:rgba(74,103,65,0.1); color:var(--sage);">🥬 Pre-pack</span>
+              </div>
+            </div>
+            <div class="activity-photo-placeholder">🥪</div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">14:00</span>
+            <span class="activity-icon">⛲</span>
+            <div class="activity-content">
+              <div class="activity-name">Gardens of Versailles + Musical Fountains</div>
+              <div class="activity-desc">Fountain show every weekend afternoon — book "Spectacles" ticket. Walk the Grand Canal. Rent a bike (₹500) to cover more ground.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.8 <span class="count">(58,200 reviews)</span></div>
+                <span class="badge badge-duration">3 hours</span>
+                <span class="badge badge-cost">₹950/person</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/versailles-gardens/240/170" alt="Versailles Gardens">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">20:00</span>
+            <span class="activity-icon">🍝</span>
+            <div class="activity-content">
+              <div class="activity-name">Dinner: L'As du Fallafel, Marais</div>
+              <div class="activity-desc">Back in Paris. Iconic falafel joint in the Marais. Long queue but moves fast. Veg + vegan friendly. ₹700 fills you up easily.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.7 <span class="count">(22,100 reviews)</span></div>
+                <span class="badge badge-duration">45 min</span>
+                <span class="badge badge-cost">~₹700/person</span>
+                <span class="badge" style="background:rgba(74,103,65,0.1); color:var(--sage);">🥬 Veg / Vegan</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/falafel-marais/240/170" alt="L'As du Fallafel">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-header-left">
+            <div class="day-number" style="background:var(--sage); box-shadow:0 3px 10px rgba(74,103,65,0.3);">4</div>
+            <div>
+              <div class="day-title">Montmartre &amp; Sacré-Cœur</div>
+              <div class="day-date">Saturday, 18 Jul · Est. ₹5,800/person</div>
+            </div>
+          </div>
+          <span class="day-cost">~₹5,800/person</span>
+        </div>
+        <div class="day-body">
+
+          <div class="activity">
+            <span class="activity-time">09:30</span>
+            <span class="activity-icon">⛪</span>
+            <div class="activity-content">
+              <div class="activity-name">Sacré-Cœur Basilica</div>
+              <div class="activity-desc">Free entry, panoramic view from Paris's highest hill. Take the funicular up (₹250) to save legs. Inside is stunning — Byzantine mosaics.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.7 <span class="count">(96,200 reviews)</span></div>
+                <span class="badge badge-duration">90 min</span>
+                <span class="badge badge-free">Free entry</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/sacre-coeur-paris/240/170" alt="Sacré-Cœur">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">11:30</span>
+            <span class="activity-icon">🎨</span>
+            <div class="activity-content">
+              <div class="activity-name">Place du Tertre &amp; Montmartre walks</div>
+              <div class="activity-desc">Artist square where Picasso and Van Gogh worked. Get a quick portrait sketch (₹2,000 — negotiable). Wander cobbled lanes.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★</span> 4.4 <span class="count">(28,400 reviews)</span></div>
+                <span class="badge badge-duration">2 hours</span>
+                <span class="badge badge-free">Free to wander</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/montmartre-place/240/170" alt="Place du Tertre">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">15:00</span>
+            <span class="activity-icon">🛍️</span>
+            <div class="activity-content">
+              <div class="activity-name">Galeries Lafayette + Opéra district</div>
+              <div class="activity-desc">Free rooftop view at Galeries Lafayette (often skipped by tourists). Window shop the Champs-Élysées if time allows. Walking distance from hotel.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★</span> 4.3 <span class="count">(52,100 reviews)</span></div>
+                <span class="badge badge-duration">2.5 hours</span>
+                <span class="badge badge-free">Free rooftop</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/galeries-lafayette/240/170" alt="Galeries Lafayette">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(this)">
+          <div class="day-header-left">
+            <div class="day-number" style="background:var(--sky); box-shadow:0 3px 10px rgba(44,107,138,0.3);">5</div>
+            <div>
+              <div class="day-title">Latin Quarter &amp; Luxembourg Gardens</div>
+              <div class="day-date">Sunday, 19 Jul · Est. ₹5,200/person</div>
+            </div>
+          </div>
+          <span class="day-cost">~₹5,200/person</span>
+        </div>
+        <div class="day-body">
+
+          <div class="activity">
+            <span class="activity-time">09:30</span>
+            <span class="activity-icon">📚</span>
+            <div class="activity-content">
+              <div class="activity-name">Shakespeare and Company Bookshop</div>
+              <div class="activity-desc">Iconic English-language bookshop on the Seine. Free to browse — buy a stamped paperback as the perfect Paris souvenir.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.7 <span class="count">(18,400 reviews)</span></div>
+                <span class="badge badge-duration">60 min</span>
+                <span class="badge badge-free">Free browsing</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/shakespeare-co/240/170" alt="Shakespeare and Company">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">11:00</span>
+            <span class="activity-icon">🌳</span>
+            <div class="activity-content">
+              <div class="activity-name">Luxembourg Gardens</div>
+              <div class="activity-desc">Locals' favourite. Free chairs around the central pond, kids sail toy boats, Sunday band in the bandstand. Bring picnic.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.8 <span class="count">(72,300 reviews)</span></div>
+                <span class="badge badge-duration">2 hours</span>
+                <span class="badge badge-free">Free entry</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/luxembourg-gardens/240/170" alt="Luxembourg Gardens">
+            </div>
+          </div>
+
+          <div class="activity">
+            <span class="activity-time">15:00</span>
+            <span class="activity-icon">🏛️</span>
+            <div class="activity-content">
+              <div class="activity-name">Musée d'Orsay</div>
+              <div class="activity-desc">Best Impressionist collection in the world — Monet, Van Gogh, Degas, Renoir. Smaller and more focused than the Louvre. Free first Sunday of month.</div>
+              <div class="activity-meta">
+                <div class="activity-rating"><span class="stars">★★★★★</span> 4.8 <span class="count">(146,200 reviews)</span></div>
+                <span class="badge badge-duration">3 hours</span>
+                <span class="badge badge-cost">₹1,800/person</span>
+              </div>
+            </div>
+            <div class="activity-photo">
+              <img src="https://picsum.photos/seed/musee-dorsay/240/170" alt="Musée d'Orsay">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="text-align:center; padding:24px 0; font-size:13px; color:var(--muted); background:rgba(0,0,0,0.02); border-radius:12px; margin:16px 0;">
+        <div style="font-weight:600; color:var(--ink); margin-bottom:6px;">Days 6–10 continue:</div>
+        Reims &amp; Champagne day trip · Mont Saint-Michel · Disneyland Paris · Final shopping &amp; Sainte-Chapelle revisit · Departure from CDG &nbsp;
+        <a href="#" style="color:var(--rust); font-weight:600; display:inline-block; margin-top:6px;">View full itinerary →</a>
+      </div>
+
+    </div><!-- end left col -->
+
+    <!-- RIGHT: Budget sidebar -->
+    <div style="position:sticky; top:80px;">
+
+      <div class="budget-summary" style="margin-bottom:16px;">
+        <h3>Budget Summary</h3>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">✈ Flights</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:62%; background:var(--rust);"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:var(--rust);">₹1,16,800</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">🏨 Hotel</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:52%; background:var(--sky);"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:var(--sky);">₹98,000</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">📄 Visa + Insurance</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:14%; background:#8a6a10;"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:#8a6a10;">₹22,600</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">🍽 Food</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:24%; background:var(--gold);"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:#8a6a10;">₹38,400</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">🚇 Transport</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:12%; background:var(--sage);"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:var(--sage);">₹14,200</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">🎟 Attractions</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:18%; background:#9b8060;"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:#7a6040;">₹18,800</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">🛍 Shopping</span>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" style="width:8%; background:var(--muted);"></div>
+          </div>
+          <span class="budget-bar-amount" style="color:var(--muted);">₹10,000</span>
+        </div>
+        <div class="budget-total">
+          <div>
+            <div class="budget-total-label">Grand total</div>
+            <div style="font-size:12px; color:var(--muted);">for 2 people · 10 days</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="budget-total-value">₹3,18,800</div>
+            <div class="budget-total-of">~€3,540 · vs ₹4,90,000 typical</div>
+          </div>
+        </div>
+        <div style="text-align:right; margin-top:8px;">
+          <span class="savings-chip">💰 Saving ~₹1,71,200 vs. last-minute booking</span>
+        </div>
+      </div>
+
+      <!-- Upgrade card -->
+      <div style="background:var(--ink); color:var(--sand); border-radius:var(--radius); padding:24px; text-align:center;">
+        <div style="font-size:24px; margin-bottom:8px;">🔥</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; margin-bottom:8px;">You've used 2 of 3 free trips</div>
+        <div style="font-size:12px; color:rgba(245,240,232,0.5); margin-bottom:20px; line-height:1.6;">
+          Upgrade for unlimited trips, visa appointment alerts, taste profile learning, and live updates.
+        </div>
+        <a href="#" class="btn btn-primary btn-full" style="justify-content:center; margin-bottom:8px;">Upgrade — ₹799/month</a>
+        <div style="font-size:11px; color:rgba(245,240,232,0.35);">Cancel anytime. First month free.</div>
+      </div>
+
+    </div>
+
+  </div><!-- end grid -->
+
+</div><!-- end container -->
+
+<!-- STICKY ACTION BAR -->
+<div class="action-bar">
+  <div class="action-bar-left">
+    <strong>Paris Adventure</strong> · 10 nights · 2 travellers · <strong style="color:var(--rust);">₹3,18,800 total est.</strong>
+  </div>
+  <div class="action-bar-right">
+    <button class="btn btn-sm" style="background:var(--gold); color:#2a1800; border:none;">📄 Visa PDF</button>
+    <button class="btn btn-ghost btn-sm">💬 Share</button>
+    <button class="btn btn-primary btn-sm">⬇ Itinerary PDF</button>
+  </div>
+</div>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+
+  function toggleDay(header) {
+    const body = header.nextElementSibling;
+    body.hidden = !body.hidden;
+  }
+</script>
+
+</body>
+</html>

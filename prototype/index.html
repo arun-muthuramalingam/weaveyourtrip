@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeaveYourTrip — Plan Your Perfect Trip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Weave<span>YourTrip</span></div>
+  <div class="nav-actions">
+    <div class="freemium-counter">
+      🔥 <span class="count">3</span> free trips left &nbsp;
+      <span class="upgrade">Upgrade →</span>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a href="#" class="btn btn-ghost btn-sm">Sign in</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner container">
+    <div class="hero-eyebrow">✦ AI-Powered Travel Planning · 2026</div>
+    <h1>Your trip.<br><span>Woven</span><br>perfectly.</h1>
+    <p class="hero-sub">
+      Answer a few questions. Get a full day-by-day itinerary with flights, hotels,
+      visa info, and live budget tracking — in under 20 seconds.
+    </p>
+    <div class="hero-btns">
+      <a href="wizard-backpacker.html" class="btn btn-primary btn-lg">Start planning free</a>
+      <a href="#modes" class="btn btn-ghost btn-lg" style="color:rgba(245,240,232,0.7); border-color:rgba(245,240,232,0.2);">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<!-- MODE CARDS -->
+<section class="modes-section" id="modes">
+  <div class="container">
+    <div class="label">Choose your journey type</div>
+    <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
+      <h2 class="serif" style="font-size:clamp(28px,4vw,42px); letter-spacing:-0.5px;">Who are we planning for?</h2>
+      <p class="text-sm text-muted">Each mode builds a tailored wizard — different questions, different priorities.</p>
+    </div>
+
+    <div class="modes-grid">
+
+      <!-- Solo Backpacker -->
+      <div class="mode-card c-rust card-hover">
+        <div class="mode-icon">🎒</div>
+        <h3>Solo Explorer</h3>
+        <p>Budget-conscious, flexible, maximum experience per euro. Date shifts, hostel filters, and street-food-first itineraries.</p>
+        <ul class="mode-features">
+          <li>Date flexibility — shift &amp; save up to €180</li>
+          <li>Hostel &amp; guesthouse filters</li>
+          <li>Per-category budget tracking</li>
+          <li>Interests-driven routing</li>
+        </ul>
+        <a href="wizard-backpacker.html" class="btn btn-primary btn-full">Plan solo trip →</a>
+      </div>
+
+      <!-- Couple -->
+      <div class="mode-card c-gold card-hover">
+        <div class="mode-icon">💑</div>
+        <h3>Couple Getaway</h3>
+        <p>Romantic trips, anniversaries, honeymoons. Boutique hotels, fine dining, sunset timing — all considered in the itinerary.</p>
+        <ul class="mode-features">
+          <li>Romantic restaurant filters</li>
+          <li>Boutique &amp; design hotel tier</li>
+          <li>Sunset &amp; viewpoint scheduling</li>
+          <li>Private experience suggestions</li>
+        </ul>
+        <a href="wizard-backpacker.html" class="btn btn-full" style="background:linear-gradient(135deg,var(--gold),#e8b840); color:#2a1800; border:none; box-shadow:0 4px 16px rgba(212,168,67,0.35);">Plan couple trip →</a>
+      </div>
+
+      <!-- Family -->
+      <div class="mode-card c-sky card-hover">
+        <div class="mode-icon">👨‍👩‍👧‍👦</div>
+        <h3>Family Adventure</h3>
+        <p>Logistics-heavy trips with kids. Stroller access, nap buffers, kid-friendly activities, and safety info baked into every day.</p>
+        <ul class="mode-features">
+          <li>Age-appropriate activity filters</li>
+          <li>Stroller routes &amp; nap buffer slots</li>
+          <li>Medical facilities highlighted</li>
+          <li>Family restaurant proximity</li>
+        </ul>
+        <a href="wizard-family.html" class="btn btn-sky btn-full">Plan family vacation →</a>
+      </div>
+
+      <!-- Group of Friends -->
+      <div class="mode-card c-sage card-hover">
+        <div class="mode-icon">👥</div>
+        <h3>Group of Friends</h3>
+        <p>Coordinate multiple opinions, split expenses, and find activities that work for everyone — without the WhatsApp chaos.</p>
+        <ul class="mode-features">
+          <li>Group size up to 20</li>
+          <li>Shared itinerary with vote &amp; suggest</li>
+          <li>Live expense splitting</li>
+          <li>Nightlife &amp; social activity focus</li>
+        </ul>
+        <a href="wizard-backpacker.html" class="btn btn-full" style="background:linear-gradient(135deg,var(--sage),#5a8050); color:white; border:none; box-shadow:0 4px 16px rgba(74,103,65,0.35);">Plan group trip →</a>
+      </div>
+
+      <!-- Senior Explorer -->
+      <div class="mode-card c-teal card-hover">
+        <div class="mode-icon">🌿</div>
+        <h3>Senior Explorer</h3>
+        <p>Comfort-first travel designed around accessibility, pace, and peace of mind. Direct flights, rest-stop itineraries, and medical facilities always visible.</p>
+        <ul class="mode-features">
+          <li>Mobility level &amp; walking distance limits</li>
+          <li>Elevator &amp; accessibility filters</li>
+          <li>Direct flights prioritised</li>
+          <li>Medical &amp; pharmacy proximity on map</li>
+        </ul>
+        <a href="wizard-senior.html" class="btn btn-teal btn-full">Plan senior trip →</a>
+      </div>
+
+      <!-- Digital Nomad — Coming soon -->
+      <div class="mode-card c-sky coming-soon">
+        <div class="coming-badge">Coming soon</div>
+        <div class="mode-icon">🌍</div>
+        <h3>Digital Nomad</h3>
+        <p>Base yourself anywhere for weeks or months. Coworking spots, reliable internet ratings, monthly rental options, and visa length planning.</p>
+        <ul class="mode-features">
+          <li>Coworking space integration</li>
+          <li>Long-stay rental filters</li>
+          <li>Visa duration planning</li>
+        </ul>
+        <button class="btn btn-ghost btn-full" disabled style="cursor:not-allowed; opacity:0.5;">Notify me when ready</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="proof-strip">
+  <div class="proof-stat">
+    <div class="num">12,400+</div>
+    <div class="stat-label">Trips planned</div>
+  </div>
+  <div class="proof-stat">
+    <div class="num">€2.1M</div>
+    <div class="stat-label">Saved on bookings</div>
+  </div>
+  <div class="proof-stat">
+    <div class="num">4.8 ★</div>
+    <div class="stat-label">Average trip rating</div>
+  </div>
+  <div class="proof-stat">
+    <div class="num">38</div>
+    <div class="stat-label">Countries covered</div>
+  </div>
+  <div class="dest-pills">
+    <span style="font-size:12px; color:rgba(245,240,232,0.4); margin-right:4px;">Trending:</span>
+    <span class="dest-pill">🇯🇵 Tokyo</span>
+    <span class="dest-pill">🇵🇹 Lisbon</span>
+    <span class="dest-pill">🇹🇭 Bangkok</span>
+    <span class="dest-pill">🇲🇦 Marrakech</span>
+    <span class="dest-pill">🇵🇪 Cusco</span>
+    <span class="dest-pill">🇮🇳 Rajasthan</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>WeaveYourTrip</strong> &nbsp;·&nbsp; Plan smarter. Travel better. &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+</body>
+</html>

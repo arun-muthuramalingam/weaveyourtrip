@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Your Trip — WeaveYourTrip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+  <style>
+    /* Passport grid in wizard step 1 */
+    .passport-step-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .passport-option {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 18px;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .passport-option:hover {
+      border-color: var(--rust);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .passport-option.disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+    .passport-option.disabled:hover {
+      transform: none;
+      border-color: var(--border);
+      box-shadow: none;
+    }
+    .passport-option .flag { font-size: 32px; line-height: 1; }
+    .passport-option .name { font-size: 15px; font-weight: 600; }
+    .passport-option .tag {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-weight: 600;
+    }
+    .passport-option.disabled .tag { color: var(--muted); }
+
+    /* Destination quick picks */
+    .dest-quickpicks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .dest-pick {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: var(--white);
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .dest-pick:hover {
+      border-color: var(--rust);
+      color: var(--rust);
+      background: var(--rust-light, rgba(201,79,44,0.05));
+    }
+    .dest-pick.active {
+      background: var(--rust);
+      color: white;
+      border-color: var(--rust);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       VISA CARD — the wow moment
+       ───────────────────────────────────────────────────────── */
+    .visa-card {
+      margin-top: 28px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--white);
+      animation: visaCardAppear 0.4s ease-out;
+    }
+    @keyframes visaCardAppear {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .visa-card.required .visa-header {
+      background: linear-gradient(135deg, #b8432a, var(--rust));
+      color: white;
+    }
+    .visa-card.not-required .visa-header {
+      background: linear-gradient(135deg, #4a8a40, var(--sage));
+      color: white;
+    }
+    .visa-card.unsupported .visa-header {
+      background: linear-gradient(135deg, #6a6a6a, #444);
+      color: white;
+    }
+    .visa-header {
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .visa-header .badge {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.18);
+      color: white;
+    }
+    .visa-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+      flex: 1;
+    }
+    .visa-header .icon { font-size: 26px; }
+
+    .visa-body { padding: 24px 28px; }
+    .visa-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .visa-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .visa-stat .label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .visa-stat .value {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .visa-stat .sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .visa-deadline {
+      background: linear-gradient(135deg, rgba(212,168,67,0.12), rgba(212,168,67,0.06));
+      border: 1px solid rgba(212,168,67,0.3);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .visa-deadline .icon { font-size: 32px; }
+    .visa-deadline .text { flex: 1; }
+    .visa-deadline .label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #8a6a10;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .visa-deadline .date {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .visa-deadline .calc {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .visa-section { margin-top: 22px; }
+    .visa-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .visa-doc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .visa-doc {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.02);
+      border-radius: 8px;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+    .visa-doc .check {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      margin-top: 2px;
+    }
+    .visa-doc .doc-content { flex: 1; }
+    .visa-doc .doc-name { font-weight: 600; color: var(--ink); }
+    .visa-doc .doc-notes { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+    .visa-centers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .visa-center {
+      font-size: 12px;
+      padding: 4px 10px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 100px;
+      color: var(--ink);
+    }
+
+    .visa-appointment {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-top: 4px;
+    }
+    .visa-appointment.open { background: rgba(74,103,65,0.1); color: var(--sage); }
+    .visa-appointment.moderate { background: rgba(212,168,67,0.12); color: #8a6a10; }
+    .visa-appointment.tight { background: rgba(201,79,44,0.1); color: var(--rust); }
+
+    .visa-rejections {
+      background: rgba(176,68,68,0.05);
+      border: 1px solid rgba(176,68,68,0.15);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 18px;
+    }
+    .visa-rejections h4 {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #b04;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .visa-rejections ul {
+      font-size: 13px;
+      color: var(--ink);
+      padding-left: 18px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .visa-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 28px;
+      background: rgba(0,0,0,0.025);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .visa-footer .report-link {
+      color: var(--rust);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .visa-footer .verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .visa-empty {
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      background: rgba(0,0,0,0.02);
+      border-radius: 12px;
+      margin-top: 24px;
+    }
+
+    /* Acid-test feedback section */
+    .acid-test-bar {
+      margin-top: 32px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(201,79,44,0.06), rgba(212,168,67,0.06));
+      border: 1px dashed var(--rust);
+      border-radius: 12px;
+      font-size: 13.5px;
+      color: var(--ink);
+    }
+    .acid-test-bar strong { color: var(--rust); }
+
+    /* ─── Mode picker (step 4) ─── */
+    .mode-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .mode-pick-card {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.18s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .mode-pick-card:hover {
+      border-color: var(--rust);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+    }
+    .mode-pick-card.active {
+      border-color: var(--rust);
+      background: rgba(201,79,44,0.04);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+    .mode-pick-card.disabled { opacity: 0.4; cursor: not-allowed; }
+    .mode-pick-card.disabled:hover {
+      transform: none;
+      border-color: var(--border);
+      box-shadow: none;
+    }
+    .mode-pick-card .coming-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: var(--muted);
+      color: white;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .mode-pick-card .mode-icon { font-size: 32px; margin-bottom: 12px; line-height: 1; }
+    .mode-pick-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .mode-pick-card p { font-size: 13px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+    .mode-pick-card ul {
+      font-size: 12.5px;
+      color: var(--muted);
+      padding-left: 0;
+      list-style: none;
+      margin-top: auto;
+    }
+    .mode-pick-card ul li { padding: 2px 0; display: flex; gap: 8px; line-height: 1.5; }
+    .mode-pick-card ul li::before { content: '→'; color: var(--rust); flex-shrink: 0; }
+
+    /* ─── Mode-specific priorities banner (step 5) ─── */
+    .mode-banner {
+      background: linear-gradient(135deg, rgba(201,79,44,0.06), rgba(212,168,67,0.06));
+      border: 1px solid rgba(201,79,44,0.18);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .mode-banner .icon { font-size: 28px; }
+    .mode-banner .body { flex: 1; }
+    .mode-banner .label-row {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--rust);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .mode-banner .name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .mode-banner .change {
+      font-size: 12px;
+      color: var(--rust);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .visa-header { flex-direction: column; align-items: flex-start; padding: 18px 20px; }
+      .visa-body, .visa-footer { padding-left: 20px; padding-right: 20px; }
+      .visa-deadline { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- WIZARD NAV -->
+<nav class="wizard-nav">
+  <a href="index-visa.html" class="nav-logo" style="font-size:18px;">Weave<span style="color:var(--rust)">YourTrip</span></a>
+
+  <div class="wizard-progress" id="progress">
+    <div class="progress-step"><div class="progress-dot active" id="dot-1">1</div></div>
+    <div class="progress-line" id="line-1"></div>
+    <div class="progress-step"><div class="progress-dot" id="dot-2">2</div></div>
+    <div class="progress-line" id="line-2"></div>
+    <div class="progress-step"><div class="progress-dot" id="dot-3">3</div></div>
+    <div class="progress-line" id="line-3"></div>
+    <div class="progress-step"><div class="progress-dot" id="dot-4">4</div></div>
+    <div class="progress-line" id="line-4"></div>
+    <div class="progress-step"><div class="progress-dot" id="dot-5">5</div></div>
+    <div class="progress-line" id="line-5"></div>
+    <div class="progress-step"><div class="progress-dot" id="dot-6">6</div></div>
+  </div>
+
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+  <a href="index-visa.html" class="btn btn-ghost btn-sm">✕ Cancel</a>
+</nav>
+
+<!-- WIZARD BODY -->
+<main class="wizard-body">
+
+  <!-- ── STEP 1: PASSPORT ──────────────────────────────────── -->
+  <div class="step" id="step-1">
+    <div class="step-header">
+      <div class="label">Step 1 of 5</div>
+      <h2>What's your passport?</h2>
+      <p class="text-sm text-muted" style="margin-top:8px;">
+        We ask this first because everything downstream — visa requirements,
+        document checklist, even the recommended travel insurance — depends on it.
+      </p>
+    </div>
+
+    <div class="passport-step-grid">
+      <div class="passport-option" onclick="selectPassport('IN')">
+        <span class="flag">🇮🇳</span>
+        <span class="name">India</span>
+        <span class="tag">✓ Visa-aware</span>
+      </div>
+      <div class="passport-option" onclick="selectPassport('US')">
+        <span class="flag">🇺🇸</span>
+        <span class="name">United States</span>
+        <span class="tag">✓ Supported</span>
+      </div>
+      <div class="passport-option" onclick="selectPassport('GB')">
+        <span class="flag">🇬🇧</span>
+        <span class="name">United Kingdom</span>
+        <span class="tag">✓ Supported</span>
+      </div>
+      <div class="passport-option" onclick="selectPassport('EU')">
+        <span class="flag">🇪🇺</span>
+        <span class="name">EU passport</span>
+        <span class="tag">✓ Supported</span>
+      </div>
+      <div class="passport-option disabled">
+        <span class="flag">🇵🇰</span>
+        <span class="name">Pakistan</span>
+        <span class="tag">Coming soon</span>
+      </div>
+      <div class="passport-option disabled">
+        <span class="flag">🇳🇬</span>
+        <span class="name">Nigeria</span>
+        <span class="tag">Coming soon</span>
+      </div>
+    </div>
+
+    <div class="step-footer">
+      <a href="index-visa.html" class="btn btn-ghost">← Back</a>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: DESTINATION + VISA CARD ──────────────────── -->
+  <div class="step" id="step-2" hidden>
+    <div class="step-header">
+      <div class="label">Step 2 of 5</div>
+      <h2>Where do you want to go?</h2>
+      <p class="text-sm text-muted" style="margin-top:8px;">
+        Pick a destination — we'll surface visa requirements immediately,
+        before you commit to anything else.
+      </p>
+    </div>
+
+    <div class="step-fields">
+      <div class="form-group">
+        <label class="form-label">Destination</label>
+        <input class="form-input"
+               type="text"
+               id="dest-input"
+               placeholder="e.g. France, Italy, Germany, UK..."
+               oninput="onDestinationInput(this.value)"
+               onchange="onDestinationInput(this.value)">
+
+        <div class="dest-quickpicks">
+          <button class="dest-pick" onclick="pickDestination('France')">🇫🇷 France</button>
+          <button class="dest-pick" onclick="pickDestination('Italy')">🇮🇹 Italy</button>
+          <button class="dest-pick" onclick="pickDestination('Germany')">🇩🇪 Germany</button>
+          <button class="dest-pick" onclick="pickDestination('Spain')">🇪🇸 Spain</button>
+          <button class="dest-pick" onclick="pickDestination('Netherlands')">🇳🇱 Netherlands</button>
+          <button class="dest-pick" onclick="pickDestination('United Kingdom')">🇬🇧 UK</button>
+        </div>
+      </div>
+
+      <!-- Visa card renders here -->
+      <div id="visa-card-slot"></div>
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+      <button class="btn btn-primary" id="continue-btn" disabled style="opacity:0.5;" onclick="goToStep(3)">
+        Continue to dates →
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: DATES + GROUP ──────────────────────────────── -->
+  <div class="step" id="step-3" hidden>
+    <div class="step-header">
+      <div class="label">Step 3 of 5</div>
+      <h2>When are you travelling?</h2>
+    </div>
+
+    <div id="visa-context-banner"></div>
+
+    <div class="step-fields">
+
+      <div class="form-group">
+        <label class="form-label">Travel dates</label>
+        <div class="form-row">
+          <div class="form-group" style="gap:4px;">
+            <span class="text-xs text-muted">Departure</span>
+            <input class="form-input" type="date" id="depart-date" value="2026-08-15">
+          </div>
+          <div class="form-group" style="gap:4px;">
+            <span class="text-xs text-muted">Return</span>
+            <input class="form-input" type="date" id="return-date" value="2026-08-25">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Travellers</label>
+        <div class="form-row mt-8">
+          <div>
+            <span class="text-xs text-muted" style="display:block; margin-bottom:6px;">Adults</span>
+            <div class="stepper">
+              <button class="stepper-btn" onclick="adjustStepper('adults', -1)">−</button>
+              <div class="stepper-value" id="adults">2</div>
+              <button class="stepper-btn" onclick="adjustStepper('adults', 1)">+</button>
+            </div>
+          </div>
+          <div>
+            <span class="text-xs text-muted" style="display:block; margin-bottom:6px;">Children</span>
+            <div class="stepper">
+              <button class="stepper-btn" onclick="adjustStepper('children', -1)">−</button>
+              <div class="stepper-value" id="children">0</div>
+              <button class="stepper-btn" onclick="adjustStepper('children', 1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Total trip budget <span class="hint">in INR — we'll convert for visa application</span></label>
+        <div class="slider-wrap mt-8">
+          <div class="slider-header">
+            <div>
+              <span class="slider-value" id="budget-display">₹ 1,80,000</span>
+              <span class="text-muted text-sm"> total &nbsp; (~€2,000)</span>
+            </div>
+            <span class="slider-label">Slide to set</span>
+          </div>
+          <input type="range" min="50000" max="800000" value="180000" step="10000"
+                 oninput="updateBudget(this.value)">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: TRIP STYLE / MODE PICKER ─────────────────── -->
+  <div class="step" id="step-4" hidden>
+    <div class="step-header">
+      <div class="label">Step 4 of 6</div>
+      <h2>What kind of trip is this?</h2>
+      <p class="text-sm text-muted" style="margin-top:8px;">
+        Each mode shapes the plan differently — restaurants, pace, accommodation,
+        even the visa cover letter tone. Pick the one that fits.
+      </p>
+    </div>
+
+    <div class="mode-cards-grid">
+      <div class="mode-pick-card" data-mode="backpacker" onclick="selectMode('backpacker')">
+        <div class="mode-icon">🎒</div>
+        <h3>Solo Explorer</h3>
+        <p>Budget-conscious, flexible, max experience per euro.</p>
+        <ul>
+          <li>Hostel &amp; guesthouse filters</li>
+          <li>Per-category budget tracking</li>
+          <li>Interests-driven routing</li>
+        </ul>
+      </div>
+
+      <div class="mode-pick-card" data-mode="couple" onclick="selectMode('couple')">
+        <div class="mode-icon">💑</div>
+        <h3>Couple Getaway</h3>
+        <p>Romantic trips, anniversaries, honeymoons.</p>
+        <ul>
+          <li>Boutique &amp; design hotels</li>
+          <li>Sunset &amp; viewpoint scheduling</li>
+          <li>Fine dining suggestions</li>
+        </ul>
+      </div>
+
+      <div class="mode-pick-card" data-mode="family" onclick="selectMode('family')">
+        <div class="mode-icon">👨‍👩‍👧‍👦</div>
+        <h3>Family Adventure</h3>
+        <p>Logistics-heavy trips with kids.</p>
+        <ul>
+          <li>Age-appropriate activity filters</li>
+          <li>Stroller routes &amp; nap buffers</li>
+          <li>Medical facilities highlighted</li>
+        </ul>
+      </div>
+
+      <div class="mode-pick-card" data-mode="group" onclick="selectMode('group')">
+        <div class="mode-icon">👥</div>
+        <h3>Group of Friends</h3>
+        <p>Coordinate opinions, split expenses.</p>
+        <ul>
+          <li>Group size up to 20</li>
+          <li>Live expense splitting</li>
+          <li>Nightlife &amp; social focus</li>
+        </ul>
+      </div>
+
+      <div class="mode-pick-card" data-mode="senior" onclick="selectMode('senior')">
+        <div class="mode-icon">🌿</div>
+        <h3>Senior Explorer</h3>
+        <p>Comfort-first, accessibility, peace of mind.</p>
+        <ul>
+          <li>Mobility &amp; walking limits</li>
+          <li>Direct flights prioritised</li>
+          <li>Medical proximity on map</li>
+        </ul>
+      </div>
+
+      <div class="mode-pick-card disabled">
+        <div class="coming-badge">Coming soon</div>
+        <div class="mode-icon">🌍</div>
+        <h3>Digital Nomad</h3>
+        <p>Long stays, coworking spaces, monthly rentals.</p>
+        <ul>
+          <li>Coworking space integration</li>
+          <li>Long-stay rentals</li>
+          <li>Visa duration planning</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+      <span class="text-sm text-muted">Tap a mode to continue →</span>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: STYLE + DIETARY + MODE-SPECIFIC ─────────── -->
+  <div class="step" id="step-5" hidden>
+    <div class="step-header">
+      <div class="label">Step 5 of 6</div>
+      <h2>Your style &amp; preferences</h2>
+    </div>
+
+    <div id="mode-banner-slot"></div>
+
+    <div id="mode-specific-fields"></div>
+
+    <div class="step-fields">
+
+      <div class="form-group">
+        <label class="form-label">Interests <span class="hint">pick as many as you like</span></label>
+        <div class="chips mt-12" id="chips-interests">
+          <span class="chip active" onclick="toggleChip(this)">🍜 Local Food</span>
+          <span class="chip active" onclick="toggleChip(this)">🏛️ Museums</span>
+          <span class="chip" onclick="toggleChip(this)">🎉 Nightlife</span>
+          <span class="chip" onclick="toggleChip(this)">🥾 Hiking</span>
+          <span class="chip active" onclick="toggleChip(this)">🏯 Architecture</span>
+          <span class="chip" onclick="toggleChip(this)">🛍️ Local Markets</span>
+          <span class="chip active" onclick="toggleChip(this)">⛪ Religious Sites</span>
+          <span class="chip" onclick="toggleChip(this)">📸 Photography Spots</span>
+          <span class="chip" onclick="toggleChip(this)">🎨 Art Galleries</span>
+          <span class="chip" onclick="toggleChip(this)">🌿 Nature &amp; Parks</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Dietary preferences <span class="hint">we'll filter restaurants accordingly</span></label>
+        <div class="chips mt-12" id="chips-dietary">
+          <span class="chip active" onclick="toggleChip(this)">🥬 Vegetarian</span>
+          <span class="chip" onclick="toggleChip(this)">🌱 Vegan</span>
+          <span class="chip" onclick="toggleChip(this)">☪️ Halal</span>
+          <span class="chip" onclick="toggleChip(this)">🕉️ Jain</span>
+          <span class="chip" onclick="toggleChip(this)">🐄 No beef</span>
+          <span class="chip" onclick="toggleChip(this)">🐖 No pork</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Accommodation tier</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="budget">
+            <div class="radio-card-title">💰 Budget</div>
+            <div class="radio-card-sub">Hostels, guesthouses</div>
+          </label>
+          <label class="radio-card active" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="mid" checked>
+            <div class="radio-card-title">🏨 Mid-range</div>
+            <div class="radio-card-sub">3★ hotels, AirBnB</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="boutique">
+            <div class="radio-card-title">✨ Boutique</div>
+            <div class="radio-card-sub">4★+, design hotels</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Trip pace</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="relaxed">
+            <div class="radio-card-title">☕ Relaxed</div>
+            <div class="radio-card-sub">2–3 things/day</div>
+          </label>
+          <label class="radio-card active" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="balanced" checked>
+            <div class="radio-card-title">⚖️ Balanced</div>
+            <div class="radio-card-sub">4–5 activities/day</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="packed">
+            <div class="radio-card-title">⚡ Packed</div>
+            <div class="radio-card-sub">Every hour counts</div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(4)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(6)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 6: REVIEW + GENERATE ──────────────────────────── -->
+  <div class="step" id="step-6" hidden>
+    <div class="step-header">
+      <div class="label">Step 6 of 6</div>
+      <h2>Looks good — ready to weave?</h2>
+    </div>
+
+    <div class="summary-card" id="summary-card">
+      <!-- Filled by JS from selected state -->
+    </div>
+
+    <div class="mt-24">
+      <div class="form-label" style="margin-bottom:4px;">What should WeaveYourTrip help with?</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">
+        Tap to toggle — selected items get their own step before the itinerary
+      </div>
+      <div class="service-cards">
+        <div class="service-card on" id="card-flights" onclick="toggleService('flights')">
+          <div class="service-check">✓</div>
+          <div class="service-icon">✈️</div>
+          <div class="service-title">Flights</div>
+          <div class="service-desc">AI-suggested with Skyscanner search redirect</div>
+          <div class="service-off-label">not included</div>
+        </div>
+        <div class="service-card on" id="card-hotels" onclick="toggleService('hotels')">
+          <div class="service-check">✓</div>
+          <div class="service-icon">🏨</div>
+          <div class="service-title">Hotels</div>
+          <div class="service-desc">Matched to your tier — confirmations work for visa application</div>
+          <div class="service-off-label">not included</div>
+        </div>
+      </div>
+      <div class="flow-preview">
+        <span class="flow-step">Your details</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step active" id="fp-flights">✈ Flights</span>
+        <span class="flow-arrow" id="fp-arrow-1">→</span>
+        <span class="flow-step active" id="fp-hotels">🏨 Hotels</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">📋 Itinerary + Visa Checklist PDF</span>
+      </div>
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(5)">← Back</button>
+      <button class="btn btn-primary" onclick="generate()">Weave my trip →</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ───────────────────────────────────────────────────────────
+     VISA DATA — embedded for prototype.
+     Production: VisaController fetches from /resources/visa-data/*.json
+     Source files: /workspace/visa-data/IN-SCHENGEN.json + IN-GB.json
+     ─────────────────────────────────────────────────────────── */
+  const VISA_DATA = {
+    "IN-SCHENGEN": {
+      "passport": "IN",
+      "destination": "SCHENGEN",
+      "destinationLabel": "Schengen Area",
+      "required": true,
+      "type": "Short-stay Schengen Visa (Type C)",
+      "processingDays": { "min": 10, "typical": 15, "max": 30 },
+      "feeEur": 80,
+      "serviceFeeEur": 31,
+      "validityDays": 90,
+      "entries": "Multiple entries allowed",
+      "applyCenters": ["VFS Mumbai", "VFS Delhi", "VFS Bangalore", "VFS Chennai", "VFS Hyderabad", "VFS Kolkata", "VFS Pune"],
+      "appointmentAvailability": "tight",
+      "requiredDocuments": [
+        { "name": "Original passport", "notes": "valid 3 months beyond return + 2 blank pages" },
+        { "name": "Schengen photo (35x45mm, white bg)" },
+        { "name": "Bank statement (last 3 months)", "notes": "stamped, ~€3,000 balance recommended" },
+        { "name": "Income Tax Return (last 2 years)" },
+        { "name": "Leave approval letter", "notes": "from employer, on company letterhead" },
+        { "name": "Confirmed return flight ticket", "notes": "use reservation only — don't buy until visa approved" },
+        { "name": "Hotel booking confirmation", "notes": "full stay, refundable accepted" },
+        { "name": "Travel insurance (min €30,000 medical)" },
+        { "name": "Cover letter with day-by-day plan" }
+      ],
+      "commonRejectionReasons": [
+        "Insufficient bank balance proof",
+        "Unclear travel intent or purpose",
+        "Too many countries in too few days",
+        "Insufficient ties to home country"
+      ],
+      "officialSourceUrl": "https://www.vfsglobal.com/en/individuals/schengen-visa.html",
+      "lastVerified": "2026-06-06"
+    },
+    "IN-GB": {
+      "passport": "IN",
+      "destination": "GB",
+      "destinationLabel": "United Kingdom",
+      "required": true,
+      "type": "UK Standard Visitor Visa",
+      "processingDays": { "min": 10, "typical": 15, "max": 21 },
+      "feeEur": 135,
+      "serviceFeeEur": 25,
+      "validityDays": 180,
+      "entries": "Multiple entries allowed",
+      "applyCenters": ["VFS Mumbai", "VFS Delhi", "VFS Bangalore", "VFS Chennai", "VFS Hyderabad", "VFS Kolkata", "VFS Ahmedabad", "VFS Pune", "VFS Chandigarh"],
+      "appointmentAvailability": "moderate",
+      "requiredDocuments": [
+        { "name": "Original passport", "notes": "valid for full duration + 1 blank page" },
+        { "name": "UK visa photo (45x35mm, light bg)" },
+        { "name": "Bank statement (last 6 months)", "notes": "~£100/day of planned stay" },
+        { "name": "Income Tax Return (last 2 years)" },
+        { "name": "Salary slips (last 6 months)" },
+        { "name": "Leave letter / NOC from employer" },
+        { "name": "Tentative flight itinerary", "notes": "do NOT buy tickets — UK doesn't require confirmed at application" },
+        { "name": "Accommodation proof", "notes": "hotel bookings or sponsor address" },
+        { "name": "Cover letter explaining purpose + return intent" }
+      ],
+      "commonRejectionReasons": [
+        "Insufficient evidence of intent to return",
+        "Inadequate financial proof",
+        "Inconsistency in submitted documents",
+        "Weak ties to home country"
+      ],
+      "officialSourceUrl": "https://www.gov.uk/standard-visitor",
+      "lastVerified": "2026-06-06"
+    },
+
+    /* ─── Soft-passport corridors (visa not required) ─────── */
+    "US-SCHENGEN": {
+      "passport": "US", "destination": "SCHENGEN",
+      "destinationLabel": "Schengen Area",
+      "required": false,
+      "type": "Visa-free travel",
+      "maxStayDays": 90,
+      "stayWindow": "90 days in any 180-day period",
+      "futureNote": "ETIAS authorization required from late 2026 (~€7, paperless online application, 96-hour approval typical).",
+      "currencyHint": "USD",
+      "lastVerified": "2026-06-06"
+    },
+    "US-GB": {
+      "passport": "US", "destination": "GB",
+      "destinationLabel": "United Kingdom",
+      "required": false,
+      "type": "Visa-free travel",
+      "maxStayDays": 180,
+      "stayWindow": "Up to 6 months per visit",
+      "futureNote": "ETA (Electronic Travel Authorization) required — £10, apply online before travel.",
+      "currencyHint": "USD",
+      "lastVerified": "2026-06-06"
+    },
+    "GB-SCHENGEN": {
+      "passport": "GB", "destination": "SCHENGEN",
+      "destinationLabel": "Schengen Area",
+      "required": false,
+      "type": "Visa-free travel",
+      "maxStayDays": 90,
+      "stayWindow": "90 days in any 180-day period",
+      "futureNote": "ETIAS authorization required from late 2026.",
+      "currencyHint": "GBP",
+      "lastVerified": "2026-06-06"
+    },
+    "EU-SCHENGEN": {
+      "passport": "EU", "destination": "SCHENGEN",
+      "destinationLabel": "Schengen Area",
+      "required": false,
+      "type": "Schengen internal travel",
+      "maxStayDays": null,
+      "stayWindow": "Unlimited — free movement within Schengen",
+      "futureNote": "Just bring your national ID card or passport. No checks at internal borders.",
+      "currencyHint": "EUR",
+      "lastVerified": "2026-06-06"
+    },
+    "EU-GB": {
+      "passport": "EU", "destination": "GB",
+      "destinationLabel": "United Kingdom",
+      "required": false,
+      "type": "Visa-free travel",
+      "maxStayDays": 180,
+      "stayWindow": "Up to 6 months per visit (post-Brexit)",
+      "futureNote": "ETA required — €7 equivalent, apply online.",
+      "currencyHint": "EUR",
+      "lastVerified": "2026-06-06"
+    }
+  };
+
+  /* Map destination text → corridor key */
+  const DESTINATION_MAP = {
+    "france":         "SCHENGEN",
+    "italy":          "SCHENGEN",
+    "germany":        "SCHENGEN",
+    "spain":          "SCHENGEN",
+    "netherlands":    "SCHENGEN",
+    "schengen":       "SCHENGEN",
+    "europe":         "SCHENGEN",
+    "paris":          "SCHENGEN",
+    "rome":           "SCHENGEN",
+    "berlin":         "SCHENGEN",
+    "barcelona":      "SCHENGEN",
+    "amsterdam":      "SCHENGEN",
+    "switzerland":    "SCHENGEN",
+    "austria":        "SCHENGEN",
+    "portugal":       "SCHENGEN",
+    "greece":         "SCHENGEN",
+    "uk":             "GB",
+    "united kingdom": "GB",
+    "england":        "GB",
+    "london":         "GB",
+    "britain":        "GB",
+    "scotland":       "GB",
+    "great britain":  "GB"
+  };
+
+  /* ───────────────────────────────────────────────────────────
+     STATE
+     ─────────────────────────────────────────────────────────── */
+  let selectedPassport = null;
+  let selectedDestination = null;
+  let selectedMode = null;
+
+  const MODE_META = {
+    backpacker: { icon: '🎒', name: 'Solo Explorer',    label: 'BACKPACKER MODE' },
+    couple:     { icon: '💑', name: 'Couple Getaway',  label: 'COUPLE MODE' },
+    family:     { icon: '👨‍👩‍👧‍👦', name: 'Family Adventure', label: 'FAMILY MODE' },
+    group:      { icon: '👥', name: 'Group of Friends', label: 'GROUP MODE' },
+    senior:     { icon: '🌿', name: 'Senior Explorer',  label: 'SENIOR MODE' }
+  };
+
+  /* Pre-select passport from URL ?passport=XX */
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const pp = params.get('passport');
+    if (['IN', 'US', 'GB', 'EU'].includes(pp)) {
+      selectPassport(pp, { skipAnimation: true });
+    }
+  })();
+
+  /* ───────────────────────────────────────────────────────────
+     NAV
+     ─────────────────────────────────────────────────────────── */
+  function selectPassport(code, opts) {
+    opts = opts || {};
+    selectedPassport = code;
+    goToStep(2);
+  }
+
+  function goToStep(n) {
+    [1, 2, 3, 4, 5, 6].forEach(i => {
+      const el = document.getElementById('step-' + i);
+      if (el) el.hidden = (i !== n);
+    });
+    [1, 2, 3, 4, 5, 6].forEach(i => {
+      const dot = document.getElementById('dot-' + i);
+      if (!dot) return;
+      dot.classList.toggle('active', i === n);
+      dot.classList.toggle('done', i < n);
+    });
+    [1, 2, 3, 4, 5].forEach(i => {
+      const line = document.getElementById('line-' + i);
+      if (line) line.classList.toggle('done', n > i);
+    });
+
+    // Visa-aware pre-fill when arriving at step 3
+    if (n === 3) applyVisaContextToDates();
+    // Mode-specific banner + fields when arriving at step 5
+    if (n === 5) renderModeSpecific();
+    // Populate summary when arriving at step 6
+    if (n === 6) populateSummary();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     STEP 4 — mode picker
+     ─────────────────────────────────────────────────────────── */
+  function selectMode(mode) {
+    selectedMode = mode;
+    document.querySelectorAll('.mode-pick-card').forEach(c => {
+      c.classList.toggle('active', c.dataset.mode === mode);
+    });
+    // small delay so the user sees the highlight before transitioning
+    setTimeout(() => goToStep(5), 200);
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     STEP 5 — mode-specific fields
+     ─────────────────────────────────────────────────────────── */
+  function renderModeSpecific() {
+    const banner = document.getElementById('mode-banner-slot');
+    const fields = document.getElementById('mode-specific-fields');
+    if (!banner || !fields) return;
+    if (!selectedMode) { banner.innerHTML = ''; fields.innerHTML = ''; return; }
+
+    const meta = MODE_META[selectedMode];
+    banner.innerHTML = `
+      <div class="mode-banner">
+        <span class="icon">${meta.icon}</span>
+        <div class="body">
+          <div class="label-row">${meta.label} · tailored fields below</div>
+          <div class="name">${meta.name}</div>
+        </div>
+        <span class="change" onclick="goToStep(4)">Change mode</span>
+      </div>
+    `;
+
+    const blocks = {
+      backpacker: `
+        <div class="form-group">
+          <label class="form-label">Accommodation tier <span class="hint">backpacker-friendly options</span></label>
+          <div class="radio-cards cols-3 mt-8">
+            <label class="radio-card active" onclick="selectRadio(this, 'accom')">
+              <input type="radio" name="accom" value="hostel" checked>
+              <div class="radio-card-title">🛏️ Hostel</div>
+              <div class="radio-card-sub">~₹1,500–2,800/night dorm</div>
+            </label>
+            <label class="radio-card" onclick="selectRadio(this, 'accom')">
+              <input type="radio" name="accom" value="guesthouse">
+              <div class="radio-card-title">🏠 Guesthouse</div>
+              <div class="radio-card-sub">~₹3,000–5,500/night private</div>
+            </label>
+            <label class="radio-card" onclick="selectRadio(this, 'accom')">
+              <input type="radio" name="accom" value="budget-hotel">
+              <div class="radio-card-title">🏨 Budget Hotel</div>
+              <div class="radio-card-sub">~₹5,000–9,000/night</div>
+            </label>
+          </div>
+        </div>`,
+      couple: `
+        <div class="form-group">
+          <label class="form-label">Couple priorities <span class="hint">we'll weight the plan accordingly</span></label>
+          <div class="chips mt-12">
+            <span class="chip active" onclick="toggleChip(this)">🌅 Sunset spots</span>
+            <span class="chip active" onclick="toggleChip(this)">🍷 Fine dining</span>
+            <span class="chip" onclick="toggleChip(this)">💆 Couples spa</span>
+            <span class="chip" onclick="toggleChip(this)">🎭 Live performances</span>
+            <span class="chip" onclick="toggleChip(this)">🚣 Private experiences</span>
+            <span class="chip active" onclick="toggleChip(this)">📸 Photogenic backdrops</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Accommodation tier</label>
+          <div class="radio-cards cols-3 mt-8">
+            <label class="radio-card" onclick="selectRadio(this, 'accom')">
+              <input type="radio" name="accom" value="mid">
+              <div class="radio-card-title">🏨 Mid-range</div>
+              <div class="radio-card-sub">3★ romantic</div>
+            </label>
+            <label class="radio-card active" onclick="selectRadio(this, 'accom')">
+              <input type="radio" name="accom" value="boutique" checked>
+              <div class="radio-card-title">✨ Boutique</div>
+              <div class="radio-card-sub">4★ design hotels</div>
+            </label>
+            <label class="radio-card" onclick="selectRadio(this, 'accom')">
+              <input type="radio" name="accom" value="luxury">
+              <div class="radio-card-title">💎 Luxury</div>
+              <div class="radio-card-sub">5★ honeymoon-grade</div>
+            </label>
+          </div>
+        </div>`,
+      family: `
+        <div class="form-group">
+          <label class="form-label">Children's ages <span class="hint">activities tailored to each child</span></label>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+            <div style="display:flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(0,0,0,0.03); border-radius:100px; font-size:13px;">
+              <span>Child 1:</span><strong>4 years</strong>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(0,0,0,0.03); border-radius:100px; font-size:13px;">
+              <span>Child 2:</span><strong>8 years</strong>
+            </div>
+            <button class="btn btn-ghost btn-sm" type="button">+ Add child</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Accessibility needs</label>
+          <label class="toggle-row" style="margin-top:8px;">
+            <div class="toggle">
+              <input type="checkbox" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="toggle-text">
+              <strong>Stroller / pushchair needed</strong>
+              We'll flag stroller-accessible routes and avoid stairs-only attractions
+            </div>
+          </label>
+          <label class="toggle-row" style="margin-top:10px;">
+            <div class="toggle">
+              <input type="checkbox">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="toggle-text">
+              <strong>Show medical facilities nearby</strong>
+              Clinics and pharmacies marked on each day's plan
+            </div>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Family priorities</label>
+          <div class="chips mt-12">
+            <span class="chip active" onclick="toggleChip(this)">🎡 Kid-friendly activities</span>
+            <span class="chip active" onclick="toggleChip(this)">🍽️ Family restaurants</span>
+            <span class="chip" onclick="toggleChip(this)">🌧️ Indoor backup plans</span>
+            <span class="chip" onclick="toggleChip(this)">🏊 Pool / beach access</span>
+            <span class="chip" onclick="toggleChip(this)">🚌 Minimal transit changes</span>
+          </div>
+        </div>`,
+      group: `
+        <div class="form-group">
+          <label class="form-label">Group activities focus</label>
+          <div class="chips mt-12">
+            <span class="chip active" onclick="toggleChip(this)">🎉 Nightlife &amp; bars</span>
+            <span class="chip active" onclick="toggleChip(this)">📸 Photogenic spots</span>
+            <span class="chip" onclick="toggleChip(this)">🚣 Active &amp; adventure</span>
+            <span class="chip" onclick="toggleChip(this)">🍽️ Group dining</span>
+            <span class="chip" onclick="toggleChip(this)">🎭 Shows &amp; events</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="toggle-row" style="margin-top:8px;">
+            <div class="toggle">
+              <input type="checkbox" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="toggle-text">
+              <strong>Enable live expense splitting</strong>
+              Built-in Splitwise-style tracker post-departure
+            </div>
+          </label>
+        </div>`,
+      senior: `
+        <div class="form-group">
+          <label class="form-label">Mobility level</label>
+          <div class="radio-cards cols-3 mt-8">
+            <label class="radio-card" onclick="selectRadio(this, 'mobility')">
+              <input type="radio" name="mobility" value="active">
+              <div class="radio-card-title">🚶 Active</div>
+              <div class="radio-card-sub">5–8 km/day comfortable</div>
+            </label>
+            <label class="radio-card active" onclick="selectRadio(this, 'mobility')">
+              <input type="radio" name="mobility" value="moderate" checked>
+              <div class="radio-card-title">🚶‍♂️ Moderate</div>
+              <div class="radio-card-sub">2–4 km/day with rest stops</div>
+            </label>
+            <label class="radio-card" onclick="selectRadio(this, 'mobility')">
+              <input type="radio" name="mobility" value="limited">
+              <div class="radio-card-title">♿ Limited</div>
+              <div class="radio-card-sub">Wheelchair-accessible routing</div>
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="toggle-row" style="margin-top:8px;">
+            <div class="toggle">
+              <input type="checkbox" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="toggle-text">
+              <strong>Prioritise direct flights</strong>
+              Skip multi-stop options even if cheaper
+            </div>
+          </label>
+          <label class="toggle-row" style="margin-top:10px;">
+            <div class="toggle">
+              <input type="checkbox" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="toggle-text">
+              <strong>Show medical facilities &amp; pharmacies</strong>
+              Marked on every day's map
+            </div>
+          </label>
+          <label class="toggle-row" style="margin-top:10px;">
+            <div class="toggle">
+              <input type="checkbox" checked>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="toggle-text">
+              <strong>Hotels with elevator only</strong>
+              No walk-up boutique stays
+            </div>
+          </label>
+        </div>`
+    };
+
+    fields.innerHTML = blocks[selectedMode] || '';
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     STEP 3 — visa context banner + date pre-fill
+     ─────────────────────────────────────────────────────────── */
+  function applyVisaContextToDates() {
+    const banner = document.getElementById('visa-context-banner');
+    if (!banner) return;
+
+    const corridorKey = DESTINATION_MAP[(selectedDestination || '').trim().toLowerCase()];
+    const data = corridorKey ? VISA_DATA[selectedPassport + '-' + corridorKey] : null;
+
+    if (!data || !data.required) {
+      banner.innerHTML = '';
+      return;
+    }
+
+    const today = new Date();
+    const earliest = new Date(today);
+    earliest.setDate(earliest.getDate() + data.processingDays.typical + 7);
+    const earliestISO = earliest.toISOString().slice(0, 10);
+    const returnDate = new Date(earliest);
+    returnDate.setDate(returnDate.getDate() + 10);
+    const returnISO = returnDate.toISOString().slice(0, 10);
+
+    const departInput = document.getElementById('depart-date');
+    const returnInput = document.getElementById('return-date');
+    if (departInput && !departInput.dataset.userTouched) departInput.value = earliestISO;
+    if (returnInput && !returnInput.dataset.userTouched) returnInput.value = returnISO;
+
+    const earliestPretty = earliest.toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+
+    banner.innerHTML = `
+      <div style="background:linear-gradient(135deg,rgba(201,79,44,0.08),rgba(212,168,67,0.08));
+                  border:1px solid rgba(201,79,44,0.25); border-radius:12px;
+                  padding:14px 18px; margin-bottom:20px; display:flex; gap:12px; align-items:center;">
+        <span style="font-size:22px;">⚠️</span>
+        <div style="flex:1; font-size:13.5px; line-height:1.5;">
+          <strong style="color:var(--rust);">${data.type}</strong> required —
+          earliest viable departure is <strong>${earliestPretty}</strong>.
+          Dates pre-filled accordingly. Adjust if you have a confirmed appointment.
+        </div>
+      </div>
+    `;
+
+    [departInput, returnInput].forEach(el => {
+      if (!el) return;
+      el.addEventListener('input', () => { el.dataset.userTouched = '1'; }, { once: true });
+    });
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     STEP 4 — chip + radio helpers
+     ─────────────────────────────────────────────────────────── */
+  function toggleChip(el) { el.classList.toggle('active'); }
+
+  function selectRadio(el, group) {
+    const radio = el.querySelector('input[type="radio"]');
+    const name = radio ? radio.name : group;
+    document.querySelectorAll(`input[type="radio"][name="${name}"]`).forEach(r => {
+      const card = r.closest('.radio-card');
+      if (card) card.classList.remove('active');
+    });
+    el.classList.add('active');
+    if (radio) radio.checked = true;
+  }
+
+  function adjustStepper(id, delta) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let v = parseInt(el.textContent, 10) + delta;
+    if (v < 0) v = 0;
+    if (v > 20) v = 20;
+    el.textContent = v;
+  }
+
+  function updateBudget(value) {
+    const inr = parseInt(value, 10);
+    const eur = Math.round(inr / 90);
+    const inrFmt = inr.toLocaleString('en-IN');
+    document.getElementById('budget-display').innerHTML =
+      `₹ ${inrFmt} <span class="text-muted text-sm" style="font-weight:400;"> total &nbsp; (~€${eur.toLocaleString()})</span>`;
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     STEP 5 — summary + service toggle + generate
+     ─────────────────────────────────────────────────────────── */
+  function populateSummary() {
+    const corridorKey = DESTINATION_MAP[(selectedDestination || '').trim().toLowerCase()];
+    const data = corridorKey ? VISA_DATA[selectedPassport + '-' + corridorKey] : null;
+
+    const depart = document.getElementById('depart-date').value;
+    const ret = document.getElementById('return-date').value;
+    const adults = document.getElementById('adults').textContent;
+    const children = document.getElementById('children').textContent;
+
+    const interests = [...document.querySelectorAll('#chips-interests .chip.active')]
+      .map(c => c.textContent.trim()).join(' · ') || '—';
+    const dietary = [...document.querySelectorAll('#chips-dietary .chip.active')]
+      .map(c => c.textContent.trim()).join(' · ') || '—';
+    const accom = document.querySelector('input[name="accom"]:checked')?.value || 'mid';
+    const pace = document.querySelector('input[name="pace"]:checked')?.value || 'balanced';
+
+    const modeMeta = selectedMode ? MODE_META[selectedMode] : null;
+    const passportFlag = { IN: '🇮🇳 India', US: '🇺🇸 United States', GB: '🇬🇧 United Kingdom', EU: '🇪🇺 EU' }[selectedPassport] || selectedPassport;
+
+    document.getElementById('summary-card').innerHTML = `
+      <div class="summary-row">
+        <span class="key">Passport</span>
+        <span class="val">${passportFlag}</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Destination</span>
+        <span class="val">${selectedDestination || '—'} ${data ? `(${data.destinationLabel})` : ''}</span>
+        <span class="edit" onclick="goToStep(2)">Edit</span>
+      </div>
+      ${data && data.required ? `
+        <div class="summary-row">
+          <span class="key">Visa</span>
+          <span class="val" style="color:var(--rust);">${data.type} · €${data.feeEur + data.serviceFeeEur} · ${data.processingDays.typical}d processing</span>
+          <span class="edit" onclick="goToStep(2)">Details</span>
+        </div>` : ''}
+      <div class="summary-row">
+        <span class="key">Dates</span>
+        <span class="val">${depart} → ${ret}</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Travellers</span>
+        <span class="val">${adults} adults${children > 0 ? `, ${children} children` : ''}</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+      ${modeMeta ? `
+        <div class="summary-row">
+          <span class="key">Trip mode</span>
+          <span class="val">${modeMeta.icon} ${modeMeta.name}</span>
+          <span class="edit" onclick="goToStep(4)">Change</span>
+        </div>` : ''}
+      <div class="summary-row">
+        <span class="key">Interests</span>
+        <span class="val">${interests}</span>
+        <span class="edit" onclick="goToStep(5)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Dietary</span>
+        <span class="val">${dietary}</span>
+        <span class="edit" onclick="goToStep(5)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Accommodation</span>
+        <span class="val">${accom}</span>
+        <span class="edit" onclick="goToStep(5)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Pace</span>
+        <span class="val">${pace}</span>
+        <span class="edit" onclick="goToStep(5)">Edit</span>
+      </div>
+    `;
+  }
+
+  function toggleService(svc) {
+    const card = document.getElementById('card-' + svc);
+    card.classList.toggle('on');
+    const fp = document.getElementById('fp-' + svc);
+    if (fp) fp.classList.toggle('active', card.classList.contains('on'));
+  }
+
+  function generate() {
+    const flights = document.getElementById('card-flights').classList.contains('on');
+    const hotels = document.getElementById('card-hotels').classList.contains('on');
+    sessionStorage.setItem('wantFlights', flights);
+    sessionStorage.setItem('wantHotels', hotels);
+    if (flights) window.location.href = 'flights.html';
+    else if (hotels) window.location.href = 'hotels.html';
+    else window.location.href = 'itinerary.html';
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     DESTINATION + VISA CARD
+     ─────────────────────────────────────────────────────────── */
+  function pickDestination(name) {
+    document.getElementById('dest-input').value = name;
+    document.querySelectorAll('.dest-pick').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    onDestinationInput(name);
+  }
+
+  let inputDebounce;
+  function onDestinationInput(value) {
+    clearTimeout(inputDebounce);
+    inputDebounce = setTimeout(() => {
+      const key = DESTINATION_MAP[value.trim().toLowerCase()];
+      selectedDestination = value;
+      renderVisaCard(selectedPassport, key, value);
+    }, 250);
+  }
+
+  function renderVisaCard(passport, corridorKey, rawDestination) {
+    const slot = document.getElementById('visa-card-slot');
+    const continueBtn = document.getElementById('continue-btn');
+
+    if (!rawDestination || rawDestination.length < 2) {
+      slot.innerHTML = '';
+      continueBtn.disabled = true;
+      continueBtn.style.opacity = '0.5';
+      return;
+    }
+
+    if (!corridorKey) {
+      slot.innerHTML = `
+        <div class="visa-card unsupported">
+          <div class="visa-header">
+            <span class="icon">🔍</span>
+            <div style="flex:1;">
+              <span class="badge">Coming soon</span>
+              <h3 style="margin-top:6px;">No visa data yet for "${rawDestination}"</h3>
+            </div>
+          </div>
+          <div class="visa-body">
+            <p style="font-size:14px; color:var(--muted); margin-bottom:8px;">
+              We're hand-curating visa data for the top 20 corridors. This destination
+              isn't covered in our launch set yet.
+            </p>
+            <p style="font-size:13px; color:var(--muted);">
+              Try a Schengen country (France, Italy, Germany, Spain, Netherlands) or the UK.
+              Other corridors land throughout July–August 2026.
+            </p>
+          </div>
+        </div>`;
+      continueBtn.disabled = true;
+      continueBtn.style.opacity = '0.5';
+      return;
+    }
+
+    const data = VISA_DATA[passport + '-' + corridorKey];
+    if (!data) {
+      slot.innerHTML = `
+        <div class="visa-card unsupported">
+          <div class="visa-header">
+            <span class="icon">🔍</span>
+            <div style="flex:1;">
+              <span class="badge">Data coming soon</span>
+              <h3 style="margin-top:6px;">No corridor data yet for ${passport} → ${corridorKey}</h3>
+            </div>
+          </div>
+          <div class="visa-body">
+            <p style="font-size:13.5px; color:var(--muted);">
+              This passport/destination pair isn't in our launch corridor set yet.
+              Try a different combination — IN, US, GB, EU passports going to
+              Schengen countries or the UK are all covered.
+            </p>
+          </div>
+        </div>`;
+      continueBtn.disabled = true;
+      continueBtn.style.opacity = '0.5';
+      return;
+    }
+
+    /* ─── No-visa-required variant (soft passports) ─── */
+    if (data.required === false) {
+      const stayInfo = data.maxStayDays
+        ? `Stay up to <strong>${data.maxStayDays} days</strong> — ${data.stayWindow}.`
+        : `<strong>${data.stayWindow}.</strong>`;
+
+      slot.innerHTML = `
+        <div class="visa-card not-required">
+          <div class="visa-header">
+            <span class="icon">✓</span>
+            <div style="flex:1;">
+              <span class="badge">No visa needed</span>
+              <h3 style="margin-top:6px;">You're cleared to travel</h3>
+              <div style="font-size:13px; opacity:0.85; margin-top:2px;">
+                ${passport} passport → ${data.destinationLabel}
+              </div>
+            </div>
+          </div>
+          <div class="visa-body">
+            <div style="background:rgba(74,103,65,0.06); border:1px solid rgba(74,103,65,0.18);
+                        border-radius:10px; padding:16px 18px; margin-bottom:14px;">
+              <div style="font-size:14px; color:var(--ink); line-height:1.6;">${stayInfo}</div>
+            </div>
+            <div style="font-size:13px; color:var(--muted); line-height:1.6;">
+              <strong style="color:var(--ink);">Heads-up:</strong> ${data.futureNote}
+            </div>
+            <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+                        font-size:12.5px; color:var(--muted);">
+              Book whenever you like. We'll still tailor your itinerary to your passport —
+              currency display, dietary defaults, cultural notes.
+            </div>
+          </div>
+          <div class="visa-footer">
+            <span class="verified">✓ Verified ${data.lastVerified}</span>
+            <span class="report-link" onclick="alert('Thanks — report submitted (prototype)')">
+              Report incorrect info
+            </span>
+          </div>
+        </div>`;
+      continueBtn.disabled = false;
+      continueBtn.style.opacity = '1';
+      return;
+    }
+
+    /* Earliest viable departure = today + typical processing + 7-day buffer */
+    const today = new Date();
+    const earliest = new Date(today);
+    earliest.setDate(earliest.getDate() + data.processingDays.typical + 7);
+    const earliestStr = earliest.toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+
+    const apptClass = data.appointmentAvailability;
+    const apptLabel = {
+      open: '🟢 Open',
+      moderate: '🟡 Moderate',
+      tight: '🔴 Tight'
+    }[apptClass] || apptClass;
+
+    slot.innerHTML = `
+      <div class="visa-card required">
+        <div class="visa-header">
+          <span class="icon">⚠️</span>
+          <div style="flex:1;">
+            <span class="badge">Visa required</span>
+            <h3 style="margin-top:6px;">${data.type}</h3>
+            <div style="font-size:13px; opacity:0.85; margin-top:2px;">India → ${data.destinationLabel}</div>
+          </div>
+        </div>
+
+        <div class="visa-body">
+
+          <div class="visa-stats">
+            <div class="visa-stat">
+              <span class="label">Processing</span>
+              <span class="value">${data.processingDays.typical} days</span>
+              <span class="sub">${data.processingDays.min}–${data.processingDays.max} day range</span>
+            </div>
+            <div class="visa-stat">
+              <span class="label">Fee</span>
+              <span class="value">€${data.feeEur}</span>
+              <span class="sub">+ €${data.serviceFeeEur} service fee</span>
+            </div>
+            <div class="visa-stat">
+              <span class="label">Validity</span>
+              <span class="value">${data.validityDays} days</span>
+              <span class="sub">${data.entries.toLowerCase()}</span>
+            </div>
+            <div class="visa-stat">
+              <span class="label">Appointments</span>
+              <span class="value" style="font-size:16px;">${apptLabel}</span>
+              <span class="sub">${data.applyCenters.length} centers across India</span>
+            </div>
+          </div>
+
+          <div class="visa-deadline">
+            <span class="icon">📅</span>
+            <div class="text">
+              <div class="label">Earliest viable departure</div>
+              <div class="date">${earliestStr}</div>
+              <div class="calc">
+                = today + ${data.processingDays.typical} day processing + 7 day buffer.
+                Book flights only after this date.
+              </div>
+            </div>
+          </div>
+
+          <div class="visa-section">
+            <div class="visa-section-title">Apply at</div>
+            <div class="visa-centers">
+              ${data.applyCenters.map(c => `<span class="visa-center">${c}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="visa-section">
+            <div class="visa-section-title">${data.requiredDocuments.length} documents required</div>
+            <ul class="visa-doc-list">
+              ${data.requiredDocuments.map(doc => `
+                <li class="visa-doc">
+                  <div class="check"></div>
+                  <div class="doc-content">
+                    <div class="doc-name">${doc.name}</div>
+                    ${doc.notes ? `<div class="doc-notes">${doc.notes}</div>` : ''}
+                  </div>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+
+          <div class="visa-rejections">
+            <h4>⚠ Common rejection reasons for this corridor</h4>
+            <ul>
+              ${data.commonRejectionReasons.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="visa-footer">
+          <span class="verified">
+            ✓ Verified ${data.lastVerified}
+            &nbsp;·&nbsp;
+            <a href="${data.officialSourceUrl}" target="_blank" style="color:var(--rust);">Official source ↗</a>
+          </span>
+          <span class="report-link" onclick="alert('Thanks — report submitted (prototype)')">
+            Report incorrect info
+          </span>
+        </div>
+      </div>
+    `;
+
+    continueBtn.disabled = false;
+    continueBtn.style.opacity = '1';
+  }
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

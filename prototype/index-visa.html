@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeaveYourTrip — Plan around your passport, not against it</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+  <style>
+    /* Passport-first specific styles */
+    .passport-picker-section {
+      padding: 60px 0;
+      background: var(--ink);
+      color: var(--sand);
+      border-top: 1px solid rgba(245,240,232,0.08);
+      border-bottom: 1px solid rgba(245,240,232,0.08);
+    }
+    .passport-picker-section .label { color: var(--gold); }
+    .passport-picker-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+    .passport-picker-section .sub {
+      font-size: 15px;
+      color: rgba(245,240,232,0.6);
+      margin-bottom: 32px;
+      max-width: 580px;
+    }
+    .passport-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .passport-card {
+      background: rgba(245,240,232,0.04);
+      border: 1px solid rgba(245,240,232,0.1);
+      border-radius: 12px;
+      padding: 22px 18px;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .passport-card:hover {
+      background: rgba(245,240,232,0.07);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .passport-flag { font-size: 32px; line-height: 1; }
+    .passport-name { font-size: 15px; font-weight: 600; color: var(--sand); }
+    .passport-supported {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .passport-coming {
+      font-size: 11px;
+      color: rgba(245,240,232,0.35);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .passport-card.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .passport-card.disabled:hover {
+      transform: none;
+      border-color: rgba(245,240,232,0.1);
+      background: rgba(245,240,232,0.04);
+    }
+
+    /* Why-visa-first section */
+    .why-section { padding: 80px 0; background: var(--sand); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+    }
+    .why-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+    }
+    .why-card .icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: rgba(201,79,44,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .why-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .why-card p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Competitor strip */
+    .comp-strip {
+      padding: 50px 0;
+      border-top: 1px solid var(--border);
+    }
+    .comp-strip h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .comp-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .comp-row:last-child { border-bottom: none; }
+    .comp-row .app-name { font-weight: 600; min-width: 140px; }
+    .comp-row .verdict-no { color: #b04; }
+    .comp-row .verdict-yes { color: var(--sage); font-weight: 600; }
+    .comp-row.us { background: rgba(201,79,44,0.04); padding-left: 14px; padding-right: 14px; border-radius: 8px; }
+
+    @media (max-width: 768px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .comp-row .app-name { min-width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Weave<span>YourTrip</span></div>
+  <div class="nav-actions">
+    <span style="font-size:12px; color:var(--muted); margin-right:8px;">Built for hard-passport travelers</span>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a href="#" class="btn btn-ghost btn-sm">Sign in</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner container">
+    <div class="hero-eyebrow">✦ The AI planner that knows your passport matters · 2026</div>
+    <h1>Plan around your<br><span>passport</span>,<br>not against it.</h1>
+    <p class="hero-sub">
+      We ask for your passport <em>before</em> your destination — because what
+      comes next depends on it. For hard-passport travelers: visa intel, document
+      checklist, earliest viable departure. For everyone: passport-aware
+      currency, dietary defaults, cultural notes baked into the plan.
+    </p>
+    <div class="hero-btns">
+      <a href="wizard-visa.html" class="btn btn-primary btn-lg">Start with your passport →</a>
+      <a href="#why" class="btn btn-ghost btn-lg" style="color:rgba(245,240,232,0.7); border-color:rgba(245,240,232,0.2);">Why visa-first matters</a>
+    </div>
+  </div>
+</section>
+
+<!-- PASSPORT QUICK PICKER -->
+<section class="passport-picker-section">
+  <div class="container">
+    <div class="label">Quick start</div>
+    <h2>What's your passport?</h2>
+    <p class="sub">Skip the wizard. Click your passport and we'll take you straight to the destination picker with visa intel pre-loaded.</p>
+
+    <div class="passport-grid">
+      <a href="wizard-visa.html?passport=IN" class="passport-card">
+        <span class="passport-flag">🇮🇳</span>
+        <span class="passport-name">India</span>
+        <span class="passport-supported">✓ Visa-aware</span>
+      </a>
+      <a href="wizard-visa.html?passport=US" class="passport-card">
+        <span class="passport-flag">🇺🇸</span>
+        <span class="passport-name">United States</span>
+        <span class="passport-supported">✓ Supported</span>
+      </a>
+      <a href="wizard-visa.html?passport=GB" class="passport-card">
+        <span class="passport-flag">🇬🇧</span>
+        <span class="passport-name">United Kingdom</span>
+        <span class="passport-supported">✓ Supported</span>
+      </a>
+      <a href="wizard-visa.html?passport=EU" class="passport-card">
+        <span class="passport-flag">🇪🇺</span>
+        <span class="passport-name">EU passport</span>
+        <span class="passport-supported">✓ Supported</span>
+      </a>
+      <a href="wizard-visa.html?passport=PK" class="passport-card disabled">
+        <span class="passport-flag">🇵🇰</span>
+        <span class="passport-name">Pakistan</span>
+        <span class="passport-coming">Coming soon</span>
+      </a>
+      <a href="wizard-visa.html?passport=NG" class="passport-card disabled">
+        <span class="passport-flag">🇳🇬</span>
+        <span class="passport-name">Nigeria</span>
+        <span class="passport-coming">Coming soon</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY VISA-FIRST -->
+<section class="why-section" id="why">
+  <div class="container">
+    <div class="label">Three things no other planner does</div>
+    <h2 class="serif" style="font-size:clamp(28px,4vw,42px); letter-spacing:-0.5px; margin-top:8px;">Visa-first changes everything</h2>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="icon">⏱️</div>
+        <h3>Earliest viable departure</h3>
+        <p>Calculated from your passport's processing time + recommended buffer. Stop accidentally booking flights you can't board because your visa isn't ready.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">📄</div>
+        <h3>Tailored document checklist</h3>
+        <p>Every document your consulate actually wants — ITR, leave letter, bank statement format, photo specs. Not generic visa info copied from Wikipedia.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">✉️</div>
+        <h3>Cover letter generator</h3>
+        <p>AI generates a consulate-ready cover letter using your actual day-by-day itinerary. Included free in your PDF download. Used to be a ₹500 service.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITOR STRIP -->
+<section class="why-section" style="background:white; padding-top:0;">
+  <div class="container">
+    <div class="comp-strip">
+      <h3>What the popular apps miss</h3>
+
+      <div class="comp-row">
+        <span class="app-name">Wanderlog</span>
+        <span style="flex:1;">Beautiful maps, free collaboration</span>
+        <span class="verdict-no">✗ Never mentions visa</span>
+      </div>
+      <div class="comp-row">
+        <span class="app-name">Stippl</span>
+        <span style="flex:1;">Full trip lifecycle, budget tracking</span>
+        <span class="verdict-no">✗ Assumes Western passport</span>
+      </div>
+      <div class="comp-row">
+        <span class="app-name">Mindtrip</span>
+        <span style="flex:1;">Group planning, photo import</span>
+        <span class="verdict-no">✗ No visa awareness</span>
+      </div>
+      <div class="comp-row">
+        <span class="app-name">ChatGPT / Gemini</span>
+        <span style="flex:1;">Free AI itineraries</span>
+        <span class="verdict-no">✗ Generic, no checklist, no consulate-specific docs</span>
+      </div>
+      <div class="comp-row us">
+        <span class="app-name" style="color:var(--rust);">WeaveYourTrip</span>
+        <span style="flex:1;">Passport-first, AI-driven, visa-aware</span>
+        <span class="verdict-yes">✓ Built for you</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>WeaveYourTrip</strong> &nbsp;·&nbsp; The trip planner that won't get you rejected at the consulate. &nbsp;·&nbsp; 2026
+  <div style="margin-top:8px; font-size:11px; color:rgba(245,240,232,0.3);">
+    Visa data verified weekly · Always confirm with official embassy before applying
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

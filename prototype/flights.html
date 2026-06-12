@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Flight — WeaveYourTrip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index-visa.html" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <div class="freemium-counter">🔥 <span class="count">2</span> free trips left <span class="upgrade">Upgrade →</span></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <!-- Step indicator -->
+    <div id="step-indicator" style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);">
+      <span style="color:var(--sage); font-weight:600;">✓ Trip details</span>
+      <span>·</span>
+      <span style="color:var(--rust); font-weight:600;">Flights</span>
+      <span id="hotels-step-label">·</span>
+      <span id="hotels-step-text">Hotels</span>
+      <span>·</span>
+      <span>Itinerary</span>
+    </div>
+  </div>
+</nav>
+
+<!-- RESULTS HERO -->
+<div class="results-hero">
+  <div class="results-hero-inner container">
+    <div class="results-route">
+      Mumbai <span class="arrow">→</span> Paris
+    </div>
+    <p class="results-meta">
+      <span>✈ 15 Jul — 25 Jul 2026</span>
+      <span>👥 2 passengers</span>
+      <span>💼 Economy</span>
+      <span style="color:var(--rust); font-weight:500;">✦ All options send a refundable confirmation suitable for your Schengen visa application</span>
+    </p>
+  </div>
+</div>
+
+<!-- VISA AWARENESS NOTICE (rendered for hard-passport flows only) -->
+<div style="background:rgba(201,79,44,0.06); border-bottom:1px solid rgba(201,79,44,0.18); padding:12px 40px;">
+  <div style="max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink);">
+    <span style="font-size:16px;">⚠️</span>
+    <span><strong style="color:var(--rust);">Visa-aware booking:</strong>
+      Do not pay for flights yet. Use the <strong>refundable reservation</strong> link
+      below each option for your visa application. Convert to paid booking only
+      after your Schengen visa is approved.
+    </span>
+  </div>
+</div>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <div class="sort-tab active" onclick="setSort(this)">Best score</div>
+  <div class="sort-tab" onclick="setSort(this)">Cheapest</div>
+  <div class="sort-tab" onclick="setSort(this)">Fastest</div>
+  <div class="sort-tab" onclick="setSort(this)">Top-rated airline</div>
+  <div class="sort-bar-right">
+    <span>4 results</span>
+  </div>
+</div>
+
+<!-- FLEXIBLE DATE TIP -->
+<div style="background:rgba(212,168,67,0.08); border-bottom:1px solid rgba(212,168,67,0.2); padding:12px 40px;">
+  <div style="max-width:900px; margin:0 auto; display:flex; align-items:center; gap:10px; font-size:13px; color:var(--gold);">
+    <span style="font-size:16px;">💡</span>
+    <span><strong>Flexible dates active:</strong> Shifting your trip to <strong>17–27 Jul</strong> saves an extra <strong>₹8,400 total</strong>. &nbsp;
+    <a href="#" style="color:var(--rust); font-weight:600; text-decoration:underline;">Apply shift →</a></span>
+  </div>
+</div>
+
+<!-- FLIGHT LIST -->
+<div class="results-list">
+
+  <!-- Flight 1 — Best score (selected by default) -->
+  <div class="flight-card selected" id="flight-1" onclick="selectFlight('flight-1')">
+    <div class="flight-badge badge-best">Best Score</div>
+    <div class="airline-info">
+      <div class="airline-logo">🇫🇷</div>
+      <div>
+        <div class="airline-name">Air France</div>
+        <div class="airline-class">Economy · Direct</div>
+      </div>
+    </div>
+    <div class="flight-times">
+      <div class="flight-time-row">
+        <span class="flight-time">02:30</span>
+        <span class="flight-time-arrow">——✈——</span>
+        <span class="flight-time">08:05</span>
+      </div>
+      <div class="flight-duration">9h 05m flight time</div>
+      <div class="flight-stops">✓ Non-stop</div>
+    </div>
+    <div style="text-align:center; font-size:12px; color:var(--muted);">
+      BOM → CDG<br>
+      <span style="font-size:11px;">Boeing 777-300ER</span>
+      <div style="margin-top:6px; font-size:10px; color:var(--rust); font-weight:600; letter-spacing:0.5px;">✓ VISA-FRIENDLY</div>
+    </div>
+    <div class="flight-price-col">
+      <div class="flight-price">₹ 58,400</div>
+      <div class="flight-price-label">per person &nbsp;(~€649)</div>
+      <div class="flight-total">₹ 1,16,800 total for 2</div>
+      <div class="flight-saving">✦ Direct + early morning landing = full Day 1</div>
+      <button class="btn btn-primary btn-sm mt-12" onclick="chooseFlight(event, 'af')">Select →</button>
+    </div>
+  </div>
+
+  <!-- Flight 2 — Cheapest -->
+  <div class="flight-card" id="flight-2" onclick="selectFlight('flight-2')">
+    <div class="flight-badge badge-cheap">Cheapest</div>
+    <div class="airline-info">
+      <div class="airline-logo">🇦🇪</div>
+      <div>
+        <div class="airline-name">Emirates</div>
+        <div class="airline-class">Economy · 1 stop</div>
+      </div>
+    </div>
+    <div class="flight-times">
+      <div class="flight-time-row">
+        <span class="flight-time">04:25</span>
+        <span class="flight-time-arrow">——✈——</span>
+        <span class="flight-time">13:45</span>
+      </div>
+      <div class="flight-duration">13h 50m total · 2h 25m layover DXB</div>
+      <div class="flight-stops has-stops">1 stop · Dubai (DXB)</div>
+    </div>
+    <div style="text-align:center; font-size:12px; color:var(--muted);">
+      BOM → DXB → CDG<br>
+      <span style="font-size:11px;">A380 + 777-300ER</span>
+      <div style="margin-top:6px; font-size:10px; color:var(--rust); font-weight:600; letter-spacing:0.5px;">✓ VISA-FRIENDLY</div>
+    </div>
+    <div class="flight-price-col">
+      <div class="flight-price">₹ 42,800</div>
+      <div class="flight-price-label">per person &nbsp;(~€476)</div>
+      <div class="flight-total">₹ 85,600 total for 2</div>
+      <div class="flight-saving">💰 Save ₹31,200 vs. Air France direct</div>
+      <button class="btn btn-secondary btn-sm mt-12" onclick="chooseFlight(event, 'emirates')">Select →</button>
+    </div>
+  </div>
+
+  <!-- Flight 3 — Fastest -->
+  <div class="flight-card" id="flight-3" onclick="selectFlight('flight-3')">
+    <div class="flight-badge badge-fast">Fastest</div>
+    <div class="airline-info">
+      <div class="airline-logo">🇮🇳</div>
+      <div>
+        <div class="airline-name">Air India</div>
+        <div class="airline-class">Economy · Direct</div>
+      </div>
+    </div>
+    <div class="flight-times">
+      <div class="flight-time-row">
+        <span class="flight-time">14:20</span>
+        <span class="flight-time-arrow">——✈——</span>
+        <span class="flight-time">19:35</span>
+      </div>
+      <div class="flight-duration">8h 45m flight time</div>
+      <div class="flight-stops">✓ Non-stop</div>
+    </div>
+    <div style="text-align:center; font-size:12px; color:var(--muted);">
+      BOM → CDG<br>
+      <span style="font-size:11px;">Boeing 787-8</span>
+      <div style="margin-top:6px; font-size:10px; color:var(--rust); font-weight:600; letter-spacing:0.5px;">✓ VISA-FRIENDLY</div>
+    </div>
+    <div class="flight-price-col">
+      <div class="flight-price">₹ 52,300</div>
+      <div class="flight-price-label">per person &nbsp;(~€581)</div>
+      <div class="flight-total">₹ 1,04,600 total for 2</div>
+      <div class="flight-saving">🥬 Veg meals confirmed pre-flight</div>
+      <button class="btn btn-secondary btn-sm mt-12" onclick="chooseFlight(event, 'ai')">Select →</button>
+    </div>
+  </div>
+
+  <!-- Flight 4 — Qatar Airways -->
+  <div class="flight-card" id="flight-4" onclick="selectFlight('flight-4')">
+    <div class="airline-info">
+      <div class="airline-logo">🇶🇦</div>
+      <div>
+        <div class="airline-name">Qatar Airways</div>
+        <div class="airline-class">Economy · 1 stop</div>
+      </div>
+    </div>
+    <div class="flight-times">
+      <div class="flight-time-row">
+        <span class="flight-time">03:40</span>
+        <span class="flight-time-arrow">——✈——</span>
+        <span class="flight-time">14:55</span>
+      </div>
+      <div class="flight-duration">15h 45m total · 3h 20m layover DOH</div>
+      <div class="flight-stops has-stops">1 stop · Doha (DOH)</div>
+    </div>
+    <div style="text-align:center; font-size:12px; color:var(--muted);">
+      BOM → DOH → CDG<br>
+      <span style="font-size:11px;">A350 + B777</span>
+      <div style="margin-top:6px; font-size:10px; color:var(--rust); font-weight:600; letter-spacing:0.5px;">✓ VISA-FRIENDLY</div>
+    </div>
+    <div class="flight-price-col">
+      <div class="flight-price">₹ 46,900</div>
+      <div class="flight-price-label">per person &nbsp;(~€521)</div>
+      <div class="flight-total">₹ 93,800 total for 2</div>
+      <div class="flight-saving" style="color:var(--sky);">★ 4.7 rated airline · Halal options</div>
+      <button class="btn btn-secondary btn-sm mt-12" onclick="chooseFlight(event, 'qatar')">Select →</button>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="text-align:center; padding:16px 0 8px; font-size:13px; color:var(--muted);">
+    Prices shown are live estimates including taxes. Final price confirmed at Skyscanner.
+    <strong style="color:var(--rust);">Use refundable booking for visa application.</strong> &nbsp;
+    <a id="skip-link" href="hotels.html" class="btn btn-primary btn-sm" style="display:inline-flex; margin-left:8px;">Skip to hotels →</a>
+  </div>
+
+</div>
+
+<script>
+  // Read user's service preferences set in wizard
+  const wantHotels = sessionStorage.getItem('wantHotels') !== 'false';
+  const nextPage   = wantHotels ? 'hotels.html' : 'itinerary.html';
+
+  // Hide the Hotels step from the breadcrumb if not wanted
+  if (!wantHotels) {
+    document.getElementById('hotels-step-label').hidden = true;
+    document.getElementById('hotels-step-text').hidden  = true;
+  }
+
+  // Update the bottom skip link to match
+  const skipLink = document.getElementById('skip-link');
+  if (skipLink) {
+    skipLink.textContent = wantHotels ? 'Skip to hotels →' : 'Skip to itinerary →';
+    skipLink.href = nextPage;
+  }
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+
+  function setSort(el) {
+    document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectFlight(id) {
+    document.querySelectorAll('.flight-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(id).classList.add('selected');
+  }
+
+  function chooseFlight(e, airline) {
+    e.stopPropagation();
+    window.location.href = nextPage;
+  }
+</script>
+
+</body>
+</html>

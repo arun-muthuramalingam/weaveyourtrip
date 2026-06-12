@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Your Trip — WeaveYourTrip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+  <style>
+    /* Teal accents for this wizard */
+    .label { color: var(--teal); }
+    .wizard-nav .nav-logo span { color: var(--teal); }
+    .progress-dot.active { background: var(--teal); border-color: var(--teal); }
+    .progress-dot.done   { background: var(--teal); border-color: var(--teal); }
+    .progress-line.done  { background: var(--teal); }
+    .toggle input:checked + .toggle-track { background: var(--teal); }
+    .chip.active { background: var(--teal-light); border-color: var(--teal); color: var(--teal); }
+    .radio-card.active-teal { border-color: var(--teal); background: var(--teal-light); }
+    .btn-primary { background: linear-gradient(135deg, var(--teal) 0%, #3a9e92 100%); box-shadow: var(--shadow-teal); }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(42,122,112,0.45); }
+    .mobility-cards { display: flex; flex-direction: column; gap: 10px; }
+    .mobility-card {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 18px 20px; border: 2px solid var(--border);
+      border-radius: var(--radius); background: var(--white);
+      cursor: pointer; transition: all 0.18s;
+    }
+    .mobility-card:hover { border-color: var(--teal); }
+    .mobility-card.active { border-color: var(--teal); background: var(--teal-light); }
+    .mobility-card input[type="radio"] { display: none; }
+    .mobility-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+    .mobility-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+    .mobility-sub   { font-size: 13px; color: var(--muted); }
+    .safety-note {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 14px 16px; border-radius: var(--radius-sm);
+      background: rgba(42,122,112,0.07);
+      border: 1px solid rgba(42,122,112,0.2);
+      font-size: 13px; color: #1e5c55;
+      margin-top: 16px;
+    }
+    .summary-card .key { color: var(--teal); }
+    .edit { color: var(--teal); }
+  </style>
+</head>
+<body>
+
+<!-- WIZARD NAV -->
+<nav class="wizard-nav">
+  <a href="index.html" class="nav-logo" style="font-size:18px;">Trip<span style="color:var(--teal)">Weave</span></a>
+
+  <div class="wizard-progress" id="progress">
+    <div class="progress-step">
+      <div class="progress-dot active" id="dot-1">1</div>
+    </div>
+    <div class="progress-line" id="line-1"></div>
+    <div class="progress-step">
+      <div class="progress-dot" id="dot-2">2</div>
+    </div>
+    <div class="progress-line" id="line-2"></div>
+    <div class="progress-step">
+      <div class="progress-dot" id="dot-3">3</div>
+    </div>
+    <div class="progress-line" id="line-3"></div>
+    <div class="progress-step">
+      <div class="progress-dot" id="dot-4">4</div>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+  <a href="index.html" class="btn btn-ghost btn-sm">✕ Cancel</a>
+</nav>
+
+<!-- WIZARD BODY -->
+<main class="wizard-body">
+
+  <!-- ── STEP 1: Where & When ──────────────────────────── -->
+  <div class="step" id="step-1">
+    <div class="step-header">
+      <div class="label">Step 1 of 4</div>
+      <h2>Where are you headed?</h2>
+    </div>
+
+    <div class="step-fields">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Flying from</label>
+          <input class="form-input" type="text" placeholder="e.g. London" value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Destination</label>
+          <input class="form-input" type="text" placeholder="e.g. Lisbon" value="">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Travel dates</label>
+        <div class="form-row">
+          <div class="form-group" style="gap:4px;">
+            <span class="text-xs text-muted">Departure</span>
+            <input class="form-input" type="date" value="2026-09-08">
+          </div>
+          <div class="form-group" style="gap:4px;">
+            <span class="text-xs text-muted">Return</span>
+            <input class="form-input" type="date" value="2026-09-18">
+          </div>
+        </div>
+      </div>
+
+      <label class="toggle-row" for="direct-flights">
+        <div class="toggle">
+          <input type="checkbox" id="direct-flights" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <div class="toggle-text">
+          <strong>Prioritise direct flights</strong>
+          Avoid connecting flights wherever possible — longer layovers are excluded
+        </div>
+      </label>
+
+      <label class="toggle-row" for="flexibility">
+        <div class="toggle">
+          <input type="checkbox" id="flexibility">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <div class="toggle-text">
+          <strong>Flexible ± 2 days</strong>
+          Shift dates slightly if it finds a meaningfully cheaper direct flight
+        </div>
+      </label>
+
+      <div class="safety-note">
+        <span style="font-size:18px; flex-shrink:0;">🛡️</span>
+        <span>We recommend purchasing travel insurance before departure. We'll include a reminder in your itinerary.</span>
+      </div>
+
+    </div>
+
+    <div class="step-footer">
+      <a href="index.html" class="btn btn-ghost">← Back</a>
+      <button class="btn btn-primary" onclick="goToStep(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Comfort & Mobility ───────────────────── -->
+  <div class="step" id="step-2" hidden>
+    <div class="step-header">
+      <div class="label">Step 2 of 4</div>
+      <h2>Comfort &amp; mobility</h2>
+    </div>
+
+    <div class="step-fields">
+
+      <div class="form-group">
+        <label class="form-label">Number of travellers</label>
+        <div class="mt-8">
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustStepper('travellers', -1)">−</button>
+            <div class="stepper-value" id="travellers">2</div>
+            <button class="stepper-btn" onclick="adjustStepper('travellers', 1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mobility level</label>
+        <div class="mobility-cards mt-8">
+
+          <label class="mobility-card" onclick="selectMobility(this, 'active')">
+            <input type="radio" name="mobility" value="active">
+            <div class="mobility-icon">🚶</div>
+            <div>
+              <div class="mobility-title">Fully Active</div>
+              <div class="mobility-sub">Comfortable walking up to 8 km/day — no special requirements</div>
+            </div>
+          </label>
+
+          <label class="mobility-card active" onclick="selectMobility(this, 'some-care')">
+            <input type="radio" name="mobility" value="some-care" checked>
+            <div class="mobility-icon">🦯</div>
+            <div>
+              <div class="mobility-title">Take It Easy</div>
+              <div class="mobility-sub">Prefer shorter walks, regular rest stops, and seated activity options</div>
+            </div>
+          </label>
+
+          <label class="mobility-card" onclick="selectMobility(this, 'wheelchair')">
+            <input type="radio" name="mobility" value="wheelchair">
+            <div class="mobility-icon">♿</div>
+            <div>
+              <div class="mobility-title">Wheelchair / Full Accessibility</div>
+              <div class="mobility-sub">Only wheelchair-accessible routes, venues, and transport included</div>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Max walking distance per day <span class="hint">we'll cap each day's route</span></label>
+        <div class="slider-wrap mt-8">
+          <div class="slider-header">
+            <div>
+              <span class="slider-value" id="walk-display">4 km</span>
+              <span class="text-muted text-sm"> per day max</span>
+            </div>
+            <span class="slider-label">Slide to set</span>
+          </div>
+          <input type="range" min="1" max="12" value="4" step="1"
+                 oninput="document.getElementById('walk-display').textContent = this.value + ' km'">
+        </div>
+      </div>
+
+      <label class="toggle-row" for="elevator">
+        <div class="toggle">
+          <input type="checkbox" id="elevator" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <div class="toggle-text">
+          <strong>Elevator / ground floor required</strong>
+          Only hotels and venues with lift access will be shown
+        </div>
+      </label>
+
+      <label class="toggle-row" for="stroller-free">
+        <div class="toggle">
+          <input type="checkbox" id="stroller-free">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <div class="toggle-text">
+          <strong>Cobblestone &amp; step-free routes preferred</strong>
+          Avoids uneven terrain, steep stairs, and long uphill stretches
+        </div>
+      </label>
+
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Comfort Preferences ──────────────────── -->
+  <div class="step" id="step-3" hidden>
+    <div class="step-header">
+      <div class="label">Step 3 of 4</div>
+      <h2>Comfort &amp; priorities</h2>
+    </div>
+
+    <div class="step-fields">
+
+      <div class="form-group">
+        <label class="form-label">Accommodation level</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="comfort-hotel">
+            <div class="radio-card-title">🏨 Comfort Hotel</div>
+            <div class="radio-card-sub">3-star, reliable amenities</div>
+            <div class="radio-card-price">~€80–130/night</div>
+          </label>
+          <label class="radio-card active-teal" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="boutique" checked>
+            <div class="radio-card-title">🌟 Boutique</div>
+            <div class="radio-card-sub">4-star, character &amp; comfort</div>
+            <div class="radio-card-price">~€130–220/night</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="luxury">
+            <div class="radio-card-title">💎 Luxury</div>
+            <div class="radio-card-sub">5-star, full concierge service</div>
+            <div class="radio-card-price">€220+/night</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Daily budget <span class="hint">per person, excl. accommodation</span></label>
+        <div class="slider-wrap mt-8">
+          <div class="slider-header">
+            <div>
+              <span class="slider-value" id="budget-display">€90</span>
+              <span class="text-muted text-sm"> / day</span>
+            </div>
+            <span class="slider-label">Slide to set</span>
+          </div>
+          <input type="range" min="30" max="400" value="90" step="10"
+                 oninput="document.getElementById('budget-display').textContent = '€' + this.value">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Trip pace</label>
+        <div class="radio-cards cols-2 mt-8">
+          <label class="radio-card active-teal" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="relaxed" checked>
+            <div class="radio-card-title">☕ Relaxed</div>
+            <div class="radio-card-sub">2–3 activities/day · long lunches · no rushing · afternoon rest built in</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="balanced">
+            <div class="radio-card-title">⚖️ Balanced</div>
+            <div class="radio-card-sub">4–5 activities/day · comfortable momentum · rest stops included</div>
+          </label>
+        </div>
+        <div style="margin-top:10px; font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px;">
+          <span style="color:var(--teal);">ℹ</span>
+          "Packed" pace is not offered — we always build in rest time for comfort and safety.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Health &amp; comfort priorities <span class="hint">pick as many as you like</span></label>
+        <div class="chips mt-12">
+          <span class="chip active" onclick="toggleChip(this)">🏥 Medical Facilities Nearby</span>
+          <span class="chip active" onclick="toggleChip(this)">💊 Pharmacy Access</span>
+          <span class="chip active" onclick="toggleChip(this)">🚌 Easy Public Transport</span>
+          <span class="chip" onclick="toggleChip(this)">🌡️ Mild Climate Preference</span>
+          <span class="chip active" onclick="toggleChip(this)">🛋️ Rest Spots &amp; Benches</span>
+          <span class="chip" onclick="toggleChip(this)">🍽️ Dietary Options</span>
+          <span class="chip active" onclick="toggleChip(this)">🎭 Cultural Experiences</span>
+          <span class="chip" onclick="toggleChip(this)">🌿 Garden &amp; Nature Walks</span>
+          <span class="chip" onclick="toggleChip(this)">🎵 Music &amp; Entertainment</span>
+          <span class="chip active" onclick="toggleChip(this)">🍷 Fine Dining</span>
+          <span class="chip" onclick="toggleChip(this)">🏊 Pool or Spa Access</span>
+          <span class="chip" onclick="toggleChip(this)">📸 Scenic Photography</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: Review & Generate ────────────────────── -->
+  <div class="step" id="step-4" hidden>
+    <div class="step-header">
+      <div class="label">Step 4 of 4</div>
+      <h2>Looks good — ready to weave?</h2>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="key">Route</span>
+        <span class="val">London → Lisbon</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Dates</span>
+        <span class="val">8–18 Sep 2026 · 10 nights</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Flights</span>
+        <span class="val" style="color:var(--teal); font-weight:500;">Direct flights prioritised · no layovers</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Travellers</span>
+        <span class="val">2 people</span>
+        <span class="edit" onclick="goToStep(2)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Mobility</span>
+        <span class="val">Take It Easy · max 4 km/day · elevator required</span>
+        <span class="edit" onclick="goToStep(2)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Stay</span>
+        <span class="val">Boutique 4-star · elevator access</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Budget</span>
+        <span class="val">€90 / person / day</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Pace</span>
+        <span class="val">Relaxed · afternoon rest included</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Priorities</span>
+        <span class="val">Medical · Pharmacy · Transport · Rest Spots · Culture · Fine Dining</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+    </div>
+
+    <div class="safety-note" style="margin-top:20px;">
+      <span style="font-size:18px; flex-shrink:0;">🛡️</span>
+      <span>Your itinerary will include <strong>nearest hospital &amp; pharmacy</strong> for each area, emergency contact fields, and a travel insurance reminder.</span>
+    </div>
+
+    <!-- Service selection -->
+    <div class="mt-24">
+      <div class="form-label" style="margin-bottom:4px;">What should WeaveYourTrip help with?</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">Tap to toggle — selected items get their own step</div>
+      <div class="service-cards">
+        <div class="service-card on teal-mode" id="card-flights" onclick="toggleService('flights')">
+          <div class="service-check">✓</div>
+          <div class="service-icon">✈️</div>
+          <div class="service-title">Flights</div>
+          <div class="service-desc">Direct options from London → Lisbon, sorted by comfort</div>
+          <div class="service-off-label">not included</div>
+        </div>
+        <div class="service-card on teal-mode" id="card-hotels" onclick="toggleService('hotels')">
+          <div class="service-check">✓</div>
+          <div class="service-icon">🏨</div>
+          <div class="service-title">Hotels</div>
+          <div class="service-desc">4-star boutique stays with confirmed elevator access</div>
+          <div class="service-off-label">not included</div>
+        </div>
+      </div>
+      <div class="flow-preview">
+        <span class="flow-step">Your details</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step active-teal" id="fp-flights">✈ Flights</span>
+        <span class="flow-arrow" id="fp-arrow-1">→</span>
+        <span class="flow-step active-teal" id="fp-hotels">🏨 Hotels</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">📋 Itinerary</span>
+      </div>
+    </div>
+
+    <div class="mt-24" style="display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+      <a id="generate-btn" href="flights.html" class="btn btn-teal btn-lg" style="width:100%; justify-content:center; max-width:380px;">
+        ✦ &nbsp;Generate My Itinerary
+      </a>
+      <p id="generate-note" class="generate-note" style="justify-content:center;">
+        <span>⏱</span> Next: choose your flights, then hotel — itinerary builds in ~15 sec
+      </p>
+    </div>
+
+    <div class="step-footer" style="margin-top: 16px;">
+      <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+      <span></span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 4;
+
+  function goToStep(n) {
+    document.getElementById('step-' + currentStep).hidden = true;
+
+    const prevDot = document.getElementById('dot-' + currentStep);
+    if (n > currentStep) {
+      prevDot.classList.remove('active');
+      prevDot.classList.add('done');
+      prevDot.textContent = '✓';
+    } else {
+      prevDot.classList.remove('done');
+      prevDot.classList.remove('active');
+      prevDot.textContent = currentStep;
+    }
+
+    for (let i = 1; i < totalSteps; i++) {
+      const line = document.getElementById('line-' + i);
+      if (line) line.classList.toggle('done', i < n);
+    }
+
+    currentStep = n;
+    document.getElementById('step-' + n).hidden = false;
+
+    const newDot = document.getElementById('dot-' + n);
+    newDot.classList.remove('done');
+    newDot.classList.add('active');
+    newDot.textContent = n;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function adjustStepper(id, delta) {
+    const el = document.getElementById(id);
+    const val = Math.max(1, Math.min(10, parseInt(el.textContent) + delta));
+    el.textContent = val;
+  }
+
+  function selectMobility(card, value) {
+    document.querySelectorAll('.mobility-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  }
+
+  function selectRadio(card, group) {
+    document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+      r.closest('.radio-card').classList.remove('active', 'active-teal');
+    });
+    card.classList.add('active-teal');
+  }
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+
+  function toggleChip(el) {
+    el.classList.toggle('active');
+  }
+
+  let wantFlights = true;
+  let wantHotels  = true;
+
+  function toggleService(service) {
+    if (service === 'flights') {
+      wantFlights = !wantFlights;
+      document.getElementById('card-flights').classList.toggle('on', wantFlights);
+      document.getElementById('fp-flights').style.display = wantFlights ? '' : 'none';
+      document.getElementById('fp-arrow-1').style.display = wantFlights ? '' : 'none';
+    } else {
+      wantHotels = !wantHotels;
+      document.getElementById('card-hotels').classList.toggle('on', wantHotels);
+      document.getElementById('fp-hotels').style.display = wantHotels ? '' : 'none';
+    }
+    updateGenerateLink();
+  }
+
+  function updateGenerateLink() {
+    sessionStorage.setItem('wantFlights', wantFlights);
+    sessionStorage.setItem('wantHotels',  wantHotels);
+    const btn  = document.getElementById('generate-btn');
+    const note = document.getElementById('generate-note');
+    if (wantFlights) {
+      btn.href = 'flights.html';
+      note.innerHTML = '<span>⏱</span> Next: pick your flights' + (wantHotels ? ', then hotel' : '') + ' — itinerary builds in ~15 sec';
+    } else if (wantHotels) {
+      btn.href = 'hotels.html';
+      note.innerHTML = '<span>⏱</span> Next: pick your accommodation — itinerary builds in ~15 sec';
+    } else {
+      btn.href = 'itinerary.html';
+      note.innerHTML = '<span>⏱</span> Your personalised itinerary will be ready in ~15 seconds';
+    }
+  }
+</script>
+
+</body>
+</html>

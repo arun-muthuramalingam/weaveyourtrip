@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Your Trip — WeaveYourTrip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+</head>
+<body>
+
+<!-- WIZARD NAV -->
+<nav class="wizard-nav">
+  <a href="index.html" class="nav-logo" style="font-size:18px;">Weave<span style="color:var(--rust)">YourTrip</span></a>
+
+  <!-- Progress dots -->
+  <div class="wizard-progress" id="progress">
+    <div class="progress-step">
+      <div class="progress-dot active" id="dot-1">1</div>
+    </div>
+    <div class="progress-line" id="line-1"></div>
+    <div class="progress-step">
+      <div class="progress-dot" id="dot-2">2</div>
+    </div>
+    <div class="progress-line" id="line-2"></div>
+    <div class="progress-step">
+      <div class="progress-dot" id="dot-3">3</div>
+    </div>
+    <div class="progress-line" id="line-3"></div>
+    <div class="progress-step">
+      <div class="progress-dot" id="dot-4">4</div>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+  <a href="index.html" class="btn btn-ghost btn-sm">✕ Cancel</a>
+</nav>
+
+<!-- WIZARD BODY -->
+<main class="wizard-body">
+
+  <!-- ── STEP 1: Where & When ──────────────────────────── -->
+  <div class="step" id="step-1">
+    <div class="step-header">
+      <div class="label">Step 1 of 4</div>
+      <h2>Where are you headed?</h2>
+    </div>
+
+    <div class="step-fields">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Flying from</label>
+          <input class="form-input" type="text" placeholder="e.g. Amsterdam" value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Destination</label>
+          <input class="form-input" type="text" placeholder="e.g. Tokyo" value="">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Travel dates</label>
+        <div class="form-row">
+          <div class="form-group" style="gap:4px;">
+            <span class="text-xs text-muted">Departure</span>
+            <input class="form-input" type="date" value="2026-08-10">
+          </div>
+          <div class="form-group" style="gap:4px;">
+            <span class="text-xs text-muted">Return</span>
+            <input class="form-input" type="date" value="2026-08-20">
+          </div>
+        </div>
+      </div>
+
+      <label class="toggle-row" for="flexibility">
+        <div class="toggle">
+          <input type="checkbox" id="flexibility" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </div>
+        <div class="toggle-text">
+          <strong>I'm flexible ± 3 days</strong>
+          Find cheaper flights by shifting dates slightly
+        </div>
+      </label>
+
+    </div>
+
+    <div class="step-footer">
+      <a href="index.html" class="btn btn-ghost">← Back</a>
+      <button class="btn btn-primary" onclick="goToStep(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Group & Budget ────────────────────────── -->
+  <div class="step" id="step-2" hidden>
+    <div class="step-header">
+      <div class="label">Step 2 of 4</div>
+      <h2>Group size &amp; budget</h2>
+    </div>
+
+    <div class="step-fields">
+
+      <div class="form-group">
+        <label class="form-label">Number of travellers</label>
+        <div class="mt-8">
+          <div class="stepper">
+            <button class="stepper-btn" onclick="adjustStepper('travellers', -1)">−</button>
+            <div class="stepper-value" id="travellers">2</div>
+            <button class="stepper-btn" onclick="adjustStepper('travellers', 1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Daily budget <span class="hint">per person</span></label>
+        <div class="slider-wrap mt-8">
+          <div class="slider-header">
+            <div>
+              <span class="slider-value" id="budget-display">€65</span>
+              <span class="text-muted text-sm"> / day</span>
+            </div>
+            <span class="slider-label">Slide to set</span>
+          </div>
+          <input type="range" min="20" max="300" value="65" step="5"
+                 oninput="document.getElementById('budget-display').textContent = '€' + this.value">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Where will you sleep?</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card active" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="hostel" checked>
+            <div class="radio-card-title">🛏️ Hostel</div>
+            <div class="radio-card-sub">Shared dorm, social vibe</div>
+            <div class="radio-card-price">~€15–30/night</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="guesthouse">
+            <div class="radio-card-title">🏠 Guesthouse</div>
+            <div class="radio-card-sub">Private room, local feel</div>
+            <div class="radio-card-price">~€30–60/night</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'accom')">
+            <input type="radio" name="accom" value="budget-hotel">
+            <div class="radio-card-title">🏨 Budget Hotel</div>
+            <div class="radio-card-sub">En-suite, reliable</div>
+            <div class="radio-card-price">~€50–90/night</div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Style & Interests ────────────────────── -->
+  <div class="step" id="step-3" hidden>
+    <div class="step-header">
+      <div class="label">Step 3 of 4</div>
+      <h2>What's your travel style?</h2>
+    </div>
+
+    <div class="step-fields">
+
+      <div class="form-group">
+        <label class="form-label">Interests <span class="hint">pick as many as you like</span></label>
+        <div class="chips mt-12">
+          <span class="chip active" onclick="toggleChip(this)">🍜 Street Food</span>
+          <span class="chip active" onclick="toggleChip(this)">🏛️ Museums</span>
+          <span class="chip" onclick="toggleChip(this)">🎉 Nightlife</span>
+          <span class="chip" onclick="toggleChip(this)">🥾 Hiking</span>
+          <span class="chip" onclick="toggleChip(this)">🏖️ Beaches</span>
+          <span class="chip active" onclick="toggleChip(this)">🏯 Architecture</span>
+          <span class="chip active" onclick="toggleChip(this)">🛍️ Local Markets</span>
+          <span class="chip" onclick="toggleChip(this)">🪂 Adventure Sports</span>
+          <span class="chip active" onclick="toggleChip(this)">⛩️ Temples &amp; History</span>
+          <span class="chip" onclick="toggleChip(this)">📸 Photography Spots</span>
+          <span class="chip" onclick="toggleChip(this)">🎨 Art &amp; Galleries</span>
+          <span class="chip" onclick="toggleChip(this)">🌿 Nature &amp; Parks</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Trip pace</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="relaxed">
+            <div class="radio-card-title">☕ Relaxed</div>
+            <div class="radio-card-sub">2–3 things/day, long lunches, no rushing</div>
+          </label>
+          <label class="radio-card active" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="balanced" checked>
+            <div class="radio-card-title">⚖️ Balanced</div>
+            <div class="radio-card-sub">4–5 activities/day with breathing room</div>
+          </label>
+          <label class="radio-card" onclick="selectRadio(this, 'pace')">
+            <input type="radio" name="pace" value="packed">
+            <div class="radio-card-title">⚡ Packed</div>
+            <div class="radio-card-sub">See as much as possible, every hour counts</div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="step-footer">
+      <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: Review & Generate ────────────────────── -->
+  <div class="step" id="step-4" hidden>
+    <div class="step-header">
+      <div class="label">Step 4 of 4</div>
+      <h2>Looks good — ready to weave?</h2>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="key">Route</span>
+        <span class="val">Amsterdam → Tokyo</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Dates</span>
+        <span class="val">10–20 Aug 2026 · 10 nights</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Flexibility</span>
+        <span class="val" style="color:var(--gold)">± 3 days · scanning for cheaper windows</span>
+        <span class="edit" onclick="goToStep(1)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Travellers</span>
+        <span class="val">2 people</span>
+        <span class="edit" onclick="goToStep(2)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Budget</span>
+        <span class="val">€65 / person / day</span>
+        <span class="edit" onclick="goToStep(2)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Accommodation</span>
+        <span class="val">Hostel</span>
+        <span class="edit" onclick="goToStep(2)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Interests</span>
+        <span class="val">Street Food · Museums · Architecture · Markets · Temples</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Pace</span>
+        <span class="val">Balanced</span>
+        <span class="edit" onclick="goToStep(3)">Edit</span>
+      </div>
+    </div>
+
+    <!-- Service selection -->
+    <div class="mt-24">
+      <div class="form-label" style="margin-bottom:4px;">What should WeaveYourTrip help with?</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">Tap to toggle — selected items get their own step</div>
+      <div class="service-cards">
+        <div class="service-card on" id="card-flights" onclick="toggleService('flights')">
+          <div class="service-check">✓</div>
+          <div class="service-icon">✈️</div>
+          <div class="service-title">Flights</div>
+          <div class="service-desc">Best options from Amsterdam → Tokyo</div>
+          <div class="service-off-label">not included</div>
+        </div>
+        <div class="service-card on" id="card-hotels" onclick="toggleService('hotels')">
+          <div class="service-check">✓</div>
+          <div class="service-icon">🏨</div>
+          <div class="service-title">Hotels</div>
+          <div class="service-desc">Matched to your hostel tier &amp; budget</div>
+          <div class="service-off-label">not included</div>
+        </div>
+      </div>
+      <div class="flow-preview">
+        <span class="flow-step">Your details</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step active" id="fp-flights">✈ Flights</span>
+        <span class="flow-arrow" id="fp-arrow-1">→</span>
+        <span class="flow-step active" id="fp-hotels">🏨 Hotels</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">📋 Itinerary</span>
+      </div>
+    </div>
+
+    <div class="mt-24" style="display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+      <a id="generate-btn" href="flights.html" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; max-width:360px;">
+        ✦ &nbsp;Generate My Itinerary
+      </a>
+      <p id="generate-note" class="generate-note" style="justify-content:center;">
+        <span>⏱</span> Next: choose your flights, then hotel — itinerary builds in ~15 sec
+      </p>
+    </div>
+
+    <div class="step-footer" style="margin-top: 16px;">
+      <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+      <span></span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 4;
+
+  function goToStep(n) {
+    // Hide current
+    document.getElementById('step-' + currentStep).hidden = true;
+
+    // Update dots
+    const prevDot = document.getElementById('dot-' + currentStep);
+    if (n > currentStep) {
+      prevDot.classList.remove('active');
+      prevDot.classList.add('done');
+      prevDot.textContent = '✓';
+    } else {
+      prevDot.classList.remove('done');
+      prevDot.classList.remove('active');
+      prevDot.textContent = currentStep;
+    }
+
+    // Update lines
+    for (let i = 1; i < totalSteps; i++) {
+      const line = document.getElementById('line-' + i);
+      if (line) line.classList.toggle('done', i < n);
+    }
+
+    // Show new step
+    currentStep = n;
+    document.getElementById('step-' + n).hidden = false;
+
+    const newDot = document.getElementById('dot-' + n);
+    newDot.classList.remove('done');
+    newDot.classList.add('active');
+    newDot.textContent = n;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function adjustStepper(id, delta) {
+    const el = document.getElementById(id);
+    const val = Math.max(1, Math.min(20, parseInt(el.textContent) + delta));
+    el.textContent = val;
+  }
+
+  let wantFlights = true;
+  let wantHotels  = true;
+
+  function toggleService(service) {
+    if (service === 'flights') {
+      wantFlights = !wantFlights;
+      document.getElementById('card-flights').classList.toggle('on', wantFlights);
+      document.getElementById('fp-flights').style.display = wantFlights ? '' : 'none';
+      document.getElementById('fp-arrow-1').style.display = wantFlights ? '' : 'none';
+    } else {
+      wantHotels = !wantHotels;
+      document.getElementById('card-hotels').classList.toggle('on', wantHotels);
+      document.getElementById('fp-hotels').style.display = wantHotels ? '' : 'none';
+    }
+    updateGenerateLink();
+  }
+
+  function updateGenerateLink() {
+    sessionStorage.setItem('wantFlights', wantFlights);
+    sessionStorage.setItem('wantHotels',  wantHotels);
+    const btn  = document.getElementById('generate-btn');
+    const note = document.getElementById('generate-note');
+    if (wantFlights) {
+      btn.href = 'flights.html';
+      note.innerHTML = '<span>⏱</span> Next: pick your flights' + (wantHotels ? ', then hotel' : '') + ' — itinerary builds in ~15 sec';
+    } else if (wantHotels) {
+      btn.href = 'hotels.html';
+      note.innerHTML = '<span>⏱</span> Next: pick your accommodation — itinerary builds in ~15 sec';
+    } else {
+      btn.href = 'itinerary.html';
+      note.innerHTML = '<span>⏱</span> Your personalised itinerary will be ready in ~15 seconds';
+    }
+  }
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+
+  function toggleChip(el) {
+    el.classList.toggle('active');
+  }
+
+  function selectRadio(card, group) {
+    document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+      const c = r.closest('.radio-card');
+      c.classList.remove('active');
+      c.classList.remove('active-sky');
+    });
+    card.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

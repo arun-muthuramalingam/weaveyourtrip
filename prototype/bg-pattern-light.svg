@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 370" width="520" height="370">
+  <g opacity="0.18">
+  <g fill="none" stroke="#9a7040" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ✈ Airplane (top right, rotated) -->
+    <g transform="translate(418, 52) rotate(-28)" stroke-width="2" opacity="0.55">
+      <path d="M0,0 L34,0"/>
+      <path d="M34,0 Q44,-2 44,0 Q44,2 34,0"/>
+      <path d="M5,0 L-6,-8"/>
+      <path d="M5,0 L-6,8"/>
+      <path d="M24,0 L13,-15 L11,-15 L19,0"/>
+      <path d="M24,0 L13,15 L11,15 L19,0"/>
+      <circle cx="-4"  cy="0" r="1.5" fill="#9a7040" opacity="0.7"/>
+      <circle cx="-12" cy="0" r="1.2" fill="#9a7040" opacity="0.5"/>
+      <circle cx="-20" cy="0" r="1"   fill="#9a7040" opacity="0.3"/>
+    </g>
+
+    <!-- ☀ Sun (top left) -->
+    <g transform="translate(68, 60)" stroke-width="2" opacity="0.5">
+      <circle cx="0" cy="0" r="14"/>
+      <line x1="0"   y1="-23" x2="0"   y2="-17"/>
+      <line x1="0"   y1="17"  x2="0"   y2="23"/>
+      <line x1="-23" y1="0"   x2="-17" y2="0"/>
+      <line x1="17"  y1="0"   x2="23"  y2="0"/>
+      <line x1="-16" y1="-16" x2="-12" y2="-12"/>
+      <line x1="12"  y1="-12" x2="16"  y2="-16"/>
+      <line x1="-16" y1="16"  x2="-12" y2="12"/>
+      <line x1="12"  y1="12"  x2="16"  y2="16"/>
+    </g>
+
+    <!-- 📸 Camera (top centre) -->
+    <g transform="translate(230, 48)" stroke-width="2" opacity="0.5">
+      <rect x="-26" y="-14" width="52" height="34" rx="5"/>
+      <path d="M-11,-14 L-8,-23 L8,-23 L11,-14"/>
+      <circle cx="0" cy="5" r="11"/>
+      <circle cx="0" cy="5" r="6"/>
+      <rect x="14" y="-10" width="7" height="5" rx="1.5"/>
+    </g>
+
+    <!-- 🗺 Scroll map (left, upper third) -->
+    <g transform="translate(130, 95)" stroke-width="1.8" opacity="0.48">
+      <rect x="-22" y="-26" width="44" height="52" rx="3"/>
+      <path d="M-22,-26 Q-32,-26 -32,-12 Q-32,0 -22,0"/>
+      <path d="M22,-26 Q32,-26 32,-12 Q32,0 22,0"/>
+      <line x1="-13" y1="-16" x2="13" y2="-16"/>
+      <line x1="-13" y1="-5"  x2="8"  y2="-5"/>
+      <line x1="-13" y1="6"   x2="13" y2="6"/>
+      <line x1="-3" y1="16" x2="3"  y2="22"/>
+      <line x1="3"  y1="16" x2="-3" y2="22"/>
+    </g>
+
+    <!-- ⚓ Anchor (right upper) -->
+    <g transform="translate(368, 82)" stroke-width="2" opacity="0.48">
+      <circle cx="0" cy="-20" r="6"/>
+      <line x1="0" y1="-14" x2="0" y2="18"/>
+      <line x1="-16" y1="-20" x2="16" y2="-20"/>
+      <path d="M0,18 Q-18,10 -16,2"/>
+      <path d="M0,18 Q18,10 16,2"/>
+      <path d="M-16,-26 Q0,-36 16,-26" stroke-dasharray="3,4"/>
+    </g>
+
+    <!-- 📍 Map pin (centre left) -->
+    <g transform="translate(160, 192)" stroke-width="2" opacity="0.5">
+      <path d="M0,-30 C-17,-30 -17,-8 0,-8 C17,-8 17,-30 0,-30 Z"/>
+      <circle cx="0" cy="-19" r="6"/>
+      <line x1="0" y1="-8" x2="0" y2="8"/>
+      <path d="M-6,8 Q0,14 6,8" stroke-width="1.4" opacity="0.6"/>
+    </g>
+
+    <!-- 🔭 Telescope (centre) -->
+    <g transform="translate(295, 155) rotate(18)" stroke-width="2" opacity="0.45">
+      <path d="M0,0 L42,0" stroke-width="6"/>
+      <path d="M42,0 L52,-4 L52,4 Z" fill="#9a7040" opacity="0.4"/>
+      <rect x="-8" y="-5" width="10" height="10" rx="2"/>
+      <line x1="16" y1="5"  x2="6"  y2="26"/>
+      <line x1="20" y1="5"  x2="30" y2="26"/>
+      <line x1="6"  y1="26" x2="30" y2="26"/>
+    </g>
+
+    <!-- 🌴 Palm tree (lower left) -->
+    <g transform="translate(36, 245)" stroke-width="2" opacity="0.5">
+      <path d="M10,95 Q14,58 8,22 Q6,10 10,0"/>
+      <path d="M10,0 Q-4,-18 -24,-14 Q-32,-12 -36,-5"/>
+      <path d="M10,0 Q4,-24 2,-38 Q1,-46 5,-50"/>
+      <path d="M10,0 Q24,-20 26,-35 Q27,-43 23,-48"/>
+      <path d="M10,0 Q28,-13 40,-11 Q48,-9 50,-2"/>
+      <path d="M10,0 Q13,-26 22,-34"/>
+      <circle cx="8"  cy="3"  r="4.5"/>
+      <circle cx="13" cy="1"  r="4.5"/>
+      <circle cx="6"  cy="-3" r="4"/>
+    </g>
+
+    <!-- 🧭 Compass (right, middle) -->
+    <g transform="translate(440, 215)" stroke-width="1.8" opacity="0.5">
+      <circle cx="0" cy="0" r="27"/>
+      <circle cx="0" cy="0" r="5"/>
+      <path d="M0,-27 L6,-5 L0,5 L-6,-5 Z" fill="#9a7040" opacity="0.35"/>
+      <path d="M27,0 L5,6 L-5,0 L5,-6 Z"/>
+      <line x1="0"   y1="-27" x2="0"   y2="-19"/>
+      <line x1="0"   y1="19"  x2="0"   y2="27"/>
+      <line x1="-27" y1="0"   x2="-19" y2="0"/>
+      <line x1="19"  y1="0"   x2="27"  y2="0"/>
+      <line x1="19"  y1="-19" x2="15"  y2="-15"/>
+      <line x1="-19" y1="-19" x2="-15" y2="-15"/>
+      <line x1="19"  y1="19"  x2="15"  y2="15"/>
+      <line x1="-19" y1="19"  x2="-15" y2="15"/>
+    </g>
+
+    <!-- 🌊 Waves (lower centre) -->
+    <g transform="translate(128, 298)" stroke-width="2" opacity="0.45">
+      <path d="M0,0 Q22,-16 44,0 Q66,16 88,0 Q110,-16 132,0 Q154,16 176,0"/>
+      <path d="M15,18 Q37,2 59,18 Q81,34 103,18 Q125,2 147,18"/>
+    </g>
+
+    <!-- 🧳 Suitcase (lower right) -->
+    <g transform="translate(458, 298)" stroke-width="2" opacity="0.5">
+      <rect x="-25" y="-2" width="50" height="38" rx="5"/>
+      <rect x="-12" y="-14" width="24" height="12" rx="3"/>
+      <line x1="-25" y1="14" x2="25"  y2="14"/>
+      <line x1="-4"  y1="6"  x2="-4"  y2="22"/>
+      <line x1="4"   y1="6"  x2="4"   y2="22"/>
+      <rect x="-4" y="12" width="8" height="4" rx="1"/>
+      <rect x="-21" y="17" width="12" height="9" rx="2"/>
+    </g>
+
+    <!-- ✦ Sparkles -->
+    <g stroke-width="1.8" opacity="0.5">
+      <g transform="translate(200, 125)">
+        <line x1="0" y1="-9" x2="0" y2="9"/>
+        <line x1="-9" y1="0" x2="9" y2="0"/>
+        <line x1="-6" y1="-6" x2="6" y2="6"/>
+        <line x1="6" y1="-6" x2="-6" y2="6"/>
+      </g>
+      <g transform="translate(310, 250)">
+        <line x1="0" y1="-8" x2="0" y2="8"/>
+        <line x1="-8" y1="0" x2="8" y2="0"/>
+        <line x1="-5" y1="-5" x2="5" y2="5"/>
+        <line x1="5" y1="-5" x2="-5" y2="5"/>
+      </g>
+      <g transform="translate(90, 325)">
+        <line x1="0" y1="-6" x2="0" y2="6"/>
+        <line x1="-6" y1="0" x2="6" y2="0"/>
+        <line x1="-4" y1="-4" x2="4" y2="4"/>
+        <line x1="4" y1="-4" x2="-4" y2="4"/>
+      </g>
+      <g transform="translate(474, 128)">
+        <line x1="0" y1="-7" x2="0" y2="7"/>
+        <line x1="-7" y1="0" x2="7" y2="0"/>
+        <line x1="-5" y1="-5" x2="5" y2="5"/>
+        <line x1="5" y1="-5" x2="-5" y2="5"/>
+      </g>
+      <g transform="translate(248, 305)">
+        <line x1="0" y1="-5" x2="0" y2="5"/>
+        <line x1="-5" y1="0" x2="5" y2="0"/>
+      </g>
+    </g>
+
+    <!-- - - - Dashed travel route -->
+    <path d="M92,160 Q172,128 244,172 Q314,212 404,178"
+          stroke-width="1.5" stroke-dasharray="5,9" opacity="0.38"/>
+    <g fill="#9a7040" stroke="none" opacity="0.45">
+      <circle cx="92"  cy="160" r="3"/>
+      <circle cx="244" cy="172" r="3"/>
+      <circle cx="404" cy="178" r="3"/>
+    </g>
+
+  </g>
+  </g>
+</svg>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Hotel — WeaveYourTrip</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('weaveyourtrip-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index-visa.html" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <div class="freemium-counter">🔥 <span class="count">2</span> free trips left <span class="upgrade">Upgrade →</span></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);">
+      <span style="color:var(--sage); font-weight:600;">✓ Trip details</span>
+      <span>·</span>
+      <span style="color:var(--sage); font-weight:600;">✓ Flights</span>
+      <span>·</span>
+      <span style="color:var(--rust); font-weight:600;">Hotels</span>
+      <span>·</span>
+      <span>Itinerary</span>
+    </div>
+  </div>
+</nav>
+
+<!-- RESULTS HERO -->
+<div class="results-hero">
+  <div class="results-hero-inner container">
+    <div class="results-route">
+      Where you'll <span class="arrow">sleep</span> in Paris
+    </div>
+    <p class="results-meta">
+      <span>🗓 15–25 Jul 2026 · 10 nights</span>
+      <span>👥 2 guests</span>
+      <span>🏨 Mid-range tier selected</span>
+    </p>
+    <!-- Selected flight summary -->
+    <div style="margin-top:16px; display:inline-flex; align-items:center; gap:12px; padding:10px 18px; border-radius:100px; background:rgba(245,240,232,0.06); border:1px solid rgba(245,240,232,0.12); font-size:13px;">
+      <span>✈ Air France · 02:30→08:05 · Direct BOM→CDG</span>
+      <span style="color:rgba(245,240,232,0.3);">|</span>
+      <span style="color:var(--gold); font-weight:600;">₹1,16,800 for 2</span>
+      <a href="flights.html" style="color:rgba(245,240,232,0.45); font-size:11px;">Change</a>
+    </div>
+  </div>
+</div>
+
+<!-- VISA-AWARE NOTICE -->
+<div style="background:rgba(201,79,44,0.06); border-bottom:1px solid rgba(201,79,44,0.18); padding:12px 40px;">
+  <div style="max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink);">
+    <span style="font-size:16px;">📄</span>
+    <span><strong style="color:var(--rust);">Visa-ready confirmations:</strong>
+      All hotels below send a confirmation email accepted by the French consulate.
+      <strong>Use refundable booking</strong> for visa application — convert to non-refundable after approval to save more.
+    </span>
+  </div>
+</div>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <div class="sort-tab active" onclick="setSort(this)">Recommended</div>
+  <div class="sort-tab" onclick="setSort(this)">Price: low to high</div>
+  <div class="sort-tab" onclick="setSort(this)">Guest rating</div>
+  <div class="sort-tab" onclick="setSort(this)">Closest to Day 1</div>
+  <div class="sort-bar-right">
+    <span>4 options</span>
+  </div>
+</div>
+
+<!-- HOTEL LIST -->
+<div class="results-list">
+
+  <!-- Hotel 1 — Top pick -->
+  <div class="hotel-card card-hover selected" id="hotel-1" onclick="selectHotel('hotel-1')">
+    <div class="flight-badge badge-best" style="top:0; left:0; border-radius:0 0 8px 0;">Top Pick</div>
+    <div class="hotel-image">
+      <img src="https://picsum.photos/seed/paris-opera-hotel/560/400" alt="Hotel Migny Opera Montmartre">
+      <div class="hotel-image-overlay">
+        <span class="hotel-tier-badge">🥬 Indian veg breakfast available</span>
+      </div>
+    </div>
+    <div class="hotel-body">
+      <div class="hotel-header">
+        <div>
+          <div class="hotel-name">Hotel Migny Opera Montmartre</div>
+          <div class="hotel-location">📍 9th Arrondissement · 4 min walk to Opera Metro</div>
+        </div>
+        <div class="hotel-score-box">
+          <div class="hotel-score">8.9</div>
+          <div class="hotel-score-label">Excellent</div>
+        </div>
+      </div>
+      <div class="hotel-review-count">3,142 guest reviews · <span style="color:var(--sage);">★ Top choice for Indian travellers</span></div>
+
+      <div style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+        "Walking distance to Galeries Lafayette, Opéra, and three Indian restaurants. Breakfast had idli &amp; sambar twice a week — felt at home."
+        <span style="font-style:italic;"> — Priya S., Mumbai</span>
+      </div>
+
+      <div class="hotel-amenities">
+        <span class="amenity">✓ Free WiFi</span>
+        <span class="amenity">🥬 Veg breakfast</span>
+        <span class="amenity">📄 Visa-ready receipt</span>
+        <span class="amenity">✓ AC rooms</span>
+        <span class="amenity">✓ Lift / elevator</span>
+        <span class="amenity">✓ 24h reception</span>
+      </div>
+
+      <div class="hotel-footer">
+        <div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="hotel-price">₹ 9,800</span>
+            <span class="hotel-price-label">/ night for 2 &nbsp;(~€109)</span>
+          </div>
+          <div class="hotel-total">₹ 98,000 total · 10 nights</div>
+        </div>
+        <button class="btn btn-primary" onclick="chooseHotel(event, 'migny')">Choose &amp; build itinerary →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hotel 2 -->
+  <div class="hotel-card card-hover" id="hotel-2" onclick="selectHotel('hotel-2')">
+    <div class="hotel-image">
+      <img src="https://picsum.photos/seed/paris-marais-boutique/560/400" alt="Hotel Jeanne d'Arc Le Marais">
+      <div class="hotel-image-overlay">
+        <span class="hotel-tier-badge">🎨 In the heart of Le Marais</span>
+      </div>
+    </div>
+    <div class="hotel-body">
+      <div class="hotel-header">
+        <div>
+          <div class="hotel-name">Hotel Jeanne d'Arc Le Marais</div>
+          <div class="hotel-location">📍 4th Arrondissement · 6 min to Notre-Dame</div>
+        </div>
+        <div class="hotel-score-box" style="background:var(--sage);">
+          <div class="hotel-score">9.2</div>
+          <div class="hotel-score-label">Exceptional</div>
+        </div>
+      </div>
+      <div class="hotel-review-count">1,847 guest reviews · <span style="color:var(--sage);">★ Best for first-time Paris visitors</span></div>
+
+      <div style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+        "Le Marais is the most walkable neighbourhood in Paris. Hotel staff arranged a paneer-friendly dinner reservation when we asked. Very accommodating."
+        <span style="font-style:italic;"> — Arun M., Bangalore</span>
+      </div>
+
+      <div class="hotel-amenities">
+        <span class="amenity">✓ Free WiFi</span>
+        <span class="amenity">🥬 Veg-friendly area</span>
+        <span class="amenity">📄 Visa-ready receipt</span>
+        <span class="amenity">✓ Historic building</span>
+        <span class="amenity">⚠️ No elevator</span>
+        <span class="amenity">✓ Walk to 8 attractions</span>
+      </div>
+
+      <div class="hotel-footer">
+        <div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="hotel-price">₹ 11,200</span>
+            <span class="hotel-price-label">/ night for 2 &nbsp;(~€124)</span>
+          </div>
+          <div class="hotel-total">₹ 1,12,000 total · 10 nights</div>
+        </div>
+        <button class="btn btn-secondary" onclick="chooseHotel(event, 'marais')">Choose &amp; build itinerary →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hotel 3 — Cheapest -->
+  <div class="hotel-card card-hover" id="hotel-3" onclick="selectHotel('hotel-3')">
+    <div class="flight-badge badge-cheap" style="top:0; left:0; border-radius:0 0 8px 0;">Cheapest</div>
+    <div class="hotel-image">
+      <img src="https://picsum.photos/seed/ibis-gare-du-nord/560/400" alt="Ibis Paris Gare du Nord">
+      <div class="hotel-image-overlay">
+        <span class="hotel-tier-badge">🚆 Direct train to airport</span>
+      </div>
+    </div>
+    <div class="hotel-body">
+      <div class="hotel-header">
+        <div>
+          <div class="hotel-name">Ibis Paris Gare du Nord</div>
+          <div class="hotel-location">📍 10th Arrondissement · 2 min walk to Gare du Nord</div>
+        </div>
+        <div class="hotel-score-box" style="background:#5578a0;">
+          <div class="hotel-score">8.4</div>
+          <div class="hotel-score-label">Very good</div>
+        </div>
+      </div>
+      <div class="hotel-review-count">5,127 guest reviews · <span style="color:var(--rust);">★ Best value</span></div>
+
+      <div style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+        "Clean rooms, basic but reliable. Indian restaurants on the same street — Krishna Bhavan and Saravana Bhavan are both walkable. Great for budget travel."
+        <span style="font-style:italic;"> — Rahul K., Delhi</span>
+      </div>
+
+      <div class="hotel-amenities">
+        <span class="amenity">✓ Free WiFi</span>
+        <span class="amenity">🥬 Indian restaurants on street</span>
+        <span class="amenity">📄 Visa-ready receipt</span>
+        <span class="amenity">✓ AC rooms</span>
+        <span class="amenity">✓ Train to Eurostar</span>
+        <span class="amenity">✓ 24h reception</span>
+      </div>
+
+      <div class="hotel-footer">
+        <div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="hotel-price">₹ 7,400</span>
+            <span class="hotel-price-label">/ night for 2 &nbsp;(~€82)</span>
+          </div>
+          <div class="hotel-total">₹ 74,000 total · 10 nights</div>
+        </div>
+        <button class="btn btn-secondary" onclick="chooseHotel(event, 'ibis')">Choose &amp; build itinerary →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hotel 4 -->
+  <div class="hotel-card card-hover" id="hotel-4" onclick="selectHotel('hotel-4')">
+    <div class="hotel-image">
+      <img src="https://picsum.photos/seed/paris-latin-quarter/560/400" alt="Hotel des Grands Boulevards">
+      <div class="hotel-image-overlay">
+        <span class="hotel-tier-badge">🎨 Designer boutique</span>
+      </div>
+    </div>
+    <div class="hotel-body">
+      <div class="hotel-header">
+        <div>
+          <div class="hotel-name">Hotel des Grands Boulevards</div>
+          <div class="hotel-location">📍 2nd Arrondissement · Steps from Bourse Metro</div>
+        </div>
+        <div class="hotel-score-box" style="background:#6a5aaa;">
+          <div class="hotel-score">9.4</div>
+          <div class="hotel-score-label">Exceptional</div>
+        </div>
+      </div>
+      <div class="hotel-review-count">1,234 guest reviews · <span style="color:#6a5aaa;">★ Designer boutique splurge</span></div>
+
+      <div style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+        "Stunning interiors — felt like staying inside a Wes Anderson film. Slightly above mid-range budget but worth every euro. Concierge speaks Hindi."
+        <span style="font-style:italic;"> — Meera J., Hyderabad</span>
+      </div>
+
+      <div class="hotel-amenities">
+        <span class="amenity">✓ Free WiFi</span>
+        <span class="amenity">🥬 Veg breakfast</span>
+        <span class="amenity">📄 Visa-ready receipt</span>
+        <span class="amenity">✓ Hindi-speaking concierge</span>
+        <span class="amenity">✓ Restaurant on-site</span>
+        <span class="amenity">✓ Boutique design</span>
+      </div>
+
+      <div class="hotel-footer">
+        <div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="hotel-price">₹ 16,800</span>
+            <span class="hotel-price-label">/ night for 2 &nbsp;(~€186)</span>
+          </div>
+          <div class="hotel-total">₹ 1,68,000 total · 10 nights</div>
+        </div>
+        <button class="btn btn-secondary" onclick="chooseHotel(event, 'boutique')">Choose &amp; build itinerary →</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; padding:16px 0 8px; font-size:13px; color:var(--muted);">
+    Prices are per person per night. Booking redirects to Booking.com — WeaveYourTrip earns an affiliate commission at no extra cost to you.
+  </div>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+
+  function setSort(el) {
+    document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectHotel(id) {
+    document.querySelectorAll('.hotel-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(id).classList.add('selected');
+  }
+
+  function chooseHotel(e, hotel) {
+    e.stopPropagation();
+    window.location.href = 'itinerary.html';
+  }
+</script>
+
+</body>
+</html>

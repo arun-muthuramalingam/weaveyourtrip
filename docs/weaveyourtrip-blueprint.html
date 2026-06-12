@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeaveYourTrip — Product Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --sand: #f5f0e8;
+    --warm: #e8dfd0;
+    --rust: #c94f2c;
+    --rust-light: #f0ece6;
+    --gold: #d4a843;
+    --sage: #4a6741;
+    --sky: #2c6b8a;
+    --sky-light: #e8f2f7;
+    --muted: #7a7060;
+    --border: #d8cfc4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--sand);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--ink);
+    color: var(--sand);
+    padding: 80px 60px 70px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,168,67,0.15) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 200px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,79,44,0.12) 0%, transparent 70%);
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 12px;
+  }
+  .hero h1 span { color: var(--rust); }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(245,240,232,0.65);
+    max-width: 560px;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+  .hero-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+  }
+  .pill-rust { border-color: var(--rust); color: var(--rust); }
+  .pill-gold { border-color: var(--gold); color: var(--gold); }
+  .pill-sand { border-color: rgba(245,240,232,0.3); color: rgba(245,240,232,0.6); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* SECTION HEADERS */
+  .section {
+    padding: 72px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 36px;
+    letter-spacing: -0.5px;
+  }
+
+  /* VISION BLOCK */
+  .vision-block {
+    background: var(--ink);
+    color: var(--sand);
+    border-radius: 16px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vision-block::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 200px;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    top: -40px; left: 20px;
+    line-height: 1;
+  }
+  .vision-block p {
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+  .vision-block p strong { color: var(--gold); font-weight: 600; }
+
+  /* USER CARDS */
+  .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .user-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    background: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .user-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  .user-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .icon-rust { background: rgba(201,79,44,0.1); }
+  .icon-sky { background: rgba(44,107,138,0.1); }
+  .user-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 8px; }
+  .user-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .user-card ul { margin-top: 12px; padding-left: 0; list-style: none; }
+  .user-card ul li { font-size: 13px; color: var(--muted); padding: 3px 0; display: flex; gap: 8px; }
+  .user-card ul li::before { content: '→'; color: var(--rust); flex-shrink: 0; }
+
+  /* PHASE TIMELINE */
+  .phases { position: relative; }
+  .phases::before {
+    content: '';
+    position: absolute;
+    left: 28px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--rust), var(--gold), var(--sage), var(--sky));
+  }
+  .phase-item {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .phase-dot {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+    z-index: 1;
+    border: 3px solid var(--sand);
+    color: white;
+  }
+  .phase-body {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    flex: 1;
+    transition: box-shadow 0.2s;
+  }
+  .phase-body:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.07); }
+  .phase-body h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 6px; }
+  .phase-body .phase-tag {
+    font-size: 10px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: block;
+  }
+  .feature-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--rust-light);
+    color: var(--rust);
+    border: 1px solid rgba(201,79,44,0.2);
+  }
+  .chip-sky { background: var(--sky-light); color: var(--sky); border-color: rgba(44,107,138,0.2); }
+  .chip-sage { background: rgba(74,103,65,0.08); color: var(--sage); border-color: rgba(74,103,65,0.2); }
+  .chip-gold { background: rgba(212,168,67,0.1); color: #8a6a10; border-color: rgba(212,168,67,0.3); }
+
+  /* COMPETITOR TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .comp-table th {
+    background: var(--ink);
+    color: var(--sand);
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .comp-table th:first-child { border-radius: 10px 0 0 0; }
+  .comp-table th:last-child { border-radius: 0 10px 0 0; }
+  .comp-table td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:nth-child(even) td { background: rgba(245,240,232,0.5); }
+  .comp-table tr:hover td { background: rgba(201,79,44,0.04); }
+  .comp-table td:first-child { font-weight: 600; font-size: 13px; }
+  .comp-table td.strong { color: var(--muted); font-size: 12.5px; }
+  .comp-table td.gap { color: var(--rust); font-size: 12.5px; }
+  .check { color: var(--sage); font-size: 16px; }
+  .cross { color: #ccc; font-size: 16px; }
+  .partial { color: var(--gold); font-size: 16px; }
+
+  /* MOAT SECTION */
+  .moat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .moat-card {
+    background: var(--ink);
+    color: var(--sand);
+    border-radius: 14px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .moat-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: 0.07;
+    background: var(--gold);
+  }
+  .moat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: rgba(245,240,232,0.08);
+    line-height: 1;
+    margin-bottom: -10px;
+  }
+  .moat-card h3 { font-size: 16px; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+  .moat-card p { font-size: 13px; color: rgba(245,240,232,0.65); line-height: 1.6; }
+
+  /* HIDDEN OPPORTUNITIES */
+  .opp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .opp-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    background: white;
+    transition: all 0.2s;
+  }
+  .opp-card:hover { border-color: var(--rust); transform: translateY(-2px); }
+  .opp-card .opp-icon { font-size: 28px; margin-bottom: 12px; }
+  .opp-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .opp-card p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .opp-card .revenue-tag {
+    margin-top: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--sage);
+    text-transform: uppercase;
+  }
+
+  /* MONETISATION */
+  .mono-layers { display: flex; flex-direction: column; gap: 16px; }
+  .mono-layer {
+    display: flex;
+    align-items: stretch;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .mono-layer-num {
+    width: 60px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .mono-layer-body { padding: 22px 28px; background: white; flex: 1; }
+  .mono-layer-body h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .mono-layer-body p { font-size: 13px; color: var(--muted); }
+  .mono-layer-body .rate {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sage);
+    background: rgba(74,103,65,0.08);
+    border-radius: 100px;
+    padding: 3px 12px;
+  }
+  .l1 { background: var(--rust); }
+  .l2 { background: var(--sky); }
+  .l3 { background: var(--gold); }
+  .l4 { background: var(--sage); }
+  .l5 { background: #555; }
+
+  /* UX FLOW */
+  .ux-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .ux-step {
+    flex: 1;
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+  .ux-step:last-child { border-right: none; }
+  .ux-step::after {
+    content: '→';
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--rust);
+    z-index: 2;
+    background: white;
+    padding: 0 2px;
+  }
+  .ux-step:last-child::after { display: none; }
+  .ux-step .step-icon { font-size: 28px; margin-bottom: 10px; }
+  .ux-step h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .ux-step p { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+  /* PLATFORM ROADMAP */
+  .roadmap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .roadmap-block {
+    border-radius: 12px;
+    padding: 28px 32px;
+    border: 1px solid var(--border);
+  }
+  .roadmap-block.primary { background: var(--ink); color: var(--sand); border-color: var(--ink); }
+  .roadmap-block.secondary { background: white; }
+  .roadmap-block h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 6px; }
+  .roadmap-block .rb-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+  .roadmap-block.primary .rb-sub { color: rgba(245,240,232,0.5); }
+  .phase-list { list-style: none; }
+  .phase-list li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 13px;
+  }
+  .roadmap-block.secondary .phase-list li { border-bottom-color: var(--border); }
+  .phase-list li:last-child { border-bottom: none; }
+  .phase-list .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0; margin-top: 6px;
+  }
+  .roadmap-block.secondary .phase-list .dot { background: var(--rust); }
+
+  /* FOOTER */
+  .footer {
+    background: var(--ink);
+    color: rgba(245,240,232,0.4);
+    text-align: center;
+    padding: 36px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .footer strong { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * { animation: fadeUp 0.6s ease both; }
+  .hero-tag { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .hero-pills { animation-delay: 0.4s; }
+
+  @media (max-width: 768px) {
+    .hero { padding: 50px 24px; }
+    .container { padding: 0 20px; }
+    .user-grid, .moat-grid, .opp-grid, .roadmap { grid-template-columns: 1fr; }
+    .ux-flow { flex-direction: column; }
+    .ux-step { border-right: none; border-bottom: 1px solid var(--border); }
+    .ux-step::after { content: '↓'; right: auto; top: auto; bottom: -14px; left: 50%; transform: translateX(-50%); }
+    .ux-step:last-child::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Product Blueprint · 2026</div>
+    <h1>Weave<span>YourTrip</span></h1>
+    <p class="hero-sub">An AI-powered end-to-end travel architect that learns your taste, optimises every trip for cost, handles visa paperwork, and delivers a day-by-day personalised itinerary.</p>
+    <div class="hero-pills">
+      <span class="pill pill-rust">Web First</span>
+      <span class="pill pill-gold">Wizard + Chat Hybrid</span>
+      <span class="pill pill-sand">Redirect → Booking</span>
+      <span class="pill pill-sand">Freemium + Affiliate</span>
+      <span class="pill pill-sand">Budget Backpackers · Family Planners</span>
+    </div>
+  </div>
+</div>
+
+<!-- VISION -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Core Vision</div>
+    <div class="vision-block">
+      <p>Not just a travel planner — a <strong>personalised trip architect</strong> that handles everything from visa paperwork to daily itineraries, while <strong>actively saving money</strong> through smart scheduling. It learns your travel taste over time, getting smarter with every trip — and it updates the plan live even after you've departed.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TARGET USERS -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Target Users</div>
+    <div class="section-title">Who We're Building For</div>
+    <div class="user-grid">
+      <div class="user-card">
+        <div class="user-icon icon-rust">🎒</div>
+        <h3>Budget Backpackers</h3>
+        <p>Solo and group travellers optimising for maximum experience per euro spent.</p>
+        <ul>
+          <li>Date flexibility to find cheaper windows</li>
+          <li>Hostel & budget stay filters</li>
+          <li>Tight per-category budget tracking</li>
+          <li>Group expense splitting</li>
+        </ul>
+      </div>
+      <div class="user-card">
+        <div class="user-icon icon-sky">👨‍👩‍👧‍👦</div>
+        <h3>Family Vacation Planners</h3>
+        <p>Parents managing logistics-heavy trips with kids — where checklists and safety matter most.</p>
+        <ul>
+          <li>Age-appropriate activity filters</li>
+          <li>Stroller access & nap buffers in itinerary</li>
+          <li>Family restaurant & medical facility proximity</li>
+          <li>Visa processing for all ages</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UX FLOW -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Interaction Model</div>
+    <div class="section-title">Wizard → AI → Chat</div>
+    <div class="ux-flow">
+      <div class="ux-step">
+        <div class="step-icon">📋</div>
+        <h4>Wizard</h4>
+        <p>Collect structured inputs — destination, dates, budget, group, passport</p>
+      </div>
+      <div class="ux-step">
+        <div class="step-icon">🧠</div>
+        <h4>AI Engine</h4>
+        <p>Generate full itinerary, visa check, date optimisation, stay suggestions</p>
+      </div>
+      <div class="ux-step">
+        <div class="step-icon">💬</div>
+        <h4>Chat Refinement</h4>
+        <p>"Move Day 3 indoors — it'll rain" or "find something cheaper nearby"</p>
+      </div>
+      <div class="ux-step">
+        <div class="step-icon">🔄</div>
+        <h4>Live Updates</h4>
+        <p>Weather alerts, visa changes, local events push-updated post-departure</p>
+      </div>
+      <div class="ux-step">
+        <div class="step-icon">📤</div>
+        <h4>Share & Export</h4>
+        <p>PDF, calendar sync, WhatsApp share, collaborative group access</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASES -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Build Roadmap</div>
+    <div class="section-title">7 Phases to Launch</div>
+    <div class="phases">
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:var(--rust)">1</div>
+        <div class="phase-body">
+          <span class="phase-tag">Foundation · Phase 1</span>
+          <h3>Trip Setup Wizard</h3>
+          <p>The structured input layer — everything the AI needs to build a personalised plan from scratch.</p>
+          <div class="feature-chips">
+            <span class="chip">Origin & Destination</span>
+            <span class="chip">Travel Dates + ±N Flexibility</span>
+            <span class="chip">Group Type & Size</span>
+            <span class="chip">Passport Nationality</span>
+            <span class="chip">Budget per Category</span>
+            <span class="chip">Travel Mode Preference</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:#b8432a">2</div>
+        <div class="phase-body">
+          <span class="phase-tag">Differentiator · Phase 2</span>
+          <h3>Visa & Documentation Engine</h3>
+          <p>Auto-detect visa requirements by passport + destination pair. Calculate cost, processing time, and "apply by" deadline.</p>
+          <div class="feature-chips">
+            <span class="chip">Visa Requirement Detection</span>
+            <span class="chip">Cost + Duration Calc</span>
+            <span class="chip">Document Checklist</span>
+            <span class="chip">Deadline Alert</span>
+            <span class="chip chip-sky">Links to VFS / Official Portals</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:var(--gold)">3</div>
+        <div class="phase-body">
+          <span class="phase-tag">Core Moat · Phase 3</span>
+          <h3>Smart Date Optimisation + Trip Score</h3>
+          <p>Scan ±N days for cheaper flights/trains. Show a savings heatmap. Compute a Trip Score vs. a typical last-minute booking.</p>
+          <div class="feature-chips">
+            <span class="chip chip-gold">Date Savings Heatmap</span>
+            <span class="chip chip-gold">Trip Score™</span>
+            <span class="chip">Peak Season Warnings</span>
+            <span class="chip">Local Holiday Alerts</span>
+            <span class="chip">Shift-to-Save Suggestions</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:var(--sage)">4</div>
+        <div class="phase-body">
+          <span class="phase-tag">Planning Layer · Phase 4</span>
+          <h3>Accommodation & Local Transport</h3>
+          <p>Stays filtered by budget tier, group type, and proximity. Local transport breakdown with cost estimates.</p>
+          <div class="feature-chips">
+            <span class="chip chip-sage">Budget Tier Filters</span>
+            <span class="chip chip-sage">Family-Friendly Flags</span>
+            <span class="chip">Metro / Rental / Taxi Estimates</span>
+            <span class="chip">Affiliate Redirect (Booking.com, Airbnb)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:var(--sky)">5</div>
+        <div class="phase-body">
+          <span class="phase-tag">Core Product · Phase 5</span>
+          <h3>Full Itinerary Generation</h3>
+          <p>Day-by-day, time-blocked plan with travel time baked in. Dynamically updated post-generation via live alerts.</p>
+          <div class="feature-chips">
+            <span class="chip chip-sky">Day-by-Day Plan</span>
+            <span class="chip chip-sky">Travel Time Between Spots</span>
+            <span class="chip chip-sky">Weather Alert Updates</span>
+            <span class="chip chip-sky">Visa Rule Change Alerts</span>
+            <span class="chip chip-sky">Local Event Suggestions</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:#4a5568">6</div>
+        <div class="phase-body">
+          <span class="phase-tag">Social Layer · Phase 6</span>
+          <h3>Collaborative Group Planning</h3>
+          <p>Solo planner or invite the whole group. Everyone can suggest, vote, and see live updates.</p>
+          <div class="feature-chips">
+            <span class="chip">Solo Planner Mode</span>
+            <span class="chip">Collaborative Invite Mode</span>
+            <span class="chip">PDF Export</span>
+            <span class="chip">Calendar Sync</span>
+            <span class="chip">WhatsApp / Email Share</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <div class="phase-dot" style="background:#333">7</div>
+        <div class="phase-body">
+          <span class="phase-tag">On-Trip Layer · Phase 7</span>
+          <h3>Checklists, Budget Tracker & Trip Journal</h3>
+          <p>Pre-trip checklists, live spend tracking vs. plan, expense splitting, and post-trip journaling for retention.</p>
+          <div class="feature-chips">
+            <span class="chip">Pre-Trip Checklist</span>
+            <span class="chip">Destination-Specific Items</span>
+            <span class="chip">Live Budget Tracker</span>
+            <span class="chip chip-gold">Group Expense Splitter</span>
+            <span class="chip">Photo Journal & Scratch Map</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITIVE LANDSCAPE -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Market Analysis</div>
+    <div class="section-title">What Competitors Do — and Don't</div>
+    <div style="overflow-x:auto; border-radius:12px; border:1px solid var(--border);">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>App</th>
+            <th>Strong At</th>
+            <th>Critical Gaps</th>
+            <th>Date Savings</th>
+            <th>Visa Intel</th>
+            <th>Trip Score</th>
+            <th>Taste Profile</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Stippl</td>
+            <td class="strong">Full trip lifecycle, budget, group expense split, packing, journals — all free</td>
+            <td class="gap">No date flexibility engine, no visa intelligence, no taste learning</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Wanderlog</td>
+            <td class="strong">Best-in-class map UI, neighbourhood clustering, unlimited free collaborators</td>
+            <td class="gap">No budget tracker, no packing list, no expense split, no visa</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Layla</td>
+            <td class="strong">Visual discovery via travel creator videos, day-by-day structure</td>
+            <td class="gap">No collaborative editing, no budget layer, no group tools</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Google Gemini</td>
+            <td class="strong">Most accurate for live visa info, local transport, seasonal weather</td>
+            <td class="gap">No trip organiser, no budget, stops at text suggestions</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>MindTrip</td>
+            <td class="strong">Shared itineraries, group chat, photo import, receipt organisation</td>
+            <td class="gap">Cluttered UX, weak AI on constraints, stability issues</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>TripIt</td>
+            <td class="strong">Auto-builds itinerary from forwarded confirmation emails</td>
+            <td class="gap">Doesn't help plan from scratch at all — only organises existing bookings</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr style="background:rgba(201,79,44,0.05);">
+            <td style="color:var(--rust); font-weight:700;">WeaveYourTrip</td>
+            <td class="strong" style="color:var(--sage); font-weight:500;">All of the above — unified in one wizard+chat flow</td>
+            <td class="strong" style="color:var(--muted);">Being built — opportunity is real</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITIVE MOAT -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Competitive Advantage</div>
+    <div class="section-title">The 4 Features Nobody Has Built Together</div>
+    <div class="moat-grid">
+      <div class="moat-card">
+        <div class="moat-number">01</div>
+        <h3>Date Flexibility Savings Engine</h3>
+        <p>Scans ±N days showing a price heatmap. "Shift by 2 days → save €180." No other planner surfaces this at the planning stage.</p>
+      </div>
+      <div class="moat-card">
+        <div class="moat-number">02</div>
+        <h3>Visa Intelligence Layer</h3>
+        <p>Auto-detect requirement by passport + destination. Compute cost, processing time, document checklist, and "apply by" deadline — with conflict alerts.</p>
+      </div>
+      <div class="moat-card">
+        <div class="moat-number">03</div>
+        <h3>Trip Score™</h3>
+        <p>A visible optimisation indicator showing exactly how much was saved vs. a typical last-minute booking. Makes value tangible and shareable.</p>
+      </div>
+      <div class="moat-card">
+        <div class="moat-number">04</div>
+        <h3>Travel Taste Profile</h3>
+        <p>App learns pace, cuisine style, accommodation tier, budget range across trips. Each new plan starts smarter — fewer questions, better suggestions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HIDDEN OPPORTUNITIES -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Untouched Opportunities</div>
+    <div class="section-title">9 Hidden Features Worth Building</div>
+    <div class="opp-grid">
+      <div class="opp-card">
+        <div class="opp-icon">🛡️</div>
+        <h3>Travel Insurance</h3>
+        <p>Auto-suggest the right policy based on destination, trip cost, group type, and duration. High-commission affiliate category nobody handles well.</p>
+        <div class="revenue-tag">💰 8–10% affiliate commission</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📱</div>
+        <h3>eSIM / Connectivity</h3>
+        <p>Built-in eSIM purchasing at the itinerary confirmation step. Instant mobile data on arrival without a physical SIM — a real family travel pain point.</p>
+        <div class="revenue-tag">💰 High margin product sale</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">💱</div>
+        <h3>Currency & FX</h3>
+        <p>Live exchange rates, best card recommendations, warnings about cash-heavy destinations. Families regularly get burned by FX fees.</p>
+        <div class="revenue-tag">💰 Fintech affiliate</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📴</div>
+        <h3>Offline Mode</h3>
+        <p>Itinerary must work without internet — critical once at destination, especially for families avoiding data roaming charges abroad.</p>
+        <div class="revenue-tag">🔒 Premium feature gate</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">👶</div>
+        <h3>Kids-Specific Planning</h3>
+        <p>Age-appropriate filters, stroller accessibility, nap buffers, family restaurant flags, proximity to medical facilities. Nobody goes this deep.</p>
+        <div class="revenue-tag">🎯 Family segment differentiator</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📸</div>
+        <h3>Trip Memory & Journal</h3>
+        <p>Post-trip photo journal, scratch map of visited countries, shareable travel reels. Drives retention — users return after the trip ends.</p>
+        <div class="revenue-tag">📈 Retention & viral loop</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">⭐</div>
+        <h3>Real Traveller Reviews</h3>
+        <p>Community layer where users share real itineraries and ratings. Adds trust the AI alone can't provide and creates a content flywheel.</p>
+        <div class="revenue-tag">📈 Network effect moat</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">🆘</div>
+        <h3>Emergency & Safety Layer</h3>
+        <p>Local emergency numbers, nearest hospital, embassy contacts, live travel advisories — surfaced in-context. Especially valuable for families.</p>
+        <div class="revenue-tag">🎯 Trust & retention driver</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">🌱</div>
+        <h3>Carbon Footprint Tracker</h3>
+        <p>Show CO₂ cost per trip and suggest greener alternatives. Growing demand especially in Europe — a differentiator for the eco-conscious segment.</p>
+        <div class="revenue-tag">🌍 ESG market positioning</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MONETISATION -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Revenue Model</div>
+    <div class="section-title">5 Monetisation Layers</div>
+    <div class="mono-layers">
+      <div class="mono-layer">
+        <div class="mono-layer-num l1">1</div>
+        <div class="mono-layer-body">
+          <h3>Affiliate Commissions — Day 1 Revenue</h3>
+          <p>Every redirect earns. Booking.com (4–15%), Airbnb (5–15%), Expedia (3–12%), Viator/activities (8–15%), Skyscanner (0.5–20%). Travel insurance affiliates add another 8–10%. Zero friction — starts earning before you have paid users.</p>
+          <span class="rate">Starts at launch · No minimum user base needed</span>
+        </div>
+      </div>
+      <div class="mono-layer">
+        <div class="mono-layer-num l2">2</div>
+        <div class="mono-layer-body">
+          <h3>Freemium Subscription — Core SaaS Revenue</h3>
+          <p><strong>Free:</strong> 1 active trip, basic itinerary, standard recommendations.<br><strong>Premium (€7–12/month):</strong> Taste profile learning, unlimited trips, collaborative mode, live updates, offline access, Trip Score™, visa intelligence. Freemium builds trust first — users upgrade once they see value.</p>
+          <span class="rate">Target: ~5–8% freemium conversion</span>
+        </div>
+      </div>
+      <div class="mono-layer">
+        <div class="mono-layer-num l3">3</div>
+        <div class="mono-layer-body">
+          <h3>eSIM Sales — High-Margin Product</h3>
+          <p>Built-in eSIM purchasing at itinerary confirmation. Surfaced at exactly the right moment — "You're going to Japan, get connected instantly on arrival." High margin, solves a real pain, zero extra effort from the user.</p>
+          <span class="rate">Typically €8–25 per eSIM sale</span>
+        </div>
+      </div>
+      <div class="mono-layer">
+        <div class="mono-layer-num l4">4</div>
+        <div class="mono-layer-body">
+          <h3>B2B White Label — Phase 3+ Revenue</h3>
+          <p>Once the planning engine is proven, license it to travel agencies and tourism boards under their own branding. Recurring SaaS fee. Small agencies would pay well for a branded version of WeaveYourTrip's AI engine with their logo.</p>
+          <span class="rate">€500–5,000/month per agency client</span>
+        </div>
+      </div>
+      <div class="mono-layer">
+        <div class="mono-layer-num l5">5</div>
+        <div class="mono-layer-body">
+          <h3>In-App Booking — Phase 4+ Revenue</h3>
+          <p>Once volume is proven, negotiate direct contracts with hotels and airlines for higher margins than affiliate rates. In-app checkout removes friction and captures more of the transaction value. Requires significant trust and volume first.</p>
+          <span class="rate">Higher margin than affiliate · Requires scale</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px; background:rgba(201,79,44,0.06); border:1px solid rgba(201,79,44,0.2); border-radius:12px; padding:24px 28px;">
+      <strong style="color:var(--rust); font-size:13px; letter-spacing:0.5px;">⚠️ What to Avoid Early</strong>
+      <p style="font-size:13px; color:var(--muted); margin-top:6px;">Data selling and in-app ads both kill user trust — especially in a planning app where users share passport details, travel dates, and family information. Build trust first, monetise deeper later.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PLATFORM ROADMAP -->
+<div class="section">
+  <div class="container">
+    <div class="section-label">Platform Strategy</div>
+    <div class="section-title">Rollout Plan</div>
+    <div class="roadmap">
+      <div class="roadmap-block primary">
+        <h3>Phase 1–4</h3>
+        <div class="rb-sub">Web App · Months 1–12</div>
+        <ul class="phase-list">
+          <li><span class="dot"></span>Wizard + AI planner on web</li>
+          <li><span class="dot"></span>Visa engine + date optimisation</li>
+          <li><span class="dot"></span>Trip Score™ launch</li>
+          <li><span class="dot"></span>Affiliate redirect to Booking/Skyscanner</li>
+          <li><span class="dot"></span>Collaborative group mode</li>
+          <li><span class="dot"></span>PDF + calendar export</li>
+        </ul>
+      </div>
+      <div class="roadmap-block secondary">
+        <h3>Phase 5+</h3>
+        <div class="rb-sub">Mobile (iOS + Android) · Year 2</div>
+        <ul class="phase-list">
+          <li><span class="dot"></span>Live itinerary updates on-trip</li>
+          <li><span class="dot"></span>Push notifications (weather, delays)</li>
+          <li><span class="dot"></span>Offline itinerary access</li>
+          <li><span class="dot"></span>eSIM purchasing flow</li>
+          <li><span class="dot"></span>Trip journal & scratch map</li>
+          <li><span class="dot"></span>In-app booking (Phase 4+)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>WeaveYourTrip</strong> · Product Blueprint · Built with intention · 2026
+</div>
+
+</body>
+</html>
