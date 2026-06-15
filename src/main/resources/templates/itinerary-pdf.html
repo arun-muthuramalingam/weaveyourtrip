@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title th:text="'Your ' + ${itinerary.destination} + ' itinerary'">Itinerary</title>
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  body { font-family: 'Helvetica', sans-serif; font-size: 11pt; color: #2b241c; line-height: 1.5; }
+  h1 { font-size: 24pt; color: #c94f2c; margin: 0 0 4pt 0; font-weight: bold; }
+  h2 { font-size: 14pt; color: #2b241c; margin: 18pt 0 6pt 0; border-bottom: 1pt solid #d8cfc4; padding-bottom: 4pt; }
+  h3 { font-size: 12pt; color: #c94f2c; margin: 10pt 0 4pt 0; }
+  .meta { color: #7a7060; font-size: 10pt; margin-bottom: 18pt; }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10pt 0; }
+  table.activities td { padding: 6pt 8pt; vertical-align: top; border-bottom: 0.5pt solid #ece6dc; }
+  table.activities td.time { width: 60pt; font-weight: bold; color: #c94f2c; }
+  table.activities td.icon { width: 24pt; }
+  table.activities td.cost { width: 90pt; text-align: right; color: #7a7060; font-size: 9pt; }
+  .booking { background: #f5f0e8; border: 0.5pt solid #d8cfc4; padding: 10pt; margin: 12pt 0; }
+  .booking td { padding: 4pt 6pt; font-size: 10pt; }
+  .booking td.label { color: #7a7060; width: 90pt; }
+  .visa-block { background: #fbf5ec; border: 0.5pt solid #d4a843; padding: 12pt; margin: 12pt 0; }
+  .visa-block strong { color: #c94f2c; }
+  .totals { margin-top: 16pt; padding: 10pt; background: #2b241c; color: #f5f0e8; }
+  .totals td.amount { text-align: right; font-size: 14pt; font-weight: bold; color: #d4a843; }
+  .footer { margin-top: 20pt; font-size: 8pt; color: #7a7060; text-align: center; }
+  .day-divider { page-break-inside: avoid; margin-bottom: 16pt; }
+  .desc { font-size: 9.5pt; color: #5a4f40; margin-top: 2pt; }
+</style>
+</head>
+<body>
+
+<!-- ── Cover ─────────────────────────────────────────────── -->
+<h1 th:text="'Your ' + ${itinerary.destination} + ' trip'">Your trip</h1>
+<p class="meta">
+  <strong th:text="${itinerary.input.totalDays() + ' days'}">10 days</strong> ·
+  <strong th:text="${itinerary.input.adults + ' adults' + (itinerary.input.children > 0 ? ', ' + itinerary.input.children + ' children' : '')}">2 travellers</strong> ·
+  <span th:text="${#temporals.format(itinerary.startDate, 'd MMM yyyy')} + ' – ' + ${#temporals.format(itinerary.endDate, 'd MMM yyyy')}">15 Jul – 25 Jul 2026</span> ·
+  Passport <span th:text="${itinerary.passport}">IN</span> ·
+  Mode <span th:text="${itinerary.tripMode}">BACKPACKER</span>
+</p>
+
+<!-- ── Visa summary ──────────────────────────────────────── -->
+<div th:if="${itinerary.visa != null and itinerary.visa.required}" class="visa-block">
+  <strong>Visa required:</strong>
+  <span th:text="${itinerary.visa.type}">Short-stay Schengen</span>
+  · <span th:text="'€' + (${itinerary.visa.feeEur} + ${itinerary.visa.serviceFeeEur}) + ' fee'">€111 fee</span>
+  · <span th:text="${itinerary.visa.processingDays.typical + ' day processing'}">15 day processing</span>
+  <br><span style="font-size:9pt; color:#7a7060;">Verified
+    <span th:text="${#temporals.format(itinerary.visa.lastVerified, 'd MMM yyyy')}">6 Jun 2026</span> ·
+    Always confirm with official embassy before applying.</span>
+</div>
+
+<!-- ── Booking strip ─────────────────────────────────────── -->
+<table class="booking" th:if="${itinerary.flights != null and !itinerary.flights.isEmpty()}">
+  <tr th:each="f : ${itinerary.flights}" th:if="${itinerary.selectedFlightId == f.id}">
+    <td class="label">✈ Flight</td>
+    <td>
+      <span th:text="${f.airline + ' · ' + f.departureAirport + '→' + f.arrivalAirport + (f.stops == 0 ? ' · Direct' : ' · ' + f.stops + ' stop')}">
+        Air France · BOM→CDG · Direct
+      </span>
+    </td>
+    <td style="text-align:right;" th:text="${currencySymbol + f.priceLocal}">₹58,400</td>
+  </tr>
+</table>
+<table class="booking" th:if="${itinerary.hotels != null and !itinerary.hotels.isEmpty()}">
+  <tr th:each="h : ${itinerary.hotels}" th:if="${itinerary.selectedHotelId == h.id}">
+    <td class="label">🏨 Hotel</td>
+    <td><span th:text="${h.name + ' · ' + h.neighborhood + ' · ' + itinerary.input.totalDays() + ' nights'}">
+        Hotel · Paris · 10 nights</span></td>
+    <td style="text-align:right;" th:text="${currencySymbol + h.totalPriceLocal}">₹98,000</td>
+  </tr>
+</table>
+
+<!-- ── Day-by-day ────────────────────────────────────────── -->
+<h2>Day-by-day plan</h2>
+
+<div th:each="day, stat : ${itinerary.days}" class="day-divider">
+  <h3 th:text="'Day ' + ${day.dayNumber} + ' · ' + ${#temporals.format(day.date, 'EEE d MMM')} + ' — ' + ${day.theme}">
+    Day 1 · Wed 15 Jul — Arrival
+  </h3>
+  <table class="activities">
+    <tr th:each="a : ${day.activities}">
+      <td class="time" th:text="${a.time}">09:00</td>
+      <td>
+        <strong th:text="${a.name}">Activity name</strong>
+        <div class="desc" th:text="${a.description}">Description</div>
+      </td>
+      <td class="cost">
+        <span th:if="${a.durationMinutes > 0}" th:text="${a.durationMinutes + ' min'}">60 min</span>
+        <br>
+        <span th:if="${a.estimatedCostLocal > 0}"
+              th:text="'~' + ${currencySymbol} + ${a.estimatedCostLocal}">~₹500</span>
+        <span th:if="${a.estimatedCostLocal == 0}">Free</span>
+      </td>
+    </tr>
+  </table>
+  <div style="font-size:9pt; color:#7a7060; margin-top:4pt;">
+    Day total est.: <strong th:text="${currencySymbol + day.estimatedDailyCostLocal}">~₹6,400</strong>
+  </div>
+</div>
+
+<!-- ── Totals ────────────────────────────────────────────── -->
+<table class="totals">
+  <tr>
+    <td>Estimated trip total
+        <span style="color:rgba(245,240,232,0.5); font-weight:normal;"
+              th:text="'(' + ${itinerary.input.adults} + ' adults, ' + ${itinerary.input.totalDays()} + ' days)'">(2 adults, 10 days)</span>
+    </td>
+    <td class="amount"
+        th:text="${currencySymbol + itinerary.totalCostLocal} +
+                 (${itinerary.totalCostEur != null ? '  (~€' + itinerary.totalCostEur + ')' : ''})">
+      ₹298,800
+    </td>
+  </tr>
+</table>
+
+<div class="footer">
+  WeaveYourTrip · Generated <span th:text="${#temporals.format(itinerary.generatedAt, 'd MMM yyyy')}">7 Jun 2026</span> ·
+  Travel that starts where you do.
+</div>
+
+</body>
+</html>

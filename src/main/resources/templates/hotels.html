@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Choose your hotel · WeaveYourTrip')}"></head>
+
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a th:href="@{/}" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a th:href="@{|/itinerary/${itinerary.id}|}" class="btn btn-ghost btn-sm">← Back to itinerary</a>
+  </div>
+</nav>
+
+<!-- RESULTS HERO -->
+<div class="results-hero">
+  <div class="results-hero-inner container">
+    <div class="results-route">
+      Where you'll <span class="arrow">sleep</span> in
+      <span th:text="${itinerary.destination}">Paris</span>
+    </div>
+    <p class="results-meta">
+      <span th:text="'🗓 ' + ${#temporals.format(itinerary.startDate, 'd MMM')} + ' — ' + ${#temporals.format(itinerary.endDate, 'd MMM yyyy')} + ' · ' + ${itinerary.input.totalDays()} + ' nights'">
+        🗓 15 Jul — 25 Jul · 10 nights
+      </span>
+      <span th:text="'👥 ' + ${itinerary.input.adults + itinerary.input.children} + ' guests'">👥 2 guests</span>
+      <span th:if="${itinerary.input.accommodationTier != null}"
+            th:text="'🏨 ' + ${itinerary.input.accommodationTier} + ' tier'">🏨 mid tier</span>
+    </p>
+  </div>
+</div>
+
+<!-- VISA-AWARE NOTICE -->
+<div th:if="${itinerary.visa != null and itinerary.visa.required}"
+     style="background:rgba(201,79,44,0.06); border-bottom:1px solid rgba(201,79,44,0.18); padding:12px 40px;">
+  <div style="max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:10px;
+              font-size:13px; color:var(--ink);">
+    <span style="font-size:16px;">📄</span>
+    <span>
+      <strong style="color:var(--rust);">Visa-ready confirmations:</strong>
+      All hotels send a confirmation email accepted by the consulate.
+      Use refundable booking for your visa application.
+    </span>
+  </div>
+</div>
+
+<!-- HOTEL LIST -->
+<div class="results-list">
+
+  <div th:if="${hotels == null or hotels.isEmpty()}"
+       style="text-align:center; padding:60px 20px; color:var(--muted);">
+    <p>No hotels generated for this trip.</p>
+    <a th:href="@{|/itinerary/${itinerary.id}|}" class="btn btn-ghost mt-12">← Back to itinerary</a>
+  </div>
+
+  <form th:each="hotel, stat : ${hotels}"
+        th:action="@{|/itinerary/${itinerary.id}/select-hotel|}"
+        method="post"
+        style="display:contents;">
+    <input type="hidden" name="hotelId" th:value="${hotel.id}">
+
+    <div class="hotel-card card-hover"
+         th:classappend="${itinerary.selectedHotelId == hotel.id ? 'selected' : ''}">
+
+      <div class="flight-badge badge-best" th:if="${stat.index == 0}"
+           style="top:0; left:0; border-radius:0 0 8px 0;">Top pick</div>
+
+      <div class="hotel-image">
+        <img th:src="@{|https://picsum.photos/seed/${hotel.id}/${itinerary.destination}/560/400|}"
+             th:alt="${hotel.name}">
+        <div class="hotel-image-overlay">
+          <span class="hotel-tier-badge" th:text="${'📄 ' + hotel.tier + ' · Visa-ready receipt'}">
+            mid · Visa-ready
+          </span>
+        </div>
+      </div>
+
+      <div class="hotel-body">
+
+        <div class="hotel-header">
+          <div>
+            <div class="hotel-name" th:text="${hotel.name}">Hotel name</div>
+            <div class="hotel-location" th:text="${'📍 ' + hotel.neighborhood}">📍 Neighborhood</div>
+          </div>
+          <div class="hotel-score-box">
+            <div class="hotel-score" th:text="${hotel.rating}">8.9</div>
+            <div class="hotel-score-label"
+                 th:text="${hotel.rating >= 9.0 ? 'Exceptional' : (hotel.rating >= 8.5 ? 'Excellent' : 'Very good')}">Excellent</div>
+          </div>
+        </div>
+
+        <div class="hotel-review-count" th:text="${hotel.tier + ' tier · suggested by AI'}">
+          mid tier · suggested by AI
+        </div>
+
+        <div class="hotel-amenities" th:if="${hotel.amenities != null}">
+          <span th:each="amenity : ${hotel.amenities}"
+                th:text="'✓ ' + ${amenity}"
+                class="amenity">✓ Free WiFi</span>
+        </div>
+
+        <div class="hotel-footer">
+          <div>
+            <div style="display:flex; align-items:baseline; gap:6px;">
+              <span class="hotel-price" th:text="'₹ ' + ${hotel.pricePerNightLocal}">₹ 9,800</span>
+              <span class="hotel-price-label">/ night</span>
+            </div>
+            <div class="hotel-total"
+                 th:text="'₹ ' + ${hotel.totalPriceLocal} + ' total · ' + ${itinerary.input.totalDays()} + ' nights'">
+              ₹ 98,000 total · 10 nights
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+            <button type="submit"
+                    th:classappend="${itinerary.selectedHotelId == hotel.id ? 'btn btn-secondary' : 'btn btn-primary'}"
+                    th:text="${itinerary.selectedHotelId == hotel.id ? '✓ Selected' : 'Choose this hotel →'}">
+              Choose →
+            </button>
+            <a th:href="${hotel.bookingSearchUrl}" target="_blank" rel="noopener"
+               style="font-size:12px; color:var(--muted);">
+              Book on Booking.com ↗
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+  <div th:if="${hotels != null and !hotels.isEmpty()}"
+       style="text-align:center; padding:16px 0 8px; font-size:13px; color:var(--muted);">
+    Prices are AI estimates. Final price confirmed on Booking.com.
+    Affiliate redirect will activate in v1.1 once partner approval lands.
+  </div>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

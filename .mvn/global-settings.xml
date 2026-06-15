@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Empty *global* Maven settings used by this project only.
+
+  Why this file exists:
+    Maven loads both the user settings (~/.m2/settings.xml or -s) AND the
+    global settings ($M2_HOME/conf/settings.xml) and MERGES their mirrors,
+    servers, and profiles. Our project-local .mvn/settings.xml is the *user*
+    file — it cannot remove the work mirrors defined at the global level.
+
+    The Homebrew install holds the work settings at
+    /opt/homebrew/Cellar/maven/.../conf/settings.xml. We can't edit that
+    (work needs it) but we CAN tell Maven to read this empty file *as* the
+    global settings via -gs, which bypasses the work file entirely for
+    this project.
+
+  How it's wired:
+    .mvn/maven.config passes -gs .mvn/global-settings.xml to every mvnw call.
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd"/>

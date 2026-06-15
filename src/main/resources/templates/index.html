@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('WeaveYourTrip — Plan around your passport, not against it')}"></head>
+
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Weave<span>YourTrip</span></div>
+  <div class="nav-actions">
+    <span style="font-size:12px; color:var(--muted); margin-right:8px;">Built for hard-passport travelers</span>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a href="#" class="btn btn-ghost btn-sm">Sign in</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner container">
+    <div class="hero-eyebrow">✦ The AI planner that knows your passport matters · 2026</div>
+    <h1>Plan around your<br><span>passport</span>,<br>not against it.</h1>
+    <p class="hero-sub">
+      We ask for your passport <em>before</em> your destination — because what
+      comes next depends on it. For hard-passport travelers: visa intel, document
+      checklist, earliest viable departure. For everyone: passport-aware
+      currency, dietary defaults, cultural notes baked into the plan.
+    </p>
+    <div class="hero-btns">
+      <a th:href="@{/plan}" class="btn btn-primary btn-lg">Start with your passport →</a>
+      <a href="#why" class="btn btn-ghost btn-lg"
+         style="color:rgba(245,240,232,0.7); border-color:rgba(245,240,232,0.2);">
+        Why visa-first matters
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PASSPORT QUICK PICKER -->
+<section style="padding:60px 0; background:var(--ink); color:var(--sand);
+                border-top:1px solid rgba(245,240,232,0.08);
+                border-bottom:1px solid rgba(245,240,232,0.08);">
+  <div class="container">
+    <div class="label" style="color:var(--gold);">Quick start</div>
+    <h2 class="serif" style="font-size:clamp(28px,4vw,42px); letter-spacing:-0.5px;
+                              margin-top:8px; margin-bottom:12px;">
+      What's your passport?
+    </h2>
+    <p style="font-size:15px; color:rgba(245,240,232,0.6); margin-bottom:32px; max-width:580px;">
+      Skip the wizard. Click your passport and we'll take you straight to the
+      destination picker with visa intel pre-loaded.
+    </p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:14px;">
+      <a th:each="p : ${passports}"
+         th:href="@{/plan(passport=${p.name()})}"
+         th:classappend="${p.name() == 'IN' ? '' : 'disabled'}"
+         style="background:rgba(245,240,232,0.04); border:1px solid rgba(245,240,232,0.1);
+                border-radius:12px; padding:22px 18px; cursor:pointer;
+                transition:all 0.18s; text-decoration:none; color:inherit;
+                display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
+        <span style="font-size:32px; line-height:1;" th:text="${p.flag}">🇮🇳</span>
+        <span style="font-size:15px; font-weight:600; color:var(--sand);" th:text="${p.displayName}">India</span>
+        <span th:if="${p.name() == 'IN'}"
+              style="font-size:11px; color:var(--gold); letter-spacing:1px;
+                     text-transform:uppercase; font-weight:600;">✓ Visa-aware</span>
+        <span th:if="${p.name() != 'IN'}"
+              style="font-size:11px; color:rgba(245,240,232,0.35); letter-spacing:1px;
+                     text-transform:uppercase;">Coming soon</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY VISA-FIRST -->
+<section style="padding:80px 0; background:var(--sand);" id="why">
+  <div class="container">
+    <div class="label">Three things no other planner does</div>
+    <h2 class="serif" style="font-size:clamp(28px,4vw,42px); letter-spacing:-0.5px; margin-top:8px;">
+      Visa-first changes everything
+    </h2>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:32px;">
+      <div style="background:white; border:1px solid var(--border); border-radius:14px; padding:32px;">
+        <div style="width:48px; height:48px; border-radius:12px;
+                    background:rgba(201,79,44,0.1); display:flex;
+                    align-items:center; justify-content:center;
+                    font-size:24px; margin-bottom:16px;">⏱️</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:18px; margin-bottom:8px;">
+          Earliest viable departure
+        </h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.6;">
+          Calculated from your passport's processing time + recommended buffer.
+          Stop accidentally booking flights you can't board.
+        </p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:14px; padding:32px;">
+        <div style="width:48px; height:48px; border-radius:12px;
+                    background:rgba(201,79,44,0.1); display:flex;
+                    align-items:center; justify-content:center;
+                    font-size:24px; margin-bottom:16px;">📄</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:18px; margin-bottom:8px;">
+          Tailored document checklist
+        </h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.6;">
+          Every document your consulate actually wants. Not generic visa info
+          copied from Wikipedia.
+        </p>
+      </div>
+      <div style="background:white; border:1px solid var(--border); border-radius:14px; padding:32px;">
+        <div style="width:48px; height:48px; border-radius:12px;
+                    background:rgba(201,79,44,0.1); display:flex;
+                    align-items:center; justify-content:center;
+                    font-size:24px; margin-bottom:16px;">✉️</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:18px; margin-bottom:8px;">
+          Cover letter generator
+        </h3>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.6;">
+          AI generates a consulate-ready cover letter using your actual itinerary.
+          Included free in your PDF download.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>WeaveYourTrip</strong> &nbsp;·&nbsp; Travel that starts where you do. &nbsp;·&nbsp; 2026
+  <div style="margin-top:8px; font-size:11px; color:rgba(245,240,232,0.3);">
+    Visa data verified weekly · Always confirm with official embassy before applying
+  </div>
+</footer>
+
+<script th:inline="javascript">
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

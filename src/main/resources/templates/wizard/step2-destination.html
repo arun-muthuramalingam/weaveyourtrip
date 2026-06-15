@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Step 2 — Where to? · WeaveYourTrip')}"></head>
+
+<body>
+
+<div th:replace="~{fragments/wizard-nav :: nav(2)}"></div>
+
+<main class="wizard-body">
+
+  <div class="step">
+    <div class="step-header">
+      <div class="label">Step 2 of 6</div>
+      <h2>Where do you want to go?</h2>
+      <p class="text-sm text-muted" style="margin-top:8px;">
+        Pick a destination — we'll surface visa requirements immediately,
+        before you commit to anything else.
+      </p>
+      <p style="margin-top:8px; font-size:13px; color:var(--rust);">
+        Passport: <strong th:text="${passportFlag + ' ' + passportName}">🇮🇳 India</strong>
+        &nbsp;<a th:href="@{/plan}" style="font-size:12px; color:var(--muted);">change</a>
+      </p>
+    </div>
+
+    <form th:action="@{/plan/destination}" method="post">
+      <div class="step-fields">
+        <div class="form-group">
+          <label class="form-label">Destination</label>
+          <input class="form-input"
+                 type="text"
+                 id="dest-input"
+                 name="destination"
+                 placeholder="e.g. France, Italy, Germany, UK..."
+                 hx-get="/visa/card"
+                 hx-target="#visa-card-slot"
+                 hx-trigger="keyup changed delay:400ms, change"
+                 hx-include="this"
+                 autocomplete="off">
+
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;">
+            <button th:each="qp : ${quickPicks}"
+                    type="button"
+                    th:text="${qp}"
+                    onclick="document.getElementById('dest-input').value=this.textContent.trim().split(' ').slice(1).join(' '); htmx.trigger('#dest-input', 'change');"
+                    style="padding:8px 14px; border:1px solid var(--border); border-radius:100px;
+                           background:var(--white); font-size:13.5px; cursor:pointer;
+                           transition:all 0.18s;">🇫🇷 France</button>
+          </div>
+        </div>
+
+        <!-- Visa card renders here via HTMX -->
+        <div id="visa-card-slot"></div>
+      </div>
+
+      <div class="step-footer">
+        <a th:href="@{/plan}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary"
+                id="continue-btn"
+                disabled
+                style="opacity:0.5;">
+          Continue to dates →
+        </button>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  // Enable Continue button when visa card has loaded
+  document.body.addEventListener('htmx:afterSwap', function(evt) {
+    if (evt.target.id === 'visa-card-slot') {
+      const btn = document.getElementById('continue-btn');
+      const hasCard = evt.target.querySelector('.visa-card.required, .visa-card.not-required') !== null;
+      btn.disabled = !hasCard;
+      btn.style.opacity = hasCard ? '1' : '0.5';
+    }
+  });
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

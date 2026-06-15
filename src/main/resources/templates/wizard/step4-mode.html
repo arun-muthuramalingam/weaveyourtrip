@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Step 4 — Trip style · WeaveYourTrip')}"></head>
+
+<body>
+
+<div th:replace="~{fragments/wizard-nav :: nav(4)}"></div>
+
+<main class="wizard-body">
+
+  <div class="step">
+    <div class="step-header">
+      <div class="label">Step 4 of 6</div>
+      <h2>What kind of trip is this?</h2>
+      <p class="text-sm text-muted" style="margin-top:8px;">
+        Each mode shapes the plan differently — restaurants, pace, accommodation,
+        even the visa cover letter tone. Pick the one that fits.
+      </p>
+    </div>
+
+    <form th:action="@{/plan/mode}" method="post">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+                  gap:16px; margin-top:24px;">
+
+        <button th:each="m : ${modes}"
+                type="submit"
+                name="mode"
+                th:value="${m.name()}"
+                th:disabled="${!#lists.contains(enabledModes, m.name())}"
+                th:classappend="${#lists.contains(enabledModes, m.name()) ? '' : 'disabled'}"
+                style="background:var(--white); border:2px solid var(--border);
+                       border-radius:14px; padding:24px; cursor:pointer;
+                       transition:all 0.18s; position:relative;
+                       display:flex; flex-direction:column; text-align:left;">
+          <div style="font-size:32px; line-height:1; margin-bottom:12px;"
+               th:text="${m.icon}">🎒</div>
+          <h3 style="font-family:'Playfair Display',serif; font-size:18px;
+                     font-weight:700; margin-bottom:6px;"
+              th:text="${m.displayName}">Solo Explorer</h3>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:10px; line-height:1.5;"
+             th:text="${modeDescriptions.get(m.name())}">Description here</p>
+          <span th:if="${!#lists.contains(enabledModes, m.name())}"
+                style="position:absolute; top:12px; right:12px; background:var(--muted);
+                       color:white; font-size:10px; letter-spacing:1px;
+                       text-transform:uppercase; padding:3px 10px; border-radius:100px;">
+            v1.1
+          </span>
+        </button>
+
+      </div>
+
+      <div class="step-footer">
+        <a th:href="@{/plan/dates}" class="btn btn-ghost">← Back</a>
+        <span class="text-sm text-muted">Tap a mode to continue →</span>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

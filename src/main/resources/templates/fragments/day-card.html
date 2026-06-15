@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+  Day card fragment — shared by:
+    1. full itinerary view (templates/itinerary.html) for already-generated days
+    2. SSE streaming endpoint (rendered server-side, emitted as SSE event data)
+
+  Model attributes the fragment expects:
+    day             — com.weaveyourtrip.model.ItineraryDay
+    dayIndex        — int, used for the alternating Day-number badge colour
+    currencySymbol  — String
+    iconForType     — Map<String, String> for activity icons
+    activitiesJson  — String, JSON for the day's Leaflet map data-attribute
+-->
+
+<div th:fragment="card" class="day-card">
+
+  <div class="day-header">
+    <div class="day-header-left">
+      <div class="day-number"
+           th:text="${day.dayNumber}"
+           th:style="${dayIndex % 3 == 1 ? 'background:var(--gold);' : (dayIndex % 3 == 2 ? 'background:var(--sage);' : '')}">1</div>
+      <div>
+        <div class="day-title" th:text="${day.theme}">Old Paris &amp; first taste</div>
+        <div class="day-date"
+             th:text="${#temporals.format(day.date, 'EEEE, d MMM')} + ' · Est. ' + ${currencySymbol} + ${day.estimatedDailyCostLocal} + '/person'">
+          Wed, 15 Jul · Est. ₹6,400/person
+        </div>
+      </div>
+    </div>
+    <span class="day-cost"
+          th:text="'~' + ${currencySymbol} + ${day.estimatedDailyCostLocal}">~₹6,400</span>
+  </div>
+
+  <!-- Leaflet map showing all activities for this day -->
+  <div class="day-map"
+       th:id="'day-' + ${day.dayNumber} + '-map'"
+       th:attr="data-activities=${activitiesJson}"
+       style="margin: 0 24px 16px;"></div>
+
+  <div class="day-body">
+
+    <div th:each="activity : ${day.activities}" class="activity">
+      <span class="activity-time" th:text="${activity.time}">09:00</span>
+      <span class="activity-icon"
+            th:text="${iconForType.get(activity.type) ?: '📍'}">📍</span>
+      <div class="activity-content">
+        <div class="activity-name" th:text="${activity.name}">Activity name</div>
+        <div class="activity-desc" th:text="${activity.description}">Description</div>
+        <div class="activity-meta">
+          <span class="badge badge-duration"
+                th:if="${activity.durationMinutes > 0}"
+                th:text="${activity.durationMinutes + ' min'}">60 min</span>
+          <span class="badge badge-cost"
+                th:if="${activity.estimatedCostLocal > 0}"
+                th:text="'~' + ${currencySymbol} + ${activity.estimatedCostLocal}">~₹500</span>
+          <span class="badge badge-free"
+                th:if="${activity.estimatedCostLocal == 0}">Free</span>
+          <th:block th:if="${activity.dietaryFlags != null}">
+            <span th:each="flag : ${activity.dietaryFlags}"
+                  th:text="${flag}"
+                  style="background:rgba(74,103,65,0.1); color:var(--sage); font-size:11px;
+                         padding:2px 8px; border-radius:100px;">veg</span>
+          </th:block>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

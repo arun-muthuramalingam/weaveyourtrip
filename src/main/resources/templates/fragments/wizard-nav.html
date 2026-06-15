@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  Wizard nav + progress dots.
+  Usage: <div th:replace="~{fragments/wizard-nav :: nav(${currentStep})}"></div>
+-->
+<body>
+<nav th:fragment="nav(currentStep)" class="wizard-nav">
+  <a th:href="@{/}" class="nav-logo" style="font-size:18px;">
+    Weave<span style="color:var(--rust)">YourTrip</span>
+  </a>
+
+  <div class="wizard-progress" id="progress">
+    <th:block th:each="i : ${#numbers.sequence(1, 6)}">
+      <div class="progress-step">
+        <div th:id="${'dot-' + i}"
+             class="progress-dot"
+             th:classappend="${i == currentStep ? 'active' : (i < currentStep ? 'done' : '')}"
+             th:text="${i}">1</div>
+      </div>
+      <div th:if="${i < 6}"
+           th:id="${'line-' + i}"
+           class="progress-line"
+           th:classappend="${i < currentStep ? 'done' : ''}"></div>
+    </th:block>
+  </div>
+
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()"
+          title="Toggle light / dark">🌙</button>
+  <a th:href="@{/}" class="btn btn-ghost btn-sm">✕ Cancel</a>
+</nav>
+</body>
+</html>

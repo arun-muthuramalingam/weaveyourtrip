@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Step 3 — When &amp; who · WeaveYourTrip')}"></head>
+
+<body>
+
+<div th:replace="~{fragments/wizard-nav :: nav(3)}"></div>
+
+<main class="wizard-body">
+
+  <div class="step">
+    <div class="step-header">
+      <div class="label">Step 3 of 6</div>
+      <h2>When are you travelling?</h2>
+    </div>
+
+    <!-- Visa-aware banner: only renders when a visa is required -->
+    <div th:if="${earliestDeparture != null}"
+         style="background:linear-gradient(135deg,rgba(201,79,44,0.08),rgba(212,168,67,0.08));
+                border:1px solid rgba(201,79,44,0.25); border-radius:12px;
+                padding:14px 18px; margin-bottom:20px; display:flex; gap:12px;
+                align-items:center;">
+      <span style="font-size:22px;">⚠️</span>
+      <div style="flex:1; font-size:13.5px; line-height:1.5;">
+        <strong style="color:var(--rust);">Visa required.</strong>
+        Earliest viable departure is
+        <strong th:text="${#temporals.format(earliestDeparture, 'd MMM yyyy')}">23 Jul 2026</strong>.
+        Dates pre-filled accordingly — adjust only if you have a confirmed appointment.
+      </div>
+    </div>
+
+    <form th:action="@{/plan/dates}" method="post" th:object="${wizardInput}">
+      <div class="step-fields">
+
+        <div class="form-group">
+          <label class="form-label">Travel dates</label>
+          <div class="form-row">
+            <div class="form-group" style="gap:4px;">
+              <span class="text-xs text-muted">Departure</span>
+              <input class="form-input" type="date"
+                     th:field="*{startDate}"
+                     th:min="${minStartDate}"
+                     required>
+            </div>
+            <div class="form-group" style="gap:4px;">
+              <span class="text-xs text-muted">Return</span>
+              <input class="form-input" type="date"
+                     th:field="*{endDate}"
+                     th:min="${minStartDate}"
+                     required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Travellers</label>
+          <div class="form-row mt-8">
+            <div>
+              <span class="text-xs text-muted" style="display:block; margin-bottom:6px;">Adults</span>
+              <input class="form-input" type="number"
+                     th:field="*{adults}" min="1" max="20" required
+                     style="width:80px;">
+            </div>
+            <div>
+              <span class="text-xs text-muted" style="display:block; margin-bottom:6px;">Children</span>
+              <input class="form-input" type="number"
+                     th:field="*{children}" min="0" max="10"
+                     style="width:80px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Total trip budget
+            <span class="hint">in local currency — we'll convert for visa application</span>
+          </label>
+          <input class="form-input" type="number"
+                 th:field="*{budgetTotalLocal}" min="1000" step="1000" required
+                 placeholder="e.g. 180000">
+        </div>
+
+      </div>
+
+      <div class="step-footer">
+        <a th:href="@{/plan/destination}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Next →</button>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

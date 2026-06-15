@@ -1,0 +1,41 @@
+services:
+
+  # ─── PostgreSQL ───────────────────────────────────────────
+  db:
+    image: postgres:16
+    container_name: weaveyourtrip-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: weaveyourtrip
+      POSTGRES_USER: weaveyourtrip
+      POSTGRES_PASSWORD: dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weaveyourtrip -d weaveyourtrip"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ─── App (only starts with --profile app) ─────────────────
+  # Dev mode:   `./mvnw spring-boot:run`   (db comes up automatically via Spring Boot Docker Compose support)
+  # Full mode:  `docker compose --profile app up --build`   (everything in containers; no Java needed on host)
+  app:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: weaveyourtrip-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?GEMINI_API_KEY must be set (export it or use a .env file)}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Step 5 — Style &amp; preferences · WeaveYourTrip')}"></head>
+
+<body>
+
+<div th:replace="~{fragments/wizard-nav :: nav(5)}"></div>
+
+<main class="wizard-body">
+
+  <div class="step">
+    <div class="step-header">
+      <div class="label">Step 5 of 6</div>
+      <h2>Your style &amp; preferences</h2>
+    </div>
+
+    <!-- Mode-specific banner — confirms which mode we're tailoring for -->
+    <div th:if="${wizardInput.mode != null}"
+         style="background:linear-gradient(135deg,rgba(201,79,44,0.06),rgba(212,168,67,0.06));
+                border:1px solid rgba(201,79,44,0.18); border-radius:12px;
+                padding:16px 20px; margin-bottom:22px; display:flex;
+                align-items:center; gap:14px;">
+      <span style="font-size:28px;" th:text="${wizardInput.mode.icon}">🎒</span>
+      <div style="flex:1;">
+        <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+                    color:var(--rust); font-weight:600; margin-bottom:2px;"
+             th:text="${wizardInput.mode.name() + ' MODE · tailored fields below'}">MODE</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px;
+                    font-weight:700; color:var(--ink);"
+             th:text="${wizardInput.mode.displayName}">Solo Explorer</div>
+      </div>
+      <a th:href="@{/plan/mode}"
+         style="font-size:12px; color:var(--rust); text-decoration:underline;">Change mode</a>
+    </div>
+
+    <form th:action="@{/plan/style}" method="post" th:object="${wizardInput}">
+
+      <!-- ─── BACKPACKER-specific: hostel tier ─── -->
+      <div th:if="${wizardInput.mode != null and wizardInput.mode.name() == 'BACKPACKER'}"
+           class="form-group">
+        <label class="form-label">
+          Accommodation tier <span class="hint">backpacker-friendly options</span>
+        </label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card"
+                 th:classappend="${wizardInput.accommodationTier == 'hostel' or wizardInput.accommodationTier == null} ? 'active' : ''">
+            <input type="radio" th:field="*{accommodationTier}" value="hostel">
+            <div class="radio-card-title">🛏️ Hostel</div>
+            <div class="radio-card-sub">~₹1,500–2,800/night dorm</div>
+          </label>
+          <label class="radio-card"
+                 th:classappend="${wizardInput.accommodationTier == 'guesthouse'} ? 'active' : ''">
+            <input type="radio" th:field="*{accommodationTier}" value="guesthouse">
+            <div class="radio-card-title">🏠 Guesthouse</div>
+            <div class="radio-card-sub">~₹3,000–5,500/night private</div>
+          </label>
+          <label class="radio-card"
+                 th:classappend="${wizardInput.accommodationTier == 'budget-hotel'} ? 'active' : ''">
+            <input type="radio" th:field="*{accommodationTier}" value="budget-hotel">
+            <div class="radio-card-title">🏨 Budget Hotel</div>
+            <div class="radio-card-sub">~₹5,000–9,000/night</div>
+          </label>
+        </div>
+      </div>
+
+      <!-- ─── COUPLE-specific: boutique tier ─── -->
+      <div th:if="${wizardInput.mode != null and wizardInput.mode.name() == 'COUPLE'}"
+           class="form-group">
+        <label class="form-label">Accommodation tier</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card"
+                 th:classappend="${wizardInput.accommodationTier == 'mid'} ? 'active' : ''">
+            <input type="radio" th:field="*{accommodationTier}" value="mid">
+            <div class="radio-card-title">🏨 Mid-range</div>
+            <div class="radio-card-sub">3★ romantic</div>
+          </label>
+          <label class="radio-card"
+                 th:classappend="${wizardInput.accommodationTier == 'boutique' or wizardInput.accommodationTier == null} ? 'active' : ''">
+            <input type="radio" th:field="*{accommodationTier}" value="boutique">
+            <div class="radio-card-title">✨ Boutique</div>
+            <div class="radio-card-sub">4★ design hotels</div>
+          </label>
+          <label class="radio-card"
+                 th:classappend="${wizardInput.accommodationTier == 'luxury'} ? 'active' : ''">
+            <input type="radio" th:field="*{accommodationTier}" value="luxury">
+            <div class="radio-card-title">💎 Luxury</div>
+            <div class="radio-card-sub">5★ honeymoon-grade</div>
+          </label>
+        </div>
+      </div>
+
+      <!-- ─── FAMILY-specific: accessibility + family priorities ─── -->
+      <div th:if="${wizardInput.mode != null and wizardInput.mode.name() == 'FAMILY'}">
+        <div class="form-group">
+          <label class="form-label">Accessibility needs</label>
+          <label class="toggle-row" style="margin-top:8px;">
+            <input type="checkbox" th:field="*{needsStrollerAccess}">
+            <div class="toggle-text">
+              <strong>Stroller / pushchair needed</strong>
+              We'll flag stroller-accessible routes and avoid stairs-only attractions
+            </div>
+          </label>
+          <label class="toggle-row" style="margin-top:10px;">
+            <input type="checkbox" th:field="*{showMedicalProximity}">
+            <div class="toggle-text">
+              <strong>Show medical facilities nearby</strong>
+              Clinics and pharmacies marked on each day's plan
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- ─── Universal: interests (multi-select chips) ─── -->
+      <div class="form-group">
+        <label class="form-label">
+          Interests <span class="hint">pick as many as you like</span>
+        </label>
+        <div class="chips mt-12" id="chips-interests">
+          <th:block th:each="opt : ${interestOptions}">
+            <label class="chip"
+                   th:classappend="${#lists.contains(wizardInput.interests, opt.value)} ? 'active' : ''">
+              <input type="checkbox" name="interests"
+                     th:value="${opt.value}"
+                     th:checked="${#lists.contains(wizardInput.interests, opt.value)}"
+                     hidden>
+              <span th:text="${opt.label}">🍜 Local Food</span>
+            </label>
+          </th:block>
+        </div>
+      </div>
+
+      <!-- ─── Universal: dietary preferences ─── -->
+      <div class="form-group">
+        <label class="form-label">
+          Dietary preferences <span class="hint">we'll filter restaurants accordingly</span>
+        </label>
+        <div class="chips mt-12" id="chips-dietary">
+          <th:block th:each="opt : ${dietaryOptions}">
+            <label class="chip"
+                   th:classappend="${#lists.contains(wizardInput.dietary, opt.value)} ? 'active' : ''">
+              <input type="checkbox" name="dietary"
+                     th:value="${opt.value}"
+                     th:checked="${#lists.contains(wizardInput.dietary, opt.value)}"
+                     hidden>
+              <span th:text="${opt.label}">🥬 Vegetarian</span>
+            </label>
+          </th:block>
+        </div>
+      </div>
+
+      <!-- ─── Universal: trip pace ─── -->
+      <div class="form-group">
+        <label class="form-label">Trip pace</label>
+        <div class="radio-cards cols-3 mt-8">
+          <label class="radio-card"
+                 th:classappend="${wizardInput.pace == 'relaxed'} ? 'active' : ''">
+            <input type="radio" th:field="*{pace}" value="relaxed">
+            <div class="radio-card-title">☕ Relaxed</div>
+            <div class="radio-card-sub">2–3 things/day</div>
+          </label>
+          <label class="radio-card"
+                 th:classappend="${wizardInput.pace == 'balanced' or wizardInput.pace == null} ? 'active' : ''">
+            <input type="radio" th:field="*{pace}" value="balanced">
+            <div class="radio-card-title">⚖️ Balanced</div>
+            <div class="radio-card-sub">4–5 activities/day</div>
+          </label>
+          <label class="radio-card"
+                 th:classappend="${wizardInput.pace == 'packed'} ? 'active' : ''">
+            <input type="radio" th:field="*{pace}" value="packed">
+            <div class="radio-card-title">⚡ Packed</div>
+            <div class="radio-card-sub">Every hour counts</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="step-footer">
+        <a th:href="@{/plan/mode}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Next →</button>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  // Chip toggle: native label-click toggles the hidden checkbox; we mirror its
+  // state into the .active class via the change event (avoids double-toggle).
+  document.querySelectorAll('label.chip input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('label.chip').classList.toggle('active', cb.checked);
+    });
+  });
+
+  // Radio-card active class on click
+  document.querySelectorAll('label.radio-card').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type=radio]');
+      if (!radio) return;
+      document.querySelectorAll(`input[type=radio][name="${radio.name}"]`).forEach(r => {
+        r.closest('.radio-card')?.classList.remove('active');
+      });
+      label.classList.add('active');
+    });
+  });
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

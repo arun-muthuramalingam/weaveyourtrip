@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Choose your flight · WeaveYourTrip')}"></head>
+
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a th:href="@{/}" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a th:href="@{|/itinerary/${itinerary.id}|}" class="btn btn-ghost btn-sm">← Back to itinerary</a>
+  </div>
+</nav>
+
+<!-- RESULTS HERO -->
+<div class="results-hero">
+  <div class="results-hero-inner container">
+    <div class="results-route">
+      <span th:text="${flights != null and !flights.isEmpty() ? flights[0].departureAirport : '—'}">BOM</span>
+      <span class="arrow">→</span>
+      <span th:text="${flights != null and !flights.isEmpty() ? flights[0].arrivalAirport : itinerary.destination}">CDG</span>
+    </div>
+    <p class="results-meta">
+      <span th:text="'✈ ' + ${#temporals.format(itinerary.startDate, 'd MMM')} + ' — ' + ${#temporals.format(itinerary.endDate, 'd MMM yyyy')}">
+        ✈ 15 Jul — 25 Jul 2026
+      </span>
+      <span th:text="'👥 ' + ${itinerary.input.adults + itinerary.input.children} + ' passengers'">👥 2</span>
+      <span>💼 Economy</span>
+    </p>
+  </div>
+</div>
+
+<!-- VISA-AWARE NOTICE -->
+<div th:if="${itinerary.visa != null and itinerary.visa.required}"
+     style="background:rgba(201,79,44,0.06); border-bottom:1px solid rgba(201,79,44,0.18); padding:12px 40px;">
+  <div style="max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:10px;
+              font-size:13px; color:var(--ink);">
+    <span style="font-size:16px;">⚠️</span>
+    <span>
+      <strong style="color:var(--rust);">Visa-aware booking:</strong>
+      Use a refundable booking for your visa application. Convert to paid
+      booking only after your visa is approved.
+    </span>
+  </div>
+</div>
+
+<!-- FLIGHT LIST -->
+<div class="results-list">
+
+  <div th:if="${flights == null or flights.isEmpty()}"
+       style="text-align:center; padding:60px 20px; color:var(--muted);">
+    <p>No flights generated for this trip.</p>
+    <a th:href="@{|/itinerary/${itinerary.id}|}" class="btn btn-ghost mt-12">← Back to itinerary</a>
+  </div>
+
+  <form th:each="flight, stat : ${flights}"
+        th:action="@{|/itinerary/${itinerary.id}/select-flight|}"
+        method="post"
+        style="display:contents;">
+    <input type="hidden" name="flightId" th:value="${flight.id}">
+
+    <div class="flight-card"
+         th:classappend="${itinerary.selectedFlightId == flight.id ? 'selected' : ''}">
+
+      <div class="flight-badge badge-best" th:if="${stat.index == 0}">Top pick</div>
+
+      <div class="airline-info">
+        <div class="airline-logo">✈</div>
+        <div>
+          <div class="airline-name" th:text="${flight.airline}">Air France</div>
+          <div class="airline-class"
+               th:text="${flight.cabinClass + (flight.stops == 0 ? ' · Direct' : ' · ' + flight.stops + ' stop')}">
+            Economy · Direct
+          </div>
+        </div>
+      </div>
+
+      <div class="flight-times">
+        <div class="flight-time-row">
+          <span class="flight-time"
+                th:text="${#temporals.format(flight.departureTime, 'HH:mm')}">02:30</span>
+          <span class="flight-time-arrow">——✈——</span>
+          <span class="flight-time"
+                th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}">08:05</span>
+        </div>
+        <div class="flight-duration"
+             th:text="${flight.durationMinutes / 60} + 'h ' + ${flight.durationMinutes % 60} + 'm flight time'">
+          9h 05m
+        </div>
+        <div class="flight-stops"
+             th:classappend="${flight.stops > 0 ? 'has-stops' : ''}"
+             th:text="${flight.stops == 0 ? '✓ Non-stop' : flight.stops + ' stop'}">
+          ✓ Non-stop
+        </div>
+      </div>
+
+      <div style="text-align:center; font-size:12px; color:var(--muted);">
+        <span th:text="${flight.departureAirport + ' → ' + flight.arrivalAirport}">BOM → CDG</span><br>
+        <span style="margin-top:6px; font-size:10px; color:var(--rust); font-weight:600;
+                     letter-spacing:0.5px;">✓ VISA-FRIENDLY</span>
+      </div>
+
+      <div class="flight-price-col">
+        <div class="flight-price" th:text="${'₹ ' + flight.priceLocal}">₹ 58,400</div>
+        <div class="flight-price-label"
+             th:text="${'per person · ~€' + flight.priceEur}">per person · ~€649</div>
+        <div class="flight-total"
+             th:text="${'₹ ' + (flight.priceLocal * (itinerary.input.adults + itinerary.input.children)) + ' total'}">
+          ₹ 116,800 total
+        </div>
+
+        <button type="submit"
+                class="btn btn-sm mt-12"
+                th:classappend="${itinerary.selectedFlightId == flight.id ? 'btn-secondary' : 'btn-primary'}"
+                th:text="${itinerary.selectedFlightId == flight.id ? '✓ Selected' : 'Select →'}">
+          Select →
+        </button>
+        <a th:href="${flight.bookingSearchUrl}" target="_blank" rel="noopener"
+           style="display:block; margin-top:8px; font-size:12px; color:var(--muted);">
+          Book on Skyscanner ↗
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <div th:if="${flights != null and !flights.isEmpty()}"
+       style="text-align:center; padding:16px 0 8px; font-size:13px; color:var(--muted);">
+    Prices shown are AI estimates. Final price confirmed on Skyscanner.
+    <strong style="color:var(--rust);">Use refundable booking for visa application.</strong>
+  </div>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

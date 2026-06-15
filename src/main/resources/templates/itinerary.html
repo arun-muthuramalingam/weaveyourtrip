@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Your trip · WeaveYourTrip')}"></head>
+
+<style>
+  .day-map {
+    height: 280px;
+    border-radius: 12px;
+    margin: 0 0 16px;
+    border: 1px solid var(--border);
+  }
+  .wyt-marker { background: none; border: none; }
+  .wyt-marker-pin {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--rust);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+</style>
+
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a th:href="@{/}" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a th:href="@{/plan/review}" class="btn btn-ghost btn-sm">← Edit trip</a>
+    <a th:href="@{|/itinerary/${itinerary.id}/pdf|}"
+       th:if="${!streamingMode}"
+       class="btn btn-primary btn-sm">⬇ Itinerary PDF</a>
+    <a th:href="@{|/itinerary/${itinerary.id}/visa-checklist.pdf|}"
+       th:if="${!streamingMode and itinerary.visa != null and itinerary.visa.required}"
+       class="btn btn-sm"
+       style="background:var(--gold); color:#2a1800; border:none;">📄 Visa Checklist PDF</a>
+  </div>
+</nav>
+
+<!-- ITINERARY HERO -->
+<div class="itinerary-hero">
+  <div class="itinerary-hero-inner container">
+    <div class="label" style="color:var(--gold); margin-bottom:12px;"
+         th:text="${itinerary.input.passport.flag + ' → ' + itinerary.destination + ' · ' + itinerary.tripMode + (itinerary.input.dietary.isEmpty() ? '' : ' · ' + #strings.listJoin(itinerary.input.dietary, ', '))}">
+      🇮🇳 → France · BACKPACKER · vegetarian
+    </div>
+    <h1 th:text="${'Your ' + itinerary.destination + ' '}">Your trip </h1>
+    <p class="itinerary-meta">
+      <strong th:text="${itinerary.input.totalDays() + ' days'}">10 days</strong> &nbsp;·&nbsp;
+      <strong th:text="${itinerary.input.adults + ' adults' + (itinerary.input.children > 0 ? ', ' + itinerary.input.children + ' children' : '')}">2 travellers</strong>
+      &nbsp;·&nbsp;
+      <span th:text="${#temporals.format(itinerary.startDate, 'd MMM')} + ' – ' + ${#temporals.format(itinerary.endDate, 'd MMM yyyy')}">15–25 Jul 2026</span>
+      &nbsp;·&nbsp;
+      <strong th:text="'~' + ${currencySymbol} + ${itinerary.totalCostLocal} + ' total est.'">~₹298,800 total</strong>
+      <span th:if="${itinerary.totalCostEur != null and !'EUR'.equals(localCurrency)}"
+            style="color:rgba(245,240,232,0.5); font-size:13px;"
+            th:text="' (~€' + ${itinerary.totalCostEur} + ')'">(~€3,320)</span>
+    </p>
+  </div>
+</div>
+
+<!-- VISA SUMMARY (only when visa required) -->
+<div th:if="${itinerary.visa != null and itinerary.visa.required}"
+     style="background:linear-gradient(135deg,rgba(201,79,44,0.04),rgba(212,168,67,0.04));
+            border-bottom:1px solid var(--border); padding:20px 0;">
+  <div class="container" style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:280px;">
+      <span style="font-size:32px;">📄</span>
+      <div>
+        <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+                    color:var(--rust); font-weight:600;"
+             th:text="${'Visa required · ' + itinerary.visa.type}">Visa required · Schengen</div>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700;
+                    color:var(--ink); margin-top:2px;"
+             th:text="${'€' + (itinerary.visa.feeEur + itinerary.visa.serviceFeeEur) + ' fee · ' + itinerary.visa.processingDays.typical + ' day processing'}">
+          €111 fee · 15 day processing</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" style="background:var(--rust); color:white; border:none;" disabled>
+      ⬇ Visa checklist PDF (Day 8+)
+    </button>
+  </div>
+</div>
+
+<!-- SELECTED BOOKINGS STRIP -->
+<div class="booking-strip" th:if="${selectedFlight != null or selectedHotel != null}">
+  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase;
+              letter-spacing:1px; flex-shrink:0;">Your bookings</div>
+
+  <div class="booking-item" th:if="${selectedFlight != null}">
+    <span class="booking-icon">✈</span>
+    <div>
+      <div class="booking-label">Outbound flight</div>
+      <div class="booking-val"
+           th:text="${selectedFlight.airline + ' · ' + selectedFlight.departureAirport + '→' + selectedFlight.arrivalAirport + (selectedFlight.stops == 0 ? ' · Direct' : ' · ' + selectedFlight.stops + ' stop')}">
+        Air France · BOM→CDG · Direct
+      </div>
+    </div>
+    <span class="booking-price"
+          th:text="${currencySymbol + selectedFlight.priceLocal}">₹58,400</span>
+    <a th:href="@{|/itinerary/${itinerary.id}/flights|}">Change</a>
+    <a th:href="${selectedFlight.bookingSearchUrl}" target="_blank" rel="noopener">Book ↗</a>
+  </div>
+
+  <div class="booking-item" th:if="${selectedHotel != null}">
+    <span class="booking-icon">🏨</span>
+    <div>
+      <div class="booking-label">Accommodation</div>
+      <div class="booking-val"
+           th:text="${selectedHotel.name + ' · ' + selectedHotel.neighborhood}">Hotel · Paris</div>
+    </div>
+    <span class="booking-price"
+          th:text="${currencySymbol + selectedHotel.totalPriceLocal}">₹98,000</span>
+    <a th:href="@{|/itinerary/${itinerary.id}/hotels|}">Change</a>
+    <a th:href="${selectedHotel.bookingSearchUrl}" target="_blank" rel="noopener">Book ↗</a>
+  </div>
+
+  <div style="margin-left:auto; text-align:right; flex-shrink:0;">
+    <div style="font-size:12px; color:var(--muted);">Estimated total</div>
+    <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--rust);"
+         th:text="${currencySymbol + itinerary.totalCostLocal}">₹298,800</div>
+    <div th:if="${itinerary.totalCostEur != null and !'EUR'.equals(localCurrency)}"
+         style="font-size:11px; color:var(--muted);"
+         th:text="${'~€' + itinerary.totalCostEur}">~€3,320</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container" style="padding-top:36px; padding-bottom:100px;">
+
+  <div style="display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start;">
+
+    <!-- LEFT: Days -->
+    <div>
+
+      <!-- Already-generated days from the persisted itinerary -->
+      <th:block th:each="day, dayStat : ${itinerary.days}">
+        <div th:replace="~{fragments/day-card :: card(
+                          day=${day},
+                          dayIndex=${dayStat.index},
+                          currencySymbol=${currencySymbol},
+                          iconForType=${iconForType},
+                          activitiesJson=${activitiesJsonByDay.get(day.dayNumber)})}"></div>
+      </th:block>
+
+      <!-- ─── Streaming mode (itinerary still pending) ─── -->
+      <th:block th:if="${streamingMode}">
+        <!-- Server-emitted day cards arrive here via SSE -->
+        <div id="streamed-days"></div>
+
+        <div id="streaming-status"
+             style="display:flex; align-items:center; gap:14px; padding:24px;
+                    background:rgba(212,168,67,0.06); border:1px solid rgba(212,168,67,0.2);
+                    border-radius:12px; margin:16px 0;">
+          <div style="font-size:28px;">⏳</div>
+          <div>
+            <div style="font-family:'Playfair Display',serif; font-size:18px;
+                        font-weight:700; color:var(--ink);">Weaving your trip…</div>
+            <div style="font-size:13px; color:var(--muted); margin-top:4px;">
+              AI is composing your itinerary day by day — each lands here as it streams in.
+              <span id="streaming-day-count">0</span> of
+              <span th:text="${itinerary.input.totalDays()}">10</span> days received.
+            </div>
+          </div>
+        </div>
+      </th:block>
+
+    </div><!-- end left col -->
+
+    <!-- RIGHT: Sidebar -->
+    <div style="position:sticky; top:80px;">
+
+      <!-- Trip stats -->
+      <div class="budget-summary" style="margin-bottom:16px;">
+        <h3>Trip stats</h3>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">📅 Duration</span>
+          <span class="budget-bar-amount" th:text="${itinerary.input.totalDays() + ' days'}">10 days</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">📍 Activities</span>
+          <span class="budget-bar-amount"
+                th:text="${#aggregates.sum(itinerary.days.![activities.size()])}">42</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">✈ Flights</span>
+          <span class="budget-bar-amount"
+                th:text="${itinerary.flights == null ? '—' : itinerary.flights.size() + ' suggestions'}">4 suggestions</span>
+        </div>
+        <div class="budget-bar-row">
+          <span class="budget-bar-label">🏨 Hotels</span>
+          <span class="budget-bar-amount"
+                th:text="${itinerary.hotels == null ? '—' : itinerary.hotels.size() + ' suggestions'}">4 suggestions</span>
+        </div>
+        <div class="budget-total">
+          <div>
+            <div class="budget-total-label">Estimated total</div>
+            <div style="font-size:12px; color:var(--muted);"
+                 th:text="${itinerary.input.adults + ' adults · ' + itinerary.input.totalDays() + ' days'}">
+              2 adults · 10 days
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="budget-total-value"
+                 th:text="${currencySymbol + itinerary.totalCostLocal}">₹298,800</div>
+            <div th:if="${itinerary.totalCostEur != null and !'EUR'.equals(localCurrency)}"
+                 style="font-size:11px; color:var(--muted); margin-top:2px;"
+                 th:text="${'~€' + itinerary.totalCostEur}">~€3,320</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Highlights from AI -->
+      <div th:if="${itinerary.flights != null and !itinerary.flights.isEmpty()}"
+           style="background:var(--ink); color:var(--sand); border-radius:var(--radius);
+                  padding:24px; text-align:center;">
+        <div style="font-size:24px; margin-bottom:8px;">🛫</div>
+        <div style="font-family:'Playfair Display',serif; font-size:16px; margin-bottom:8px;">
+          AI suggested flights
+        </div>
+        <div style="font-size:12px; color:rgba(245,240,232,0.5); margin-bottom:16px;">
+          Day 7+ unlocks the full flight picker with all options. For now, top pick:
+        </div>
+        <div style="font-size:13px; color:var(--sand);"
+             th:text="${itinerary.flights[0].airline + ' · ' + itinerary.flights[0].departureAirport + '→' + itinerary.flights[0].arrivalAirport}">
+          Air France · BOM→CDG
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Leaflet maps init for each day card -->
+<script th:src="@{/js/itinerary-maps.js}"></script>
+
+<!-- Streaming mode: vanilla EventSource appends day-card HTML as the AI streams -->
+<script th:if="${streamingMode}" th:inline="javascript">
+  (function () {
+    const id = /*[[${itinerary.id}]]*/ '';
+    const target = document.getElementById('streamed-days');
+    const counter = document.getElementById('streaming-day-count');
+    const status = document.getElementById('streaming-status');
+
+    const evt = new EventSource('/itinerary/' + id + '/stream');
+
+    evt.addEventListener('day', e => {
+      target.insertAdjacentHTML('beforeend', e.data);
+      counter.textContent = String(parseInt(counter.textContent, 10) + 1);
+      if (window.WYT && typeof window.WYT.initMaps === 'function') {
+        window.WYT.initMaps();
+      }
+    });
+
+    evt.addEventListener('done', () => {
+      evt.close();
+      status.innerHTML = '<div style="font-size:14px; color:var(--sage);">'
+                       + '✓ Itinerary complete — refreshing for booking strip and totals…</div>';
+      setTimeout(() => window.location.reload(), 800);
+    });
+
+    evt.onerror = err => {
+      console.warn('[wyt] SSE error', err);
+      evt.close();
+      status.innerHTML = '<div style="color:var(--rust);">Stream interrupted — reloading…</div>';
+      setTimeout(() => window.location.reload(), 3000);
+    };
+  })();
+</script>
+
+<script th:inline="javascript">
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

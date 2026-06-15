@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+  The visa card fragment, returned by GET /visa/card?destination=...
+  Each fragment reads from the controller-supplied model attributes directly
+  (no fragment parameters), so controllers just return e.g. "::required".
+-->
+
+<!-- ──────────────────────────────────────────────────────────
+     EMPTY — no destination typed yet (renders nothing)
+     ────────────────────────────────────────────────────────── -->
+<div th:fragment="empty"></div>
+
+
+<!-- ──────────────────────────────────────────────────────────
+     UNSUPPORTED — destination has no corridor data
+       Model: destination (String)
+     ────────────────────────────────────────────────────────── -->
+<div th:fragment="unsupported" class="visa-card unsupported"
+     style="margin-top:28px; border-radius:16px; overflow:hidden;
+            border:1px solid var(--border); background:var(--white);">
+  <div style="padding:22px 28px; display:flex; align-items:center; gap:14px;
+              background:linear-gradient(135deg,#6a6a6a,#444); color:white;">
+    <span style="font-size:26px;">🔍</span>
+    <div style="flex:1;">
+      <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase;
+                   font-weight:700; padding:4px 10px; border-radius:100px;
+                   background:rgba(255,255,255,0.18); color:white;">Coming soon</span>
+      <h3 style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700;
+                 margin:6px 0 0 0;"
+          th:text="${'No visa data yet for &quot;' + destination + '&quot;'}">No data</h3>
+    </div>
+  </div>
+  <div style="padding:24px 28px; font-size:14px; color:var(--muted); line-height:1.6;">
+    We're hand-curating visa data for the top 20 corridors. This destination
+    isn't covered in our launch set yet. Try a Schengen country (France, Italy,
+    Germany, Spain, Netherlands) or the UK.
+  </div>
+</div>
+
+
+<!-- ──────────────────────────────────────────────────────────
+     NOT REQUIRED — soft-passport visa-free corridor
+       Model: requirement (VisaRequirement)
+     ────────────────────────────────────────────────────────── -->
+<div th:fragment="notRequired" class="visa-card not-required"
+     style="margin-top:28px; border-radius:16px; overflow:hidden;
+            border:1px solid var(--border); background:var(--white);">
+  <div style="padding:22px 28px; display:flex; align-items:center; gap:14px;
+              background:linear-gradient(135deg,#4a8a40,var(--sage)); color:white;">
+    <span style="font-size:26px;">✓</span>
+    <div style="flex:1;">
+      <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase;
+                   font-weight:700; padding:4px 10px; border-radius:100px;
+                   background:rgba(255,255,255,0.18); color:white;">No visa needed</span>
+      <h3 style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700;
+                 margin:6px 0 0 0;">You're cleared to travel</h3>
+      <div style="font-size:13px; opacity:0.85; margin-top:2px;"
+           th:text="${requirement.passport.displayName + ' → ' + requirement.destination}">
+        Passport → Destination</div>
+    </div>
+  </div>
+  <div style="padding:24px 28px; font-size:14px; color:var(--ink); line-height:1.6;">
+    Stay <strong th:text="${requirement.validityDays}">90</strong> days visa-free.
+    Book whenever you like.
+  </div>
+</div>
+
+
+<!-- ──────────────────────────────────────────────────────────
+     REQUIRED — full visa intel card (the wedge moment)
+       Model: requirement, earliestDeparture, totalFee
+     ────────────────────────────────────────────────────────── -->
+<div th:fragment="required" class="visa-card required"
+     style="margin-top:28px; border-radius:16px; overflow:hidden;
+            border:1px solid var(--border); background:var(--white);">
+
+  <!-- Header -->
+  <div style="padding:22px 28px; display:flex; align-items:center; gap:14px;
+              background:linear-gradient(135deg,#b8432a,var(--rust)); color:white;">
+    <span style="font-size:26px;">⚠️</span>
+    <div style="flex:1;">
+      <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase;
+                   font-weight:700; padding:4px 10px; border-radius:100px;
+                   background:rgba(255,255,255,0.18); color:white;">Visa required</span>
+      <h3 style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700;
+                 margin:6px 0 0 0;" th:text="${requirement.type}">Short-stay Schengen</h3>
+      <div style="font-size:13px; opacity:0.85; margin-top:2px;"
+           th:text="${requirement.passport.displayName + ' → ' + requirement.destination}">
+        India → SCHENGEN</div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div style="padding:24px 28px;">
+
+    <!-- Stats grid -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+                gap:18px; margin-bottom:24px;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+                     color:var(--muted); font-weight:600;">Processing</span>
+        <span style="font-family:'Playfair Display',serif; font-size:22px;
+                     font-weight:700; color:var(--ink);"
+              th:text="${requirement.processingDays.typical + ' days'}">15 days</span>
+        <span style="font-size:12px; color:var(--muted);"
+              th:text="${requirement.processingDays.min + '–' + requirement.processingDays.max + ' day range'}">10–30</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+                     color:var(--muted); font-weight:600;">Fee</span>
+        <span style="font-family:'Playfair Display',serif; font-size:22px;
+                     font-weight:700; color:var(--ink);"
+              th:text="${'€' + totalFee}">€111</span>
+        <span style="font-size:12px; color:var(--muted);"
+              th:text="${'€' + requirement.feeEur + ' visa + €' + requirement.serviceFeeEur + ' service'}">€80+€31</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+                     color:var(--muted); font-weight:600;">Validity</span>
+        <span style="font-family:'Playfair Display',serif; font-size:22px;
+                     font-weight:700; color:var(--ink);"
+              th:text="${requirement.validityDays + ' days'}">90 days</span>
+        <span style="font-size:12px; color:var(--muted);" th:text="${requirement.entries}">multiple</span>
+      </div>
+    </div>
+
+    <!-- Earliest viable departure -->
+    <div style="background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(212,168,67,0.06));
+                border:1px solid rgba(212,168,67,0.3); border-radius:12px;
+                padding:20px 24px; margin-bottom:22px; display:flex;
+                align-items:center; gap:18px;">
+      <span style="font-size:32px;">📅</span>
+      <div style="flex:1;">
+        <div style="font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+                    color:#8a6a10; font-weight:600; margin-bottom:4px;">
+          Earliest viable departure
+        </div>
+        <div style="font-family:'Playfair Display',serif; font-size:26px;
+                    font-weight:700; color:var(--ink); line-height:1.1;"
+             th:text="${#temporals.format(earliestDeparture, 'd MMM yyyy')}">23 Jul 2026</div>
+        <div style="font-size:12.5px; color:var(--muted); margin-top:4px;"
+             th:text="${'= today + ' + requirement.processingDays.typical + ' day processing + buffer. Book flights only after this date.'}">
+          + processing + buffer</div>
+      </div>
+    </div>
+
+    <!-- Apply centers -->
+    <div style="margin-top:22px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:1.5px;
+                  text-transform:uppercase; color:var(--muted); margin-bottom:12px;">
+        Apply at
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <span th:each="c : ${requirement.applyCenters}"
+              th:text="${c}"
+              style="font-size:12px; padding:4px 10px; background:rgba(0,0,0,0.04);
+                     border-radius:100px; color:var(--ink);">VFS Mumbai</span>
+      </div>
+    </div>
+
+    <!-- Required documents -->
+    <div style="margin-top:22px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:1.5px;
+                  text-transform:uppercase; color:var(--muted); margin-bottom:12px;"
+           th:text="${requirement.requiredDocuments.size() + ' documents required'}">
+        9 documents
+      </div>
+      <ul style="display:flex; flex-direction:column; gap:8px; list-style:none;
+                 padding:0; margin:0;">
+        <li th:each="doc : ${requirement.requiredDocuments}"
+            style="display:flex; align-items:flex-start; gap:12px; padding:10px 14px;
+                   background:rgba(0,0,0,0.02); border-radius:8px; font-size:13.5px;
+                   line-height:1.5;">
+          <div style="flex-shrink:0; width:18px; height:18px; border-radius:50%;
+                      border:2px solid var(--border); margin-top:2px;"></div>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:var(--ink);" th:text="${doc.name}">Passport</div>
+            <div th:if="${doc.notes != null}"
+                 style="font-size:12.5px; color:var(--muted); margin-top:2px;"
+                 th:text="${doc.notes}">notes here</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Common rejection reasons -->
+    <div th:if="${requirement.commonRejectionReasons != null and !requirement.commonRejectionReasons.isEmpty()}"
+         style="background:rgba(176,68,68,0.05); border:1px solid rgba(176,68,68,0.15);
+                border-radius:10px; padding:14px 18px; margin-top:18px;">
+      <h4 style="font-size:12px; letter-spacing:1px; text-transform:uppercase;
+                 color:#b04; font-weight:700; margin-bottom:8px;">
+        ⚠ Common rejection reasons for this corridor
+      </h4>
+      <ul style="font-size:13px; color:var(--ink); padding-left:18px;
+                 line-height:1.6; margin:0;">
+        <li th:each="reason : ${requirement.commonRejectionReasons}" th:text="${reason}">reason</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div style="display:flex; align-items:center; justify-content:space-between;
+              gap:14px; padding:14px 28px; background:rgba(0,0,0,0.025);
+              border-top:1px solid var(--border); font-size:12px;
+              color:var(--muted); flex-wrap:wrap;">
+    <span>
+      ✓ Verified <span th:text="${#temporals.format(requirement.lastVerified, 'd MMM yyyy')}">6 Jun 2026</span>
+      &nbsp;·&nbsp;
+      <a th:href="${requirement.officialSourceUrl}" target="_blank" rel="noopener"
+         style="color:var(--rust);">Official source ↗</a>
+    </span>
+    <a th:href="@{|/visa/${requirement.passport.name()}/${requirement.destination}/report-error|}"
+       style="color:var(--rust); text-decoration:underline; cursor:pointer;">
+      Report incorrect info
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

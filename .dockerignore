@@ -1,0 +1,32 @@
+# Build output
+target/
+**/target/
+*.jar
+*.war
+
+# IDE + OS noise
+.idea/
+*.iml
+.vscode/
+.DS_Store
+**/.DS_Store
+
+# VCS
+.git/
+.gitignore
+.gitattributes
+
+# Local Claude session state — never goes in the image
+.claude/
+.claude-sandbox/
+
+# Docs + assets not needed at runtime (everything app-facing is in src/)
+docs/
+prototype/
+*.md
+HELP.md
+
+# Secrets — never bake env files into images
+.env
+.env.*
+!.env.example

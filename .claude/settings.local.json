@@ -3,7 +3,13 @@
     "allow": [
       "Bash(mv project_tripforge.md project_weaveyourtrip.md)",
       "Bash(mv feedback_tripforge_design.md feedback_weaveyourtrip_design.md)",
-      "Bash(sed -i 's/TripForge/WeaveYourTrip/g; s/tripforge/weaveyourtrip/g; s/\\\\bForged\\\\b/Woven/g; s/\\\\bforged\\\\b/woven/g; s/\\\\bForge\\\\b/Weave/g; s/\\\\bforge\\\\b/weave/g' MEMORY.md project_weaveyourtrip.md feedback_weaveyourtrip_design.md)"
+      "Bash(sed -i 's/TripForge/WeaveYourTrip/g; s/tripforge/weaveyourtrip/g; s/\\\\bForged\\\\b/Woven/g; s/\\\\bforged\\\\b/woven/g; s/\\\\bForge\\\\b/Weave/g; s/\\\\bforge\\\\b/weave/g' MEMORY.md project_weaveyourtrip.md feedback_weaveyourtrip_design.md)",
+      "Bash(mkdir -p /workspace/src/main/resources/visa-data)",
+      "Bash(mv /workspace/visa-data/IN-SCHENGEN.json /workspace/visa-data/IN-GB.json /workspace/src/main/resources/visa-data/)",
+      "Bash(rmdir /workspace/visa-data)",
+      "Bash(mkdir -p /workspace/src/main/resources/static/css)",
+      "Bash(cp /workspace/prototype/style.css /workspace/src/main/resources/static/css/style.css)",
+      "Bash(cp /workspace/prototype/bg-pattern.svg /workspace/prototype/bg-pattern-light.svg /workspace/src/main/resources/static/)"
     ]
   }
 }

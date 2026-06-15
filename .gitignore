@@ -32,3 +32,13 @@ build/
 ### VS Code ###
 .vscode/
 .claude-sandbox/
+
+### Secrets ###
+.env
+.env.local
+.env.*.local
+!.env.example
+
+### OS noise ###
+.DS_Store
+**/.DS_Store

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Step 6 — Ready to weave · WeaveYourTrip')}"></head>
+
+<body>
+
+<div th:replace="~{fragments/wizard-nav :: nav(6)}"></div>
+
+<main class="wizard-body">
+
+  <div class="step">
+    <div class="step-header">
+      <div class="label">Step 6 of 6</div>
+      <h2>Looks good — ready to weave?</h2>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="key">Passport</span>
+        <span class="val"
+              th:text="${wizardInput.passport != null ? wizardInput.passport.flag + ' ' + wizardInput.passport.displayName : '—'}">🇮🇳 India</span>
+        <a th:href="@{/plan}" class="edit">Edit</a>
+      </div>
+      <div class="summary-row">
+        <span class="key">Destination</span>
+        <span class="val" th:text="${wizardInput.destination ?: '—'}">France</span>
+        <a th:href="@{/plan/destination}" class="edit">Edit</a>
+      </div>
+      <div th:if="${requirement != null and requirement.required}" class="summary-row">
+        <span class="key">Visa</span>
+        <span class="val" style="color:var(--rust);"
+              th:text="${requirement.type + ' · €' + (requirement.feeEur + requirement.serviceFeeEur) + ' · ' + requirement.processingDays.typical + 'd processing'}">
+          Schengen · €111 · 15d
+        </span>
+        <a th:href="@{/plan/destination}" class="edit">Details</a>
+      </div>
+      <div class="summary-row">
+        <span class="key">Dates</span>
+        <span class="val"
+              th:text="${wizardInput.startDate} + ' → ' + ${wizardInput.endDate}">2026-07-15 → 2026-07-25</span>
+        <a th:href="@{/plan/dates}" class="edit">Edit</a>
+      </div>
+      <div class="summary-row">
+        <span class="key">Travellers</span>
+        <span class="val"
+              th:text="${wizardInput.adults + ' adults' + (wizardInput.children > 0 ? ', ' + wizardInput.children + ' children' : '')}">
+          2 adults
+        </span>
+        <a th:href="@{/plan/dates}" class="edit">Edit</a>
+      </div>
+      <div class="summary-row">
+        <span class="key">Budget</span>
+        <span class="val"
+              th:text="${wizardInput.budgetTotalLocal != 0 ? '₹ ' + wizardInput.budgetTotalLocal : '—'}">
+          ₹ 180,000
+        </span>
+        <a th:href="@{/plan/dates}" class="edit">Edit</a>
+      </div>
+      <div th:if="${wizardInput.mode != null}" class="summary-row">
+        <span class="key">Trip mode</span>
+        <span class="val"
+              th:text="${wizardInput.mode.icon + ' ' + wizardInput.mode.displayName}">🎒 Solo Explorer</span>
+        <a th:href="@{/plan/mode}" class="edit">Change</a>
+      </div>
+      <div class="summary-row">
+        <span class="key">Interests</span>
+        <span class="val"
+              th:text="${#strings.listJoin(wizardInput.interests, ' · ')}">food · museums</span>
+        <a th:href="@{/plan/style}" class="edit">Edit</a>
+      </div>
+      <div class="summary-row">
+        <span class="key">Dietary</span>
+        <span class="val"
+              th:text="${wizardInput.dietary.isEmpty() ? '—' : #strings.listJoin(wizardInput.dietary, ' · ')}">veg</span>
+        <a th:href="@{/plan/style}" class="edit">Edit</a>
+      </div>
+      <div th:if="${wizardInput.accommodationTier != null}" class="summary-row">
+        <span class="key">Accommodation</span>
+        <span class="val" th:text="${wizardInput.accommodationTier}">mid</span>
+        <a th:href="@{/plan/style}" class="edit">Edit</a>
+      </div>
+      <div th:if="${wizardInput.pace != null}" class="summary-row">
+        <span class="key">Pace</span>
+        <span class="val" th:text="${wizardInput.pace}">balanced</span>
+        <a th:href="@{/plan/style}" class="edit">Edit</a>
+      </div>
+    </div>
+
+    <form th:action="@{/api/generate}" method="post" th:object="${wizardInput}">
+
+      <div class="mt-24">
+        <div class="form-label" style="margin-bottom:4px;">What should WeaveYourTrip help with?</div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">
+          Tap to toggle — selected items get their own step before the itinerary
+        </div>
+        <div class="service-cards">
+          <label class="service-card"
+                 th:classappend="${wizardInput.wantFlights} ? 'on' : ''">
+            <input type="checkbox" th:field="*{wantFlights}" hidden>
+            <div class="service-check">✓</div>
+            <div class="service-icon">✈️</div>
+            <div class="service-title">Flights</div>
+            <div class="service-desc">AI-suggested with Skyscanner search redirect</div>
+            <div class="service-off-label">not included</div>
+          </label>
+          <label class="service-card"
+                 th:classappend="${wizardInput.wantHotels} ? 'on' : ''">
+            <input type="checkbox" th:field="*{wantHotels}" hidden>
+            <div class="service-check">✓</div>
+            <div class="service-icon">🏨</div>
+            <div class="service-title">Hotels</div>
+            <div class="service-desc">Matched to your tier — confirmations work for visa application</div>
+            <div class="service-off-label">not included</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="step-footer">
+        <a th:href="@{/plan/style}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">Weave my trip →</button>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  // Service cards: native label-click toggles the hidden checkbox; we mirror
+  // its state into the .on class via the change event (avoids double-toggle).
+  document.querySelectorAll('label.service-card input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('label.service-card').classList.toggle('on', cb.checked);
+    });
+  });
+
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

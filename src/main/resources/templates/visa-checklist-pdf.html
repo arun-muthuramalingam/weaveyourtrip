@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Visa application checklist</title>
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  body { font-family: 'Helvetica', sans-serif; font-size: 11pt; color: #2b241c; line-height: 1.5; }
+  h1 { font-size: 22pt; color: #c94f2c; margin: 0 0 6pt 0; font-weight: bold; }
+  h2 { font-size: 13pt; color: #2b241c; margin: 14pt 0 6pt 0; border-bottom: 1pt solid #d8cfc4; padding-bottom: 3pt; }
+  .meta { color: #7a7060; font-size: 10pt; margin-bottom: 14pt; }
+  .deadline-box { background: #fbf5ec; border: 1pt solid #d4a843; padding: 12pt; margin: 12pt 0; }
+  .deadline-box strong { color: #c94f2c; }
+  table.docs { width: 100%; border-collapse: collapse; margin: 0 0 10pt 0; }
+  table.docs td { padding: 7pt 8pt; vertical-align: top; border-bottom: 0.5pt solid #ece6dc; font-size: 10.5pt; }
+  table.docs td.check { width: 16pt; }
+  table.docs td.name { font-weight: bold; }
+  table.docs td.notes { color: #5a4f40; font-size: 9.5pt; }
+  .rejections { background: #fcf2f0; border: 0.5pt solid #c94f2c; padding: 10pt; margin: 12pt 0; }
+  .rejections h3 { color: #b04; font-size: 11pt; margin: 0 0 6pt 0; }
+  .rejections ul { margin: 0; padding-left: 18pt; font-size: 10pt; }
+  .cover-letter {
+    margin-top: 14pt;
+    padding: 14pt;
+    background: #f5f0e8;
+    border: 0.5pt solid #d8cfc4;
+    page-break-inside: avoid;
+    font-family: 'Times', serif;
+    font-size: 10.5pt;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .footer { margin-top: 16pt; font-size: 8pt; color: #7a7060; text-align: center; }
+  .small { font-size: 9pt; color: #7a7060; }
+</style>
+</head>
+<body>
+
+<h1>Visa application checklist</h1>
+<p class="meta">
+  <strong th:text="${itinerary.passport}">IN</strong>
+  passport →
+  <strong th:text="${visa.destination}">SCHENGEN</strong>
+  ·
+  <span th:text="${visa.type}">Short-stay Schengen Visa (Type C)</span>
+</p>
+
+<!-- ── Application deadline ──────────────────────────────── -->
+<div class="deadline-box">
+  <strong>Apply by:</strong>
+  Submit your application at least
+  <strong th:text="${visa.processingDays.typical} + ' days'">15 days</strong>
+  before your travel date of
+  <strong th:text="${#temporals.format(itinerary.startDate, 'd MMM yyyy')}">15 Jul 2026</strong>.
+  <br>Recommended buffer: extra 7 days for appointment + admin slack.
+  <br><br>
+  <strong>Fee:</strong>
+  <span th:text="'€' + ${visa.feeEur} + ' visa + €' + ${visa.serviceFeeEur} + ' service = €' + (${visa.feeEur} + ${visa.serviceFeeEur})">
+    €80 visa + €31 service = €111
+  </span> per applicant
+  <br>
+  <strong>Valid:</strong> <span th:text="${visa.validityDays + ' days · ' + visa.entries}">90 days · multiple-allowed</span>
+</div>
+
+<!-- ── Required documents ────────────────────────────────── -->
+<h2 th:text="${visa.requiredDocuments.size()} + ' required documents'">Required documents</h2>
+<table class="docs">
+  <tr th:each="doc : ${visa.requiredDocuments}">
+    <td class="check">☐</td>
+    <td class="name" th:text="${doc.name}">Original passport</td>
+    <td class="notes" th:text="${doc.notes ?: ''}">notes</td>
+  </tr>
+</table>
+
+<!-- ── Common rejection reasons ──────────────────────────── -->
+<div th:if="${visa.commonRejectionReasons != null and !visa.commonRejectionReasons.isEmpty()}"
+     class="rejections">
+  <h3>⚠ Common rejection reasons for this corridor</h3>
+  <ul>
+    <li th:each="reason : ${visa.commonRejectionReasons}" th:text="${reason}">reason</li>
+  </ul>
+</div>
+
+<!-- ── AI-generated cover letter ─────────────────────────── -->
+<h2>Cover letter (draft)</h2>
+<p class="small">
+  Auto-generated based on your itinerary. Review, sign, and attach to your application.
+  Edit freely — this is a starting point, not a guarantee.
+</p>
+<div class="cover-letter" th:text="${coverLetter}">Cover letter body here.</div>
+
+<!-- ── Apply centers ─────────────────────────────────────── -->
+<h2>Where to apply</h2>
+<p class="small" th:text="${#strings.listJoin(visa.applyCenters, ' · ')}">VFS Mumbai · VFS Delhi</p>
+
+<!-- ── Footer ────────────────────────────────────────────── -->
+<div class="footer">
+  Data verified <span th:text="${#temporals.format(visa.lastVerified, 'd MMM yyyy')}">6 Jun 2026</span> ·
+  Always confirm against official VFS / consulate pages before submission.
+  <br>WeaveYourTrip · Travel that starts where you do.
+</div>
+
+</body>
+</html>

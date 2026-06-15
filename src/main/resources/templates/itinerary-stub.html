@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Your trip — generating · WeaveYourTrip')}"></head>
+
+<body>
+
+<nav class="nav">
+  <a th:href="@{/}" class="nav-logo">Weave<span>YourTrip</span></a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+    <a th:href="@{/plan/review}" class="btn btn-ghost btn-sm">← Back to review</a>
+  </div>
+</nav>
+
+<section class="hero" style="min-height:60vh;">
+  <div class="hero-inner container">
+    <div class="hero-eyebrow">✦ Day 5 milestone — wizard end-to-end</div>
+    <h1>Your trip is <span>queued</span>.</h1>
+    <p class="hero-sub">
+      The wizard captured everything. AI generation, day-by-day streaming, maps,
+      and PDFs land Week 2 (Day 6+). Below is the input the AI will see.
+    </p>
+
+    <div style="margin-top:32px; background:rgba(245,240,232,0.04); padding:24px;
+                border-radius:12px; font-family:'JetBrains Mono', monospace;
+                font-size:13px; color:rgba(245,240,232,0.8); line-height:1.7;
+                max-width:800px;">
+      <div><strong style="color:var(--gold);">Passport:</strong>
+        <span th:text="${wizardInput.passport != null ? wizardInput.passport.name() + ' (' + wizardInput.passport.displayName + ')' : '—'}">IN</span>
+      </div>
+      <div><strong style="color:var(--gold);">Destination:</strong>
+        <span th:text="${wizardInput.destination ?: '—'}">France</span>
+      </div>
+      <div><strong style="color:var(--gold);">Dates:</strong>
+        <span th:text="${wizardInput.startDate} + ' → ' + ${wizardInput.endDate} + ' (' + ${wizardInput.totalDays()} + ' days)'">
+          2026-07-15 → 2026-07-25
+        </span>
+      </div>
+      <div><strong style="color:var(--gold);">Group:</strong>
+        <span th:text="${wizardInput.adults + ' adults, ' + wizardInput.children + ' children'}">2 adults</span>
+      </div>
+      <div><strong style="color:var(--gold);">Budget:</strong>
+        <span th:text="${'₹ ' + wizardInput.budgetTotalLocal + ' total'}">₹ 180,000</span>
+      </div>
+      <div><strong style="color:var(--gold);">Mode:</strong>
+        <span th:text="${wizardInput.mode != null ? wizardInput.mode.name() : '—'}">BACKPACKER</span>
+      </div>
+      <div><strong style="color:var(--gold);">Interests:</strong>
+        <span th:text="${#strings.listJoin(wizardInput.interests, ', ')}">food, museums</span>
+      </div>
+      <div><strong style="color:var(--gold);">Dietary:</strong>
+        <span th:text="${wizardInput.dietary.isEmpty() ? 'no restrictions' : #strings.listJoin(wizardInput.dietary, ', ')}">veg</span>
+      </div>
+      <div><strong style="color:var(--gold);">Accommodation:</strong>
+        <span th:text="${wizardInput.accommodationTier ?: '—'}">mid</span>
+      </div>
+      <div><strong style="color:var(--gold);">Pace:</strong>
+        <span th:text="${wizardInput.pace ?: '—'}">balanced</span>
+      </div>
+      <div><strong style="color:var(--gold);">Want flights:</strong>
+        <span th:text="${wizardInput.wantFlights}">true</span>
+      </div>
+      <div><strong style="color:var(--gold);">Want hotels:</strong>
+        <span th:text="${wizardInput.wantHotels}">true</span>
+      </div>
+    </div>
+
+    <div style="margin-top:32px; display:flex; gap:12px;">
+      <a th:href="@{/plan/review}" class="btn btn-primary">← Edit review</a>
+      <a th:href="@{/}" class="btn btn-ghost"
+         style="color:rgba(245,240,232,0.7); border-color:rgba(245,240,232,0.2);">
+        Start over
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <strong>WeaveYourTrip</strong> &nbsp;·&nbsp; Travel that starts where you do. &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+  function toggleTheme() {
+    var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('weaveyourtrip-theme', next);
+    document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+  document.getElementById('theme-toggle').textContent =
+    document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+</script>
+
+</body>
+</html>

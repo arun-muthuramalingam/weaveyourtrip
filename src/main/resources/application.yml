@@ -1,0 +1,121 @@
+# =============================================================================
+# WeaveYourTrip — application config
+# Active profile is set via SPRING_PROFILES_ACTIVE env var; defaults to "local".
+# =============================================================================
+
+spring:
+  application:
+    name: weaveyourtrip
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  threads:
+    virtual:
+      enabled: true                 # Java 21 virtual threads for SSE / AI streaming
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate            # Flyway owns the schema, not Hibernate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+    baseline-on-migrate: true
+
+  # -----------------------------------------------------------------
+  # Spring AI — Google Gemini consumer API (free tier via AI Studio)
+  # Export GEMINI_API_KEY=AIza... before running.
+  # -----------------------------------------------------------------
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}     # placeholder — empty default so tests skip cleanly
+        chat:
+          options:
+            model: gemini-2.5-flash
+            temperature: 0.7
+
+server:
+  port: 8080
+
+# Application-specific config (binds to @ConfigurationProperties later)
+weaveyourtrip:
+  max-trip-days: 14
+  visa-buffer-days: 7                              # extra buffer beyond typical processing
+  visa-data-path: classpath:/visa-data/
+  generation-cap-per-ip-per-day: 20                # cost guard
+  fx-rates-url: https://api.frankfurter.app/latest
+  nominatim:
+    base-url: https://nominatim.openstreetmap.org
+    rate-limit-ms: 1100                            # 1 req/sec per Nominatim policy
+    user-agent: WeaveYourTrip/0.1 (arun.muthuramalingam@bsi-software.com)
+
+# =============================================================================
+# Profile: local — Docker Compose Postgres, verbose logging
+# =============================================================================
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weaveyourtrip
+    username: weaveyourtrip
+    password: dev
+  thymeleaf:
+    cache: false
+  devtools:
+    restart:
+      enabled: true
+
+logging:
+  level:
+    com.weaveyourtrip: DEBUG
+    org.springframework.ai: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE             # show prepared-statement params
+
+# =============================================================================
+# Profile: docker — used when the app runs inside Docker Compose.
+#                   Postgres is reachable at the compose service name 'db'.
+# =============================================================================
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://db:5432/weaveyourtrip
+    username: weaveyourtrip
+    password: dev
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    com.weaveyourtrip: DEBUG
+    org.springframework.ai: INFO
+
+# =============================================================================
+# Profile: prod — credentials from env, quiet logging
+# =============================================================================
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  thymeleaf:
+    cache: true
+
+logging:
+  level:
+    com.weaveyourtrip: INFO
+    org.springframework.ai: INFO
+    org.hibernate.SQL: INFO

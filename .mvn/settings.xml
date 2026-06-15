@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Project-local Maven settings for WeaveYourTrip.
+
+  Why this file exists:
+    The Homebrew global settings.xml at
+    /opt/homebrew/Cellar/maven/3.9.10/libexec/conf/settings.xml
+    contains work-specific mirrors / servers that block resolution of public
+    Maven Central artifacts (Spring AI BOM, etc.). We don't want to touch the
+    global file — it's needed for work. Instead this project-local file
+    overrides it whenever Maven is invoked from this repo.
+
+  How it's used:
+    - Command line:  ./mvnw -s .mvn/settings.xml ...
+                     OR  ./mvnw ...  (picks it up via .mvn/maven.config below)
+    - IntelliJ:      Settings → Build Tools → Maven → "User settings file"
+                     → check "Override" → point to this file
+    - Docker build:  not needed — the container has no inherited settings
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!--
+    Empty <mirrors>: explicitly *no* mirrors. Defeats any mirrors inherited
+    from the global settings.xml. Maven Central + the Spring repos referenced
+    in pom.xml are queried directly.
+  -->
+  <mirrors/>
+
+  <!-- Default-clean profile so any global profile activation doesn't interfere. -->
+  <profiles/>
+  <activeProfiles/>
+
+  <!--
+    Local artifact cache. Defaults to ~/.m2/repository. Uncomment + set to a
+    project-local path if you want this project's downloads quarantined from
+    your work repo (slower first build, no cross-contamination).
+  -->
+  <!-- <localRepository>${user.home}/.m2/repository-weaveyourtrip</localRepository> -->
+
+</settings>
